@@ -1,6 +1,8 @@
-%header.navbar.navbar-fixed-top
-  .navbar-inner.container
-    = link_to "bringit", root_path, id: "logo"
-    %ul.nav
-      %li= link_to "Home", root_path
-      %li= link_to "Repositories", "#"
+%header.navbar.navbar-inverse.navbar-fixed-top
+  .navbar-inner
+    .container
+      = link_to "bringit", root_path, id: "logo", class: "brand"
+      .nav-collapse.collapse
+        %ul.nav
+          %li= link_to "Home", root_path
+          %li= link_to "Repositories", "#"
