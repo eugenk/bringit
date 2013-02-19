@@ -21,17 +21,16 @@ group :assets do
 end
 
 group :development, :test do
+  gem 'sqlite3'
   gem 'rspec-rails', '2.11.0'
   gem 'factory_girl'
 end
 
 group :development do
-  gem 'mysql2'
   gem 'quiet_assets'
 end
 
 group :test do
-  gem 'sqlite3'
   gem 'capybara', '1.1.2'
 end
 
