@@ -11,6 +11,7 @@ gem 'jquery-ui-rails', '~> 4.0.0'
 gem 'jquery-ui-bootstrap-rails'
 gem 'font-awesome-rails'
 gem 'haml'
+gem 'haml-rails'
 gem 'foreigner'
 gem 'rugged'
 
