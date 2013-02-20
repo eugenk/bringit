@@ -10,7 +10,8 @@ class SessionsController < ApplicationController
     end
     
     user = User.find(params[:user_id])
-    session["warden.user.user.key"] = ["User", user.id, nil]
+    sign_in(:user, user)
+    #session["warden.user.user.key"] = ["User", user.id, nil]
     
     flash[:success] = "Signed in as #{user.email}"
     
