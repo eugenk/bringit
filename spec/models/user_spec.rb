@@ -82,7 +82,12 @@ describe User do
   end
   
   describe "with a password that's too short" do
-    before { @user.password = @user.password_confirmation = "a" * 8 }
+    before { @user.password = @user.password_confirmation = "a" * 7 }
+    it { should be_invalid }
+  end
+  
+  describe "with a password that's too long" do
+    before { @user.password = @user.password_confirmation = "a" * 129 }
     it { should be_invalid }
   end
   
