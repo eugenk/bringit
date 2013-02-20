@@ -6,7 +6,7 @@ class AddContraints < ActiveRecord::Migration
     add_index :git_repository_owners, :owner_id
     add_foreign_key :git_repository_owners, :users, column: 'owner_id', dependent: :delete
     
-    add_index :git_commits, :hash
+    add_index :git_commits, :commit_hash
     add_index :git_commits, :git_push_id
     add_foreign_key :git_commits, :git_pushes, column: 'git_push_id', dependent: :delete
     
