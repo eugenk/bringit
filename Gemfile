@@ -14,11 +14,13 @@ gem 'haml-rails'
 gem 'foreigner'
 gem 'rugged'
 gem 'simple_form'
+gem 'compass'
 
 group :assets do
   gem 'sass-rails',   '3.2.5'
   gem 'coffee-rails', '3.2.2'
   gem 'uglifier', '1.2.3'
+  gem 'compass-rails'
 end
 
 group :development, :test do
@@ -29,6 +31,7 @@ end
 
 group :development do
   gem 'quiet_assets'
+  gem 'mysql2'
 end
 
 group :test do

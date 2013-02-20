@@ -1,9 +1,11 @@
 @import "bootstrap";
 @import "bootstrap-responsive";
+@import "compass";
 
 /* mixins, variables, etc. */
 
 $grayMediumLight: #eaeaea;
+$blue: #31ACBC;
 
 body {
   padding-top:60px;
@@ -16,14 +18,23 @@ body {
   margin-right: 10px;
   font-size: 1.7em;
   color: white;
-  text-transform: uppercase;
   letter-spacing: -1px;
   padding-top: 9px;
-  font-weight: bold;
   line-height: 1;
+  strong {
+    color:$grayMediumLight !important;
+    background:$blue;
+    padding:0px 8px 0px 4px;
+    @include border-radius(5px);
+    margin-left:4px;
+  }
   &:hover {
     color: white;
     text-decoration: none;
+    strong {
+      background:#666666;
+      
+    }
   }
 }
 
