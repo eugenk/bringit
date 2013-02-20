@@ -9,19 +9,19 @@
     = render 'layouts/development_bar' if development_mode?
     = render 'layouts/header'
     .container
-      =if flash[:error]
+      - if flash[:error]
         .alert.alert-error
           %button.close{ 'data-dismiss' => 'alert', type: 'button' } &times;
           =flash[:error]
-      =if alert || flash[:warning]
+      - if alert || flash[:warning]
         .alert.alert-block
           %button.close{ 'data-dismiss' => 'alert', type: 'button' } &times;
           =alert || flash[:warning] 
-      =if notice || flash[:notice]
+      - if notice || flash[:notice]
         .alert.alert-info
           %button.close{ 'data-dismiss' => 'alert', type: 'button' } &times;
           =notice || flash[:notice]
-      =if flash[:success]
+      - if flash[:success]
         .alert.alert-success
           %button.close{ 'data-dismiss' => 'alert', type: 'button' } &times;
           =flash[:success]

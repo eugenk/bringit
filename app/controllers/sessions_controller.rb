@@ -18,7 +18,6 @@ class SessionsController < ApplicationController
   end
   
   protected
-  
   def check_development_mode!
     unless development_mode?
       flash[:error] = "not in development mode"
