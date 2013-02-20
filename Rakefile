@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Awe11::Application.load_tasks
+Bringit::Application.load_tasks

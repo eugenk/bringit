@@ -9,7 +9,7 @@ if defined?(Bundler)
   # Bundler.require(:default, :assets, Rails.env)
 end
 
-module Awe11
+module Bringit
   class Application < Rails::Application
     
     # don't generate RSpec tests for views and helpers

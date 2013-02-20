@@ -4,7 +4,7 @@ development:
   database: bringit_dev
   pool: 5
   timeout: 5000
-  
+  #socket: /tmp/mysql.sock
 test:
   adapter: sqlite3
   database: db/test.sqlite3

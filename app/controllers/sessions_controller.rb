@@ -5,13 +5,18 @@ class SessionsController < ApplicationController
   def create
     if params[:user_id].empty?
       flash[:warning] = "Please choose a user"
-      redirect_to :root
+      redirect_to :back
       return
     end
     
     user = User.find(params[:user_id])
+    unless user
+      flash[:error] = "No user found for given id"
+      redirect_to :back
+      return
+    end
+    
     sign_in(:user, user)
-    #session["warden.user.user.key"] = ["User", user.id, nil]
     
     flash[:success] = "Signed in as #{user.email}"
     

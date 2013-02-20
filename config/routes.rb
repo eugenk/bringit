@@ -1,4 +1,4 @@
-Awe11::Application.routes.draw do
+Bringit::Application.routes.draw do
   devise_for :users
 
   get "home/index"
