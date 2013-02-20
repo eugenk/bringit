@@ -1,7 +1,7 @@
 %header.navbar.navbar-inverse.navbar-fixed-top
   .navbar-inner
     .container
-      = link_to "bringit", root_path, id: "logo", class: "brand"
+      = link_to raw("brin<strong>git</strong>"), root_path, id: "logo", class: "brand"
       .nav-collapse.collapse
         %ul.nav
           %li= link_to "Home", root_path
