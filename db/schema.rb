@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(:version => 20130220182217) do
   add_index "git_commit_links", ["parent_id"], :name => "index_git_commit_links_on_parent_id"
 
   create_table "git_commits", :force => true do |t|
-    t.string   "hash",            :null => false
+    t.string   "commit_hash",     :null => false
     t.text     "message",         :null => false
     t.string   "committer_email"
     t.string   "committer_name"
@@ -36,8 +36,8 @@ ActiveRecord::Schema.define(:version => 20130220182217) do
     t.datetime "updated_at",      :null => false
   end
 
+  add_index "git_commits", ["commit_hash"], :name => "index_git_commits_on_commit_hash"
   add_index "git_commits", ["git_push_id"], :name => "index_git_commits_on_git_push_id"
-  add_index "git_commits", ["hash"], :name => "index_git_commits_on_hash"
 
   create_table "git_pushes", :force => true do |t|
     t.integer  "author_id"
