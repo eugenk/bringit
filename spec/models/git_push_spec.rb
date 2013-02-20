@@ -1,5 +1,13 @@
 require 'spec_helper'
 
 describe GitPush do
-  pending "add some examples to (or delete) #{__FILE__}"
+  before do
+    @push = GitPush.new(push_type: 'web')
+  end
+  
+  subject { @push }
+  
+  it { should respond_to(:push_type) }
+  
+  it { should be_valid }
 end

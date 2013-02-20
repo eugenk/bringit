@@ -8,6 +8,10 @@ describe User do
   
   subject { @user }
   
+  [:email, :password, :password_confirmation, :remember_me].each do |field|
+    it { should respond_to(field) }
+  end
+  
   it { should respond_to(:email) }
   it { should respond_to(:password) }
   it { should respond_to(:password_confirmation) }
