@@ -3,5 +3,5 @@ class GitPush < ActiveRecord::Base
   
   attr_accessible :push_type, :author
   
-  validates :push_type, presence: true, include: ['web', 'ssh']
+  validates :push_type, presence: true, included_in: ['web', 'ssh']
 end
