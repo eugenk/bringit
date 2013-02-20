@@ -3,10 +3,16 @@ class SessionsController < ApplicationController
   before_filter :check_development_mode!
   
   def create
+    if params[:user_id].empty?
+      flash[:warning] = "Please choose a user"
+      redirect_to :root
+      return
+    end
+    
     user = User.find(params[:user_id])
     session["warden.user.user.key"] = ["User", user.id, nil]
     
-    flash[:success] = "Signed in as #{user.name}"
+    flash[:success] = "Signed in as #{user.email}"
     
     redirect_to :root
   end

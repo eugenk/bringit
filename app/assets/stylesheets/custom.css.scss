@@ -63,3 +63,11 @@ footer {
     }
   }
 }
+
+
+/* dev-bar */
+#development-bar {
+  h1 {
+    @extend h4;
+  }
+}

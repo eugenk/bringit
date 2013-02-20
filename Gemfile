@@ -16,6 +16,7 @@ gem 'foreigner'
 gem 'rugged'
 gem 'simple_form'
 gem 'compass'
+gem 'inherited_resources'
 
 group :assets do
   gem 'sass-rails',   '3.2.5'

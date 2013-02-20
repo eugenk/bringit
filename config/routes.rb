@@ -4,6 +4,8 @@ Awe11::Application.routes.draw do
   get "home/index"
   
   root to: 'home#index'
+  
+  post '/development/session' => 'sessions#create', as: :development_session
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -1,0 +1,7 @@
+#development-bar.container
+  .well.well-small
+    %h1 Development Mode
+    = form_tag development_session_path, class: 'input-prepend input-append' do
+      .add-on Login as
+      = select_tag 'user_id', options_for_select([""] + User.all.map{|user| ["#{user.email}", user.id] })
+      = button_tag 'Sign in', class: 'btn'

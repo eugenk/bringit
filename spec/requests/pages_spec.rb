@@ -24,10 +24,10 @@ describe "Pages" do
     click_link "Sign in"
     page.should have_selector 'title', text: full_title('Sign in')
   end
-  # for later use
-  #it "should have the right links on the layout" do
-  #  visit root_path
-  #  click_link "Repositories"
-  #  page.should have_selector 'title', text: full_title('Repositories')
-  #end
+  
+  it "should not have a development bar" do
+    visit root_path
+    should_not have_selector("#development-bar")
+  end
+  
 end
