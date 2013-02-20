@@ -8,6 +8,5 @@ class CreateGitRepositories < ActiveRecord::Migration
       t.timestamps
     end
     
-    add_index :git_repositories, :path, unique: true
   end
 end

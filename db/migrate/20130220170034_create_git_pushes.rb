@@ -7,9 +7,5 @@ class CreateGitPushes < ActiveRecord::Migration
       
       t.timestamps
     end
-    add_index :git_pushes, :author_id
-    add_foreign_key :git_pushes, :users, column: 'author_id'
-    add_index :git_pushes, :git_repository_id
-    add_foreign_key :git_pushes, :git_repository_id, dependent: :delete
   end
 end
