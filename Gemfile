@@ -16,7 +16,6 @@ gem 'foreigner'
 gem 'rugged'
 gem 'simple_form'
 gem 'compass'
-gem 'capistrano'
 
 group :assets do
   gem 'sass-rails',   '3.2.5'
