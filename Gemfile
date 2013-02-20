@@ -6,6 +6,7 @@ gem 'bcrypt-ruby', '~> 3.0.1'
 gem 'faker', '~> 1.0.1'
 gem 'kaminari'
 gem 'devise'
+gem 'cancan'
 gem 'jquery-rails', '~> 2.0.2'
 gem 'jquery-ui-rails', '~> 4.0.0'
 gem 'font-awesome-rails'
@@ -36,6 +37,8 @@ end
 
 group :test do
   gem 'capybara', '1.1.2'
+  gem 'database_cleaner'
+  gem 'email_spec'
 end
 
 group :production do
