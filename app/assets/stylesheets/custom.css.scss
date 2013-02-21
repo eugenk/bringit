@@ -1,11 +1,12 @@
+@import "compass";
+@import "compass/reset";
 @import "bootstrap";
 @import "bootstrap-responsive";
-@import "compass";
-
 /* mixins, variables, etc. */
 
 $grayMediumLight: #eaeaea;
 $blue: #31ACBC;
+$blue2: #EFF2F7;
 
 body {
   padding-top:60px;
@@ -69,5 +70,26 @@ footer {
 #development-bar {
   h1 {
     @extend h4;
+  }
+}
+
+.top-search {
+  margin:20px 0px;
+}
+
+/* box */
+.box {
+  background:$blue2;
+  .top {
+    margin:-10px -10px 0px -10px;
+    padding:10px;
+    background: $grayLighter;
+    h1 {
+      @extend h4;
+      a {
+        color:$textColor;
+      }
+    }
+    
   }
 }

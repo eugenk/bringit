@@ -1,9 +1,39 @@
 - provide(:title, 'Repositories')
 %h1 Repositories
+
 .row
-  .span6= paginate @repositories
-  .span6 
-    .well.pull-right.well-small= page_entries_info @repositories
+  .span6
+    = form_tag repositories_path, class: 'input-prepend input-append top-search' do
+      = search_field :repository, :title
+      = button_tag 'Search', class: 'btn btn-primary'
+  .span6  
+    .pull-right= paginate @repositories
+.clearfix    
 
 - @repositories.each do |repository|
+  %article.well.well-small.box
+    .top.row-fluid
+      .span9
+        %h1= link_to repository.title, repositories_path
+      .span3
+        .path.pull-right= repository.path
+      .clearfix
+    .row-fluid
+      .span3= image_tag("rails.png")
+      .span9
+        %ol
+          - repository.commits.each do |commit|
+            %li.commit
+              .row-fluid
+                .span9
+                  .message= link_to commit.message_title, repositories_path
+                  .time= time_ago_in_words(commit.committer_time)
+                .span3
+                  .pull-right
+                    = link_to commit.short_hash, repositories_path
+                .clearfix
+               
+        
   .div= repository.title
+  
+.well.pull-right.well-small= page_entries_info @repositories

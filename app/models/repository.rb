@@ -18,6 +18,6 @@ class Repository < ActiveRecord::Base
   
   default_scope order: 'updated_at desc'
   
-  paginates_per 20
+  paginates_per 10
   max_paginates_per 50
 end
