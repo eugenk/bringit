@@ -1,6 +1,6 @@
 class GitCommit < ActiveRecord::Base
   attr_accessible :author_email, :author_name, :author_time, :committer_email, :committer_name, 
-    :committer_time, :git_push_id, :commit_hash, :message, :parents
+    :committer_time, :git_push_id, :commit_hash, :message, :parents, :git_push
   
   belongs_to :git_push
   has_one :git_repository, through: :git_push

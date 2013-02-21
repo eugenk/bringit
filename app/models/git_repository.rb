@@ -1,8 +1,9 @@
 class GitRepository < ActiveRecord::Base
-  attr_accessible :description, :path, :title, :owners
+  attr_accessible :description, :path, :title, :owners, :git_pushes
   
   has_many :git_repository_owners, foreign_key: 'git_repository_id', class_name: 'GitRepositoryOwner'
   has_many :owners, through: :git_repository_owners, class_name: 'User'
+  has_many :git_pushes, class_name: 'GitPush', foreign_key: 'git_repository_id'
   
   validate :validate_owner_existance
   validates :title, presence: true
