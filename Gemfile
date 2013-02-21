@@ -19,6 +19,7 @@ gem 'compass'
 gem 'inherited_resources'
 gem 'validates_existence'
 gem 'mysql2'
+gem 'best_in_place'
 
 group :assets do
   gem 'sass-rails',   '3.2.5'
