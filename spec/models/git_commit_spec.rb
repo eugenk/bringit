@@ -47,11 +47,19 @@ describe GitCommit do
       @commit.add_parent(parent)
     end
     it { should be_valid }
+    
+    it "should have one parent" do
+      @commit.parents.size.should == 1
+    end
   end
   
   describe "when it is its own parent" do
-    before { @commit.add_parent(@commit) }
-    it { should_not be_valid }
+    before do
+      @commit.add_parent(@commit)
+    end
+    it "should have no parent" do
+      @commit.parents.size.should == 0
+    end
   end
   
   describe "when it parent is added twice" do
@@ -67,7 +75,7 @@ describe GitCommit do
     end
     
     it "should have only one parent" do
-      @commit.parents.size == 1
+      @commit.parents.size.should == 1
     end
   end
 end
