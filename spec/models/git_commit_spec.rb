@@ -13,7 +13,7 @@ describe GitCommit do
   # responsiveness
   [:author_email, :author_name, :author_time, 
     :committer_email, :committer_name, :committer_time, 
-    :git_push_id, :commit_hash, :message].each do |field|
+    :git_push_id, :commit_hash, :message, :parents].each do |field|
     it { should respond_to(field) }
   end
   
