@@ -47,3 +47,8 @@ end
 group :production do
   gem 'mysql2'
 end
+
+group :deployment do
+  gem 'capistrano'
+  gem 'rvm-capistrano'
+end
