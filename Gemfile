@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 3.2.12'
-gem 'bootstrap-sass', '~> 2.1'
-gem 'bcrypt-ruby', '~> 3.0.1'
-gem 'faker', '~> 1.0.1'
+gem 'rails', '3.2.12'
+gem 'bootstrap-sass'
+gem 'bcrypt-ruby'
+gem 'faker'
 gem 'kaminari'
 gem 'devise'
 gem 'cancan'
@@ -17,22 +17,22 @@ gem 'rugged'
 gem 'simple_form'
 gem 'compass'
 gem 'inherited_resources'
-gem 'validates_existence'
 gem 'mysql2'
 gem 'best_in_place'
 
 group :assets do
-  gem 'sass-rails',   '3.2.5'
-  gem 'coffee-rails', '3.2.2'
-  gem 'uglifier', '1.2.3'
+  gem 'sass-rails'
+  gem 'coffee-rails'
+  gem 'uglifier'
   gem 'compass-rails'
   gem 'therubyracer', '0.10.2'
 end
 
 group :development, :test do
-  gem 'rspec-rails', '2.11.0'
+  gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'rails3-generators'
+  gem 'seed_dump'
 end
 
 group :development do

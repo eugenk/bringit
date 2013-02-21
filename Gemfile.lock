@@ -44,13 +44,13 @@ GEM
       net-sftp (>= 2.0.0)
       net-ssh (>= 2.0.14)
       net-ssh-gateway (>= 1.1.0)
-    capybara (1.1.2)
+    capybara (2.0.2)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
-      xpath (~> 0.1.4)
+      xpath (~> 1.0.0)
     childprocess (0.3.8)
       ffi (~> 1.0, >= 1.0.11)
     chunky_png (1.2.7)
@@ -85,8 +85,8 @@ GEM
     factory_girl_rails (4.2.1)
       factory_girl (~> 4.2.0)
       railties (>= 3.0.0)
-    faker (1.0.1)
-      i18n (~> 0.4)
+    faker (1.1.2)
+      i18n (~> 0.5)
     ffi (1.4.0)
     font-awesome-rails (3.0.2.0)
       railties (>= 3.1)
@@ -108,9 +108,9 @@ GEM
       has_scope (~> 0.5.0)
       responders (~> 0.6)
     journey (1.0.4)
-    jquery-rails (2.0.3)
-      railties (>= 3.1.0, < 5.0)
-      thor (~> 0.14)
+    jquery-rails (2.2.1)
+      railties (>= 3.0, < 5.0)
+      thor (>= 0.14, < 2.0)
     jquery-ui-rails (4.0.1)
       jquery-rails
       railties (>= 3.1.0)
@@ -169,29 +169,28 @@ GEM
       json (~> 1.4)
     responders (0.9.3)
       railties (~> 3.1)
-    rspec (2.11.0)
-      rspec-core (~> 2.11.0)
-      rspec-expectations (~> 2.11.0)
-      rspec-mocks (~> 2.11.0)
-    rspec-core (2.11.1)
-    rspec-expectations (2.11.3)
+    rspec-core (2.12.2)
+    rspec-expectations (2.12.1)
       diff-lcs (~> 1.1.3)
-    rspec-mocks (2.11.3)
-    rspec-rails (2.11.0)
+    rspec-mocks (2.12.2)
+    rspec-rails (2.12.2)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       railties (>= 3.0)
-      rspec (~> 2.11.0)
+      rspec-core (~> 2.12.0)
+      rspec-expectations (~> 2.12.0)
+      rspec-mocks (~> 2.12.0)
     rubyzip (0.9.9)
     rugged (0.16.0)
     rvm-capistrano (1.2.7)
       capistrano (>= 2.0.0)
     sass (3.2.5)
-    sass-rails (3.2.5)
+    sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
-    selenium-webdriver (2.29.0)
+    seed_dump (0.4.2)
+    selenium-webdriver (2.30.0)
       childprocess (>= 0.2.5)
       multi_json (~> 1.0)
       rubyzip
@@ -212,34 +211,33 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.35)
-    uglifier (1.2.3)
+    uglifier (1.3.0)
       execjs (>= 0.3.0)
-      multi_json (>= 1.0.2)
-    validates_existence (0.8.0)
+      multi_json (~> 1.0, >= 1.0.2)
     warden (1.2.1)
       rack (>= 1.0)
     websocket (1.0.7)
-    xpath (0.1.4)
+    xpath (1.0.0)
       nokogiri (~> 1.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  bcrypt-ruby (~> 3.0.1)
+  bcrypt-ruby
   best_in_place
-  bootstrap-sass (~> 2.1)
+  bootstrap-sass
   cancan
   capistrano
   capybara
-  coffee-rails (= 3.2.2)
+  coffee-rails
   compass
   compass-rails
   database_cleaner
   devise
   email_spec
   factory_girl_rails
-  faker (~> 1.0.1)
+  faker
   font-awesome-rails
   foreigner
   haml
@@ -250,13 +248,13 @@ DEPENDENCIES
   kaminari
   mysql2
   quiet_assets
-  rails (~> 3.2.12)
+  rails (= 3.2.12)
   rails3-generators
-  rspec-rails (= 2.11.0)
+  rspec-rails
   rugged
   rvm-capistrano
-  sass-rails (= 3.2.5)
+  sass-rails
+  seed_dump
   simple_form
   therubyracer (= 0.10.2)
-  uglifier (= 1.2.3)
-  validates_existence
+  uglifier

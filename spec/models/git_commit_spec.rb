@@ -78,4 +78,16 @@ describe Commit do
       @commit.parents.size.should == 1
     end
   end
+  
+  it "when short hash is prefix of full hash" do
+    @commit.short_hash.should == @commit.commit_hash[0..@commit.short_hash.size-1]
+  end
+  
+  it "when short hash has size of 7" do
+    @commit.short_hash.size.should == 7
+  end
+  
+  it "when message_title returns only first line of message" do
+    @commit.message_title.should == @commit.message.split('\n').first
+  end
 end
