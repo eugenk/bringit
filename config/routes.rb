@@ -8,4 +8,6 @@ Bringit::Application.routes.draw do
   post '/development/session' => 'sessions#create', as: :development_session
   
   resources :repositories
+  
+  match '/search', to: 'repositories#search'
 end
