@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
 
 gem 'rails', '~> 3.2.12'
-gem 'bootstrap-sass', '~> 2.1'
-gem 'bcrypt-ruby', '~> 3.0.1'
-gem 'faker', '~> 1.0.1'
+gem 'bootstrap-sass'
+gem 'bcrypt-ruby'
+gem 'faker'
 gem 'kaminari'
 gem 'devise'
 gem 'cancan'
@@ -20,9 +20,9 @@ gem 'inherited_resources'
 gem 'mysql2'
 
 group :assets do
-  gem 'sass-rails',   '3.2.5'
-  gem 'coffee-rails', '3.2.2'
-  gem 'uglifier', '1.2.3'
+  gem 'sass-rails'
+  gem 'coffee-rails'
+  gem 'uglifier'
   gem 'compass-rails'
   gem 'therubyracer', '0.10.2'
 end

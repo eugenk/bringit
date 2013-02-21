@@ -222,19 +222,19 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bcrypt-ruby (~> 3.0.1)
-  bootstrap-sass (~> 2.1)
+  bcrypt-ruby
+  bootstrap-sass
   cancan
   capistrano
   capybara
-  coffee-rails (= 3.2.2)
+  coffee-rails
   compass
   compass-rails
   database_cleaner
   devise
   email_spec
   factory_girl_rails
-  faker (~> 1.0.1)
+  faker
   font-awesome-rails
   foreigner
   haml
@@ -250,7 +250,7 @@ DEPENDENCIES
   rspec-rails (= 2.11.0)
   rugged
   rvm-capistrano
-  sass-rails (= 3.2.5)
+  sass-rails
   simple_form
   therubyracer (= 0.10.2)
-  uglifier (= 1.2.3)
+  uglifier
