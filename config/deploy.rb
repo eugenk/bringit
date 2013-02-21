@@ -15,6 +15,7 @@ set :use_sudo, false
 set :deploy_via, :remote_cache
 set :deploy_to, "/home/#{user}"
 
+before "deploy:create_symlink", "deploy:symlink_config"
 after "deploy:restart", "deploy:cleanup"
 
 set :shared_children, %w(data log tmp/pids)
@@ -41,5 +42,9 @@ namespace :deploy do
   task :stop do ; end
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
+  end
+  task :symlink_config do
+    run "ln -fs #{shared_path}/database.yml #{latest_release}/config/"
+    run "ln -fs #{shared_path}/secret_token.rb #{latest_release}/config/initializers/"
   end
 end
