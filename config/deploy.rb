@@ -51,4 +51,9 @@ namespace :deploy do
   task :reset do
     run "cd #{current_path} && bundle exec rake db:migrate:reset db:seed", env: { RAILS_ENV: 'production' }
   end
+  task :init do
+    update
+    restart
+    reset
+  end
 end
