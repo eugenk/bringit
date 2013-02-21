@@ -15,4 +15,8 @@ class Commit < ActiveRecord::Base
     return if parent == self || parents.include?(parent) 
     parents << parent
   end
+  
+  def short_hash
+    commit_hash[0..6]
+  end
 end
