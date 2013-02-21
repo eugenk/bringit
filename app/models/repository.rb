@@ -17,6 +17,7 @@ class Repository < ActiveRecord::Base
   end
   
   default_scope order: 'updated_at desc'
+  scope :search, ->(term) { where "title ILIKE ?", "%" << term << "%" }
   
   paginates_per 10
   max_paginates_per 50
