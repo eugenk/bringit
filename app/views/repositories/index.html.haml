@@ -19,7 +19,8 @@
         .path.pull-right= repository.path
       .clearfix
     .row-fluid
-      .span3= image_tag("rails.png")
+      .span3
+        %i.icon-sitemap.icon-4x
       .span9
         %ol
           - repository.commits.each do |commit|
