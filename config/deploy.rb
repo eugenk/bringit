@@ -3,6 +3,8 @@ require 'rvm/capistrano'
 set :rvm_ruby_string, '1.9.3@bringit'
 set :rvm_type, :system
 
+after "deploy:update_code", "deploy:symlink_config"
+
 # Bundler
 require "bundler/capistrano"
 set :bundle_without, [:development, :test, :deployment]
@@ -15,7 +17,6 @@ set :use_sudo, false
 set :deploy_via, :remote_cache
 set :deploy_to, "/home/#{user}"
 
-before "deploy:create_symlink", "deploy:symlink_config"
 after "deploy:restart", "deploy:cleanup"
 
 set :shared_children, %w(data log tmp/pids)
@@ -46,5 +47,8 @@ namespace :deploy do
   task :symlink_config do
     run "ln -fs #{shared_path}/database.yml #{latest_release}/config/"
     run "ln -fs #{shared_path}/secret_token.rb #{latest_release}/config/initializers/"
+  end
+  task :reset do
+    run "cd #{current_path} && bundle exec rake db:migrate:reset db:seed", env: { RAILS_ENV: 'production' }
   end
 end

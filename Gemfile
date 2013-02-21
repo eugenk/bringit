@@ -7,8 +7,8 @@ gem 'faker', '~> 1.0.1'
 gem 'kaminari'
 gem 'devise'
 gem 'cancan'
-gem 'jquery-rails', '~> 2.0.2'
-gem 'jquery-ui-rails', '~> 4.0.0'
+gem 'jquery-rails'
+gem 'jquery-ui-rails'
 gem 'font-awesome-rails'
 gem 'haml'
 gem 'haml-rails'
@@ -18,6 +18,7 @@ gem 'simple_form'
 gem 'compass'
 gem 'inherited_resources'
 gem 'validates_existence'
+gem 'mysql2'
 
 group :assets do
   gem 'sass-rails',   '3.2.5'
@@ -28,7 +29,6 @@ group :assets do
 end
 
 group :development, :test do
-  gem 'sqlite3'
   gem 'rspec-rails', '2.11.0'
   gem 'factory_girl_rails'
   gem 'rails3-generators'
@@ -36,17 +36,12 @@ end
 
 group :development do
   gem 'quiet_assets'
-  gem 'mysql2'
 end
 
 group :test do
-  gem 'capybara', '1.1.2'
+  gem 'capybara'
   gem 'database_cleaner'
   gem 'email_spec'
-end
-
-group :production do
-  gem 'mysql2'
 end
 
 group :deployment do
