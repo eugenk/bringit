@@ -22,7 +22,7 @@ def create_commit(push, parents = [])
     committer_email: Faker::Internet.email,
     committer_time: Time.now - rand(28*3600*24),
     message: Faker::Lorem.sentences(rand(2)+1).join('\n'),
-    git_push: push,
+    push: push,
     parents: parents
   })
 end
