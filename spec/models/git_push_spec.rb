@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe GitPush do
+describe Push do
   before do
-    @push = GitPush.new(push_type: 'web')
+    @push = Push.new(push_type: 'web')
   end
   
   subject { @push }

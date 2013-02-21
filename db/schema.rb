@@ -13,16 +13,16 @@
 
 ActiveRecord::Schema.define(:version => 20130220182217) do
 
-  create_table "git_commit_links", :force => true do |t|
+  create_table "commit_links", :force => true do |t|
     t.integer "parent_id", :null => false
     t.integer "child_id",  :null => false
   end
 
-  add_index "git_commit_links", ["child_id"], :name => "index_git_commit_links_on_child_id"
-  add_index "git_commit_links", ["parent_id", "child_id"], :name => "index_git_commit_links_on_parent_id_and_child_id", :unique => true
-  add_index "git_commit_links", ["parent_id"], :name => "index_git_commit_links_on_parent_id"
+  add_index "commit_links", ["child_id"], :name => "index_commit_links_on_child_id"
+  add_index "commit_links", ["parent_id", "child_id"], :name => "index_commit_links_on_parent_id_and_child_id", :unique => true
+  add_index "commit_links", ["parent_id"], :name => "index_commit_links_on_parent_id"
 
-  create_table "git_commits", :force => true do |t|
+  create_table "commits", :force => true do |t|
     t.string   "commit_hash",     :null => false
     t.text     "message",         :null => false
     t.string   "committer_email"
@@ -31,26 +31,26 @@ ActiveRecord::Schema.define(:version => 20130220182217) do
     t.string   "author_email"
     t.string   "author_name"
     t.datetime "author_time"
-    t.integer  "git_push_id"
+    t.integer  "push_id"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
   end
 
-  add_index "git_commits", ["commit_hash"], :name => "index_git_commits_on_commit_hash"
-  add_index "git_commits", ["git_push_id"], :name => "index_git_commits_on_git_push_id"
+  add_index "commits", ["commit_hash"], :name => "index_commits_on_commit_hash"
+  add_index "commits", ["push_id"], :name => "index_commits_on_push_id"
 
-  create_table "git_pushes", :force => true do |t|
+  create_table "pushes", :force => true do |t|
     t.integer  "author_id"
-    t.string   "push_type",         :null => false
-    t.integer  "git_repository_id", :null => false
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.string   "push_type",     :null => false
+    t.integer  "repository_id", :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
-  add_index "git_pushes", ["author_id"], :name => "index_git_pushes_on_author_id"
-  add_index "git_pushes", ["git_repository_id"], :name => "index_git_pushes_on_git_repository_id"
+  add_index "pushes", ["author_id"], :name => "index_pushes_on_author_id"
+  add_index "pushes", ["repository_id"], :name => "index_pushes_on_repository_id"
 
-  create_table "git_repositories", :force => true do |t|
+  create_table "repositories", :force => true do |t|
     t.string   "path",        :null => false
     t.string   "title",       :null => false
     t.text     "description"
@@ -58,16 +58,16 @@ ActiveRecord::Schema.define(:version => 20130220182217) do
     t.datetime "updated_at",  :null => false
   end
 
-  add_index "git_repositories", ["path"], :name => "index_git_repositories_on_path", :unique => true
+  add_index "repositories", ["path"], :name => "index_repositories_on_path", :unique => true
 
-  create_table "git_repository_owners", :force => true do |t|
-    t.integer "git_repository_id"
-    t.integer "owner_id",          :null => false
+  create_table "repository_owners", :force => true do |t|
+    t.integer "repository_id"
+    t.integer "owner_id",      :null => false
   end
 
-  add_index "git_repository_owners", ["git_repository_id", "owner_id"], :name => "index_git_repository_owners_on_git_repository_id_and_owner_id", :unique => true
-  add_index "git_repository_owners", ["git_repository_id"], :name => "index_git_repository_owners_on_git_repository_id"
-  add_index "git_repository_owners", ["owner_id"], :name => "index_git_repository_owners_on_owner_id"
+  add_index "repository_owners", ["owner_id"], :name => "index_repository_owners_on_owner_id"
+  add_index "repository_owners", ["repository_id", "owner_id"], :name => "index_repository_owners_on_repository_id_and_owner_id", :unique => true
+  add_index "repository_owners", ["repository_id"], :name => "index_repository_owners_on_repository_id"
 
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "", :null => false
@@ -87,15 +87,15 @@ ActiveRecord::Schema.define(:version => 20130220182217) do
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
-  add_foreign_key "git_commit_links", "git_commits", :name => "git_commit_links_child_id_fk", :column => "child_id", :dependent => :delete
-  add_foreign_key "git_commit_links", "git_commits", :name => "git_commit_links_parent_id_fk", :column => "parent_id", :dependent => :delete
+  add_foreign_key "commit_links", "commits", :name => "commit_links_child_id_fk", :column => "child_id", :dependent => :delete
+  add_foreign_key "commit_links", "commits", :name => "commit_links_parent_id_fk", :column => "parent_id", :dependent => :delete
 
-  add_foreign_key "git_commits", "git_pushes", :name => "git_commits_git_push_id_fk", :dependent => :delete
+  add_foreign_key "commits", "pushes", :name => "commits_push_id_fk", :dependent => :delete
 
-  add_foreign_key "git_pushes", "git_repositories", :name => "git_pushes_git_repository_id_fk", :dependent => :delete
-  add_foreign_key "git_pushes", "users", :name => "git_pushes_author_id_fk", :column => "author_id"
+  add_foreign_key "pushes", "repositories", :name => "pushes_repository_id_fk", :dependent => :delete
+  add_foreign_key "pushes", "users", :name => "pushes_author_id_fk", :column => "author_id"
 
-  add_foreign_key "git_repository_owners", "git_repositories", :name => "git_repository_owners_git_repository_id_fk", :dependent => :delete
-  add_foreign_key "git_repository_owners", "users", :name => "git_repository_owners_owner_id_fk", :column => "owner_id", :dependent => :delete
+  add_foreign_key "repository_owners", "repositories", :name => "repository_owners_repository_id_fk", :dependent => :delete
+  add_foreign_key "repository_owners", "users", :name => "repository_owners_owner_id_fk", :column => "owner_id", :dependent => :delete
 
 end

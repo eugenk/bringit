@@ -1,6 +1,6 @@
-class CreateGitCommitLinks < ActiveRecord::Migration
+class CreateCommitLinks < ActiveRecord::Migration
   def change
-    create_table :git_commit_links do |t|
+    create_table :commit_links do |t|
       t.references :parent, null: false
       t.references :child, null: false
     end

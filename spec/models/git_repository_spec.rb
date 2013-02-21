@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe GitRepository do
+describe Repository do
   before do
     @user = User.new(email: "eugenk@tzi.de", 
                      password: "password", password_confirmation: "password")
-    @repository = GitRepository.new(path: 'some/path/bringit.git', title: 'bringit!', owners: [@user])
+    @repository = Repository.new(path: 'some/path/bringit.git', title: 'bringit!', owners: [@user])
     @fields = [:path, :title, :description]
   end
   

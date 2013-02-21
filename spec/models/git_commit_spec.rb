@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe GitCommit do
+describe Commit do
   before do
-    @commit = GitCommit.new(commit_hash: 'd430f8f9b7bdbd5c767904420bb3d3332d5a165a', 
+    @commit = Commit.new(commit_hash: 'd430f8f9b7bdbd5c767904420bb3d3332d5a165a', 
                             message: 'Initialize repository')
   end
   
@@ -13,7 +13,7 @@ describe GitCommit do
   # responsiveness
   [:author_email, :author_name, :author_time, 
     :committer_email, :committer_name, :committer_time, 
-    :git_push_id, :commit_hash, :message, :parents].each do |field|
+    :push_id, :commit_hash, :message, :parents].each do |field|
     it { should respond_to(field) }
   end
   

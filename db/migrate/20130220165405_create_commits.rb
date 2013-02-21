@@ -1,6 +1,6 @@
-class CreateGitCommits < ActiveRecord::Migration
+class CreateCommits < ActiveRecord::Migration
   def change
-    create_table :git_commits do |t|
+    create_table :commits do |t|
       t.string :commit_hash, null: false
       t.text :message, null: false
       t.string :committer_email
@@ -9,7 +9,7 @@ class CreateGitCommits < ActiveRecord::Migration
       t.string :author_email
       t.string :author_name
       t.datetime :author_time
-      t.references :git_push
+      t.references :push
 
       t.timestamps
     end
