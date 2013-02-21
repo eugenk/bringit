@@ -39,4 +39,35 @@ describe GitCommit do
     before { @commit.commit_hash = '0' * 41 }
     it { should_not be_valid }
   end
+  
+  describe "when it has a valid parent" do
+    before do
+      parent = @commit.dup
+      parent.commit_hash.reverse!
+      @commit.add_parent(parent)
+    end
+    it { should be_valid }
+  end
+  
+  describe "when it is its own parent" do
+    before { @commit.add_parent(@commit) }
+    it { should_not be_valid }
+  end
+  
+  describe "when it parent is added twice" do
+    before do
+      parent = @commit.dup
+      parent.commit_hash.reverse!
+      @commit.add_parent(parent)
+      @commit.add_parent(parent)
+    end
+    
+    describe "it should be valid" do
+      it { should be_valid }
+    end
+    
+    it "should have only one parent" do
+      @commit.parents.size == 1
+    end
+  end
 end

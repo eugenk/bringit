@@ -17,6 +17,7 @@ gem 'rugged'
 gem 'simple_form'
 gem 'compass'
 gem 'inherited_resources'
+gem 'validates_existence'
 
 group :assets do
   gem 'sass-rails',   '3.2.5'
