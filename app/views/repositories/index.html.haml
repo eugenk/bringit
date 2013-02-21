@@ -1,0 +1,8 @@
+%h1 Repositories
+.row
+  .span6= paginate @repositories
+  .span6 
+    .well.pull-right.well-small= page_entries_info @repositories
+
+- @repositories.each do |repository|
+  .div= repository.title
