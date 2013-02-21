@@ -33,7 +33,8 @@ describe GitRepository do
   
   describe "when path has invalid format" do
     it "should be invalid" do
-      paths = ['a:b', 'a!b', 'a*b', 'a?b', 'a//b', 'a|b']
+      bad_sequences = %w[\ // : ? * " > < |]
+      paths = bad_sequences.map{ |s| "some#{s}invalidpath" }
       paths.each do |invalid_path|
         @repository.path = invalid_path
         @repository.should_not be_valid
