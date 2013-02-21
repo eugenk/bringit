@@ -5,7 +5,7 @@ User.create!({
   password_confirmation: "password"
 })
 
-10.times do |n|
+30.times do |n|
   User.create!({ 
     email: Faker::Internet.email,
     password: "password#{n}",
@@ -27,11 +27,11 @@ def create_commit(push, parents = [])
   })
 end
 
-5.times do
+60.times do
   Repository.create!({
     title: Faker::Lorem.words(rand(2)+1),
     description: Faker::Lorem.paragraph(rand(3)+1),
-    owners: [User.first],
+    owners: [User.first(offset: rand(User.count))],
     path: Faker::Lorem.words(rand(4)+1).split(' ').join('/')
   }).tap do |repo|
     5.times do

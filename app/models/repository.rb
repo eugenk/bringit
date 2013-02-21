@@ -14,4 +14,9 @@ class Repository < ActiveRecord::Base
     return if owners && owners.size >= 1
     errors.add :owners, 'has no owner'
   end
+  
+  default_scope order: 'updated_at desc'
+  
+  paginates_per 20
+  max_paginates_per 50
 end

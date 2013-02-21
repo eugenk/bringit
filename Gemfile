@@ -17,7 +17,6 @@ gem 'rugged'
 gem 'simple_form'
 gem 'compass'
 gem 'inherited_resources'
-gem 'validates_existence'
 gem 'mysql2'
 
 group :assets do
