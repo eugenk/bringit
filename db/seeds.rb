@@ -14,7 +14,6 @@ User.create!({
 end
 
 
-
 def create_commit(push, parents = [])
   push.commits.create!({
     commit_hash: SecureRandom.hex(20),
