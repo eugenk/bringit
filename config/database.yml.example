@@ -5,9 +5,11 @@ development:
   pool: 5
   timeout: 5000
   #socket: /tmp/mysql.sock
+  
 test:
-  adapter: sqlite3
-  database: db/test.sqlite3
+  adapter: mysql2
+  username: root
+  database: bringit_test
   pool: 5
   timeout: 5000
 
