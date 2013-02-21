@@ -11,6 +11,8 @@ class Commit < ActiveRecord::Base
   validates :commit_hash, presence: true, length: { maximum: 40, minimum: 40 }, format: VALID_HASH_REGEX
   validates :message, presence: true
   
+  default_scope order: 'committer_time desc'
+  
   def add_parent(parent)
     return if parent == self || parents.include?(parent) 
     parents << parent
