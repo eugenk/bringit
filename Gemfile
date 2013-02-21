@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 3.2.12'
+gem 'rails', '3.2.12'
 gem 'bootstrap-sass'
 gem 'bcrypt-ruby'
 gem 'faker'
@@ -28,7 +28,7 @@ group :assets do
 end
 
 group :development, :test do
-  gem 'rspec-rails', '2.11.0'
+  gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'rails3-generators'
   gem 'seed_dump'
