@@ -28,9 +28,9 @@ end
 
 60.times do
   Repository.create!({
-    title: Faker::Lorem.words(rand(2)+1).join(' '),
+    title: Faker::Lorem.words(rand(4)+1).join(' '),
     description: Faker::Lorem.paragraph(rand(3)+1),
-    owners: [User.first(offset: rand(User.count))],
+    owners: User.all[rand(10)..rand(20)+10],
   }).tap do |repo|
     5.times do
       repo.pushes.create!({
