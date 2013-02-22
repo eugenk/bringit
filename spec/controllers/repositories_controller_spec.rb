@@ -36,13 +36,13 @@ describe RepositoriesController do
   describe "GET 'show'" do
     it "returns http success" do
       repository = FactoryGirl.create(:repository)
-      get 'show', {id: 1}
+      get 'show', {id: repository.path}
       response.should be_success
     end
     
     it "assign repository as @repository" do
       repository = FactoryGirl.create(:repository)
-      get 'show', {id: 1}
+      get 'show', {id: repository.path}
       assigns(:repository).should eq(repository)
     end
   end

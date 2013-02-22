@@ -1,7 +1,7 @@
 %article.well.well-small.box
   .top.row-fluid
     .span9
-      %h1= link_to repository.title, repositories_path
+      %h1= link_to repository.title, repository_path(repository.path)
     .span3
       .path.pull-right= repository.path
     .clearfix

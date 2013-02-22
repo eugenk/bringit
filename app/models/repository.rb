@@ -29,6 +29,7 @@ class Repository < ActiveRecord::Base
   
   default_scope order: 'updated_at desc'
   scope :search, ->(term) { where "title LIKE ?", "%" << term << "%" }
+  scope :identifier, ->(path) { where "path = ?", path }
   
   paginates_per 10
   max_paginates_per 50

@@ -14,7 +14,7 @@ class RepositoriesController < ApplicationController
   end
   
   def show
-    
+    @repository = Repository.identifier(params[:id]).first
   end
   
   def new
