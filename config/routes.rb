@@ -9,6 +9,7 @@ Bringit::Application.routes.draw do
   
   resources :repositories do
     get :autocomplete_repository_title, :on => :collection
+    #match ':repositories(/:path(:/action))'
   end
   
   match '/search', to: 'repositories#search'

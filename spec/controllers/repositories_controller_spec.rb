@@ -78,28 +78,13 @@ describe RepositoriesController do
   describe "POST create" do
     before { login_user }
     
-    it "returns http success" do
-      post 'create'
-      response.should be_success
-    end
-    
     describe "with valid params" do
       it "creates a new repository" do
         expect {
           post :create, {repository: FactoryGirl.attributes_for(:repository)}
         }.to change(Repository, :count).by(1)
       end
-
-      it "assigns a newly created repository as @repository" do
-        post :create, {repository: FactoryGirl.attributes_for(:repository)}
-        assigns(:repository).should be_a(Repository)
-        assigns(:repository).should be_persisted
-      end
-
-      it "redirects to the created repository" do
-        post :create, {repository: FactoryGirl.attributes_for(:repository)}
-        response.should redirect_to(Repository.last)
-      end
+      
     end
 
     describe "with invalid params" do

@@ -7,6 +7,7 @@ class Repository < ActiveRecord::Base
   has_many :commits, class_name: 'Commit', through: :pushes, :limit => 3
   
   before_validation do |repository|
+    return unless repository.title
     repository.path = repository.title.downcase.tr('^a-z0-9', ' ').split(' ').join('_')
   end
   
