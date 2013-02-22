@@ -4,7 +4,7 @@ describe Repository do
   before do
     @user = User.new(email: "eugenk@tzi.de", 
                      password: "password", password_confirmation: "password")
-    @repository = Repository.new(path: 'some/path/bringit.git', title: 'bringit!', owners: [@user])
+    @repository = Repository.new(title: 'Bringit - git web-interface', owners: [@user])
     @fields = [:path, :title, :description]
   end
   
@@ -23,6 +23,10 @@ describe Repository do
       before { @repository[field] = " " }
       it { should_not be_valid }
     end
+  end
+  
+  it "path is derived from title" do
+    @repository.path.should == 'bringit_git_web_interface'
   end
   
   describe "when path is already taken" do
@@ -51,5 +55,4 @@ describe Repository do
     end
     it { should_not be_valid }
   end
-  
 end
