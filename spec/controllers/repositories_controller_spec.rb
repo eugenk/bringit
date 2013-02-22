@@ -53,10 +53,10 @@ describe RepositoriesController do
       response.should_not be_success
     end
   end
-    
-  describe "GET not 'create'" do
+  
+  describe "POST not 'create'" do
     it "returns no http success" do
-      get 'create'
+      post 'create'
       response.should_not be_success
     end
   end
@@ -74,16 +74,48 @@ describe RepositoriesController do
       assigns(:repository).should be_a_new(Repository)
     end
   end
-    
-  describe "GET 'create'" do
+  
+  describe "POST create" do
     before { login_user }
     
     it "returns http success" do
-      get 'create'
+      post 'create'
       response.should be_success
     end
     
-    
+    describe "with valid params" do
+      it "creates a new repository" do
+        expect {
+          post :create, {repository: FactoryGirl.attributes_for(:repository)}
+        }.to change(Repository, :count).by(1)
+      end
+
+      it "assigns a newly created repository as @repository" do
+        post :create, {repository: FactoryGirl.attributes_for(:repository)}
+        assigns(:repository).should be_a(Repository)
+        assigns(:repository).should be_persisted
+      end
+
+      it "redirects to the created repository" do
+        post :create, {repository: FactoryGirl.attributes_for(:repository)}
+        response.should redirect_to(Repository.last)
+      end
+    end
+
+    describe "with invalid params" do
+      it "assigns a newly created but unsaved repository as @repository" do
+        # Trigger the behavior that occurs when invalid params are submitted
+        FactoryGirl.build_stubbed(:repository).stub(:save).and_return(false)
+        post :create, {repository: {}}
+        assigns(:repository).should be_a_new(Repository)
+      end
+
+      it "re-renders the 'new' template" do
+        # Trigger the behavior that occurs when invalid params are submitted
+        FactoryGirl.build_stubbed(:repository).stub(:save).and_return(false)
+        post :create, {repository: {}}
+        response.should render_template("_new")
+      end
+    end
   end
-  
 end
