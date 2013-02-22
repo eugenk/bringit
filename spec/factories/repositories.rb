@@ -2,8 +2,11 @@
 
 FactoryGirl.define do
   factory :repository do
-    path "MyString"
-    title "MyString"
-    description "MyText"
+    path "path_to/bringit.git"
+    title "bringit"
+    description "bringit\nThe simple web-interface for git"
+    owners [{email: "user@example.com", 
+             password: "password",
+             password_confirmation: "password"}]
   end
 end
