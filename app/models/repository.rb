@@ -6,9 +6,15 @@ class Repository < ActiveRecord::Base
   has_many :pushes, class_name: 'Push', foreign_key: 'repository_id'
   has_many :commits, class_name: 'Commit', through: :pushes, :limit => 3
   
+  before_validation do |repository|
+    repository.path = repository.title.downcase.tr('^a-z0-9', ' ').split(' ').join('_')
+  end
+  
   validate :validate_owner_existance
-  validates :title, presence: true
-  VALID_PATH_REGEX = /^([^\s\\\/\?\*\"\>\<\|\:][^\\\/\?\*\"\>\<\|\:]+[^\s\\\/\?\*\"\>\<\|\:]|[^\s\\\/\?\*\"\>\<\|\:])*(\/([^\s\\\/\?\*\"\>\<\|\:][^\\\/\?\*\"\>\<\|\:]+[^\s\\\/\?\*\"\>\<\|\:]|[^\s\\\/\?\*\"\>\<\|\:])*)*$/
+  VALID_TITLE_REGEX = /^[A-Za-z0-9_\.\-\ ]+$/
+  validates :title, presence: true, length: { maximum: 32, minimum: 3 }, 
+                    uniqueness: { case_sensitive: false }, format: VALID_TITLE_REGEX
+  VALID_PATH_REGEX = /^[a-z0-9_]+$/
   validates :path, presence: true, uniqueness: { case_sensitive: true }, format: VALID_PATH_REGEX
   
   def validate_owner_existance

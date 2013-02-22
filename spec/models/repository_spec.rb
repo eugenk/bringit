@@ -18,7 +18,7 @@ describe Repository do
   end
   
   # presence
-  [:path, :title].each do |field|
+  [:title].each do |field|
     describe "when #{field} is not present" do
       before { @repository[field] = " " }
       it { should_not be_valid }
@@ -26,6 +26,7 @@ describe Repository do
   end
   
   it "path is derived from title" do
+    @repository.save
     @repository.path.should == 'bringit_git_web_interface'
   end
   
@@ -38,15 +39,26 @@ describe Repository do
     it { should_not be_valid }
   end
   
-  describe "when path has invalid format" do
-    it "should be invalid" do
-      bad_sequences = %w[\ // : ? * " > < |].concat [" /", "/ "]
-      paths = bad_sequences.map{ |s| "some#{s}invalidpath" }
-      paths.each do |invalid_path|
-        @repository.path = invalid_path
-        @repository.should_not be_valid
+  describe "when title has characters that are not allowed in the path" do
+    it "should be valid" do
+      title_chars = %w[A B Z a b z 0 1 9 _ . -].push(' ')
+      titles = title_chars.map{ |s| "some#{s}title" }
+      titles.each do |t|
+        @repository.title = t
+        @repository.save
+        @repository.should be_valid
       end
     end
+  end
+  
+  describe "when title is too short" do
+    before { @repository.title = 'a'*2 }
+    it { should_not be_valid }
+  end
+  
+  describe "when title is too long" do
+    before { @repository.title = 'a'*33 }
+    it { should_not be_valid }
   end
   
   describe "when it has no owner" do

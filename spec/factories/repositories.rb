@@ -2,8 +2,7 @@
 
 FactoryGirl.define do
   factory :repository do
-    sequence(:path) { |n| "bringit#{n}" }
-    sequence(:title) { |n| "bringit#{n}" }
+    sequence(:title) { |n| "Bringit #{n} - The simple web-interface for git" }
     description "bringit\nThe simple web-interface for git"
     before(:create) do |repository|
       repository_owner = FactoryGirl.create(:repository_owner, repository: repository)
