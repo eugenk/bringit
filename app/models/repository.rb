@@ -28,7 +28,7 @@ class Repository < ActiveRecord::Base
   end
   
   def ssh_url
-    Rails.application.config.git_base_url + path + ".git"
+    Bringit::Application.config.ssh_base_url + path + ".git"
   end
   
   def contributors

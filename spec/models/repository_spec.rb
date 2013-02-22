@@ -70,6 +70,6 @@ describe Repository do
   
   it "when ssh_url is derived from path and config" do
     @repository.save
-    @repository.ssh_url.should == Rails.application.config.git_base_url + @repository.path + ".git"
+    @repository.ssh_url.should == Bringit::Application.config.ssh_base_url + @repository.path + ".git"
   end
 end

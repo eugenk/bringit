@@ -47,7 +47,6 @@ namespace :deploy do
   task :symlink_config do
     run "ln -fs #{shared_path}/database.yml #{latest_release}/config/"
     run "ln -fs #{shared_path}/secret_token.rb #{latest_release}/config/initializers/"
-    run "sed -i 's/git@localhost/git@bringit.digineo.de/g' #{latest_release}/config/application.rb"
   end
   task :reset do
     run "cd #{current_path} && bundle exec rake db:migrate:reset db:seed", env: { RAILS_ENV: 'production' }
