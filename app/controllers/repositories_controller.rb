@@ -31,6 +31,7 @@ class RepositoriesController < ApplicationController
       @redirect_url = repository_path(@repository.path)
       render template: 'layouts/_redirect', layout: false 
     else
+      flash[:error] = @repository.errors.messages.map { |field, error| "#{field} #{error.join(", ")}." }.join(" ")
       render action: '_new', layout: false 
     end
   end
