@@ -12,7 +12,7 @@ end
 module Bringit
   class Application < Rails::Application
     config.git_base_url = "git@localhost/"
-    config.git_root = "/home/git/"
+    config.git_root = "/tmp/gitroot/"
     
     # don't generate RSpec tests for views and helpers
     config.generators do |g|
