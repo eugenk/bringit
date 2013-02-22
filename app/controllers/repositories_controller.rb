@@ -1,4 +1,5 @@
 class RepositoriesController < ApplicationController
+  before_filter :require_login, only: [:new]
   
   autocomplete :repository, :title, full: true, extra_data: [:id], 
     display_value: :autocomplete_value, options: {appendTo: '.form-search .input-append'}
@@ -14,6 +15,11 @@ class RepositoriesController < ApplicationController
   
   def show
     
+  end
+  
+  def new
+    @repository = Repository.new
+    render template: 'repositories/_new', layout: false
   end
   
 end

@@ -13,6 +13,8 @@
               %ul.dropdown-menu
                 %li= link_to raw('<i class="icon-cog"></i> Preferences'), '#'
                 %li= link_to raw('<i class="icon-sitemap"></i> Own repositories'), '#'
+                %li= link_to raw('<i class="icon-plus"></i> Create repository'), new_repository_path, 
+                  remote: true, "data-replace" => '#modal', "data-update" => '#modal'
                 %li.divider
                 %li= link_to raw('<i class="icon-off"></i> Sign out'), destroy_user_session_path
           - else

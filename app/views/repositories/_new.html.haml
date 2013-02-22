@@ -1,0 +1,10 @@
+= render 'layouts/flash_messages'
+.modal-header
+  = button_tag 'X', class: 'close', 'data-dismiss' => 'modal'
+  %h3 Create new repository
+.modal-body
+  = simple_form_for(@repository, html: {class: 'form-horizontal'}) do |f|
+    = f.input :title, input_html: { class: 'input-xlarge' }
+    = f.input :description, input_html: { class: 'input-xlarge' }
+    .control-group
+      .controls= f.button :submit, class: 'btn btn-primary'
