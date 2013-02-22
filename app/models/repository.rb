@@ -27,6 +27,14 @@ class Repository < ActiveRecord::Base
     "#{title}"
   end
   
+  def ssh_url
+    Rails.application.config.git_base_url << path
+  end
+  
+  def contributors
+    owners
+  end
+  
   default_scope order: 'updated_at desc'
   scope :search, ->(term) { where "title LIKE ?", "%" << term << "%" }
   scope :identifier, ->(path) { where "path = ?", path }
