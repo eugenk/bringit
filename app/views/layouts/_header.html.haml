@@ -4,7 +4,6 @@
       = link_to raw("brin<strong>git</strong>"), root_path, id: "logo", class: "brand"
       .nav-collapse.collapse
         %ul.nav
-          %li= link_to "Home", root_path
           %li= link_to "Repositories", repositories_path
         %ul.nav.pull-right
           - if user_signed_in?

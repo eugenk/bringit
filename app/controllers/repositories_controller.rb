@@ -22,4 +22,8 @@ class RepositoriesController < ApplicationController
     render template: 'repositories/_new', layout: false
   end
   
+  def create
+    
+  end
+  
 end

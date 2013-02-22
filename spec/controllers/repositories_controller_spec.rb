@@ -54,11 +54,32 @@ describe RepositoriesController do
     end
   end
     
+  describe "GET not 'create'" do
+    it "returns no http success" do
+      get 'create'
+      response.should_not be_success
+    end
+  end
+    
   describe "GET 'new'" do
     before { login_user }
     
     it "returns http success" do
       get 'new'
+      response.should be_success
+    end
+    
+    it "assign repository as @repository" do
+      get 'new'
+      assigns(:repository).should be_a_new(Repository)
+    end
+  end
+    
+  describe "GET 'create'" do
+    before { login_user }
+    
+    it "returns http success" do
+      get 'create'
       response.should be_success
     end
   end
