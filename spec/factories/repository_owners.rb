@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :repository_owner do
-    repository nil
-    owner nil
+    repository 
+    owner
   end
 end

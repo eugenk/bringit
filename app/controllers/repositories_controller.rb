@@ -8,7 +8,7 @@ class RepositoriesController < ApplicationController
   end
   
   def search
-    @term = params[:repository][:term]
+    @term = params[:term] || ""
     @repositories = Repository.search(@term).page params[:page]
   end
   

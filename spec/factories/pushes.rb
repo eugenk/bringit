@@ -2,12 +2,8 @@
 
 FactoryGirl.define do
   factory :push do
-    author User.new(email: "user@example.com", 
-                    password: "password", password_confirmation: "password")
-    repository Repository.new(path: 'some/path/bringit.git', title: 'bringit!',
-                              owners: [User.new(email: "user@example.com", 
-                                                password: "password", 
-                                                password_confirmation: "password")])
-    push_type "web"
+    push_type 'web'
+    repository { FactoryGirl.next(:repository) }
+    author { FactoryGirl.next(:user) }
   end
 end

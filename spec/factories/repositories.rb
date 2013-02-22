@@ -2,11 +2,13 @@
 
 FactoryGirl.define do
   factory :repository do
-    path "path_to/bringit.git"
-    title "bringit"
+    sequence(:path) { |n| "bringit#{n}" }
+    sequence(:title) { |n| "bringit#{n}" }
     description "bringit\nThe simple web-interface for git"
-    owners [{email: "user@example.com", 
-             password: "password",
-             password_confirmation: "password"}]
+    before(:create) do |repository|
+      repository_owner = FactoryGirl.create(:repository_owner, repository: repository)
+      repository.repository_owners << FactoryGirl.create(:repository_owner, repository: repository)
+      repository.owners << repository_owner.owner
+    end
   end
 end
