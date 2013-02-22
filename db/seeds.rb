@@ -31,7 +31,6 @@ end
     title: Faker::Lorem.words(rand(2)+1).join(' '),
     description: Faker::Lorem.paragraph(rand(3)+1),
     owners: [User.first(offset: rand(User.count))],
-    path: Faker::Lorem.words(rand(7)+1).join('/')
   }).tap do |repo|
     5.times do
       repo.pushes.create!({
