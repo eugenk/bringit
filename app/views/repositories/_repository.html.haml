@@ -2,8 +2,8 @@
   .top.row-fluid
     .span9
       %h1= link_to repository.title, repository_path(repository.path)
-    .span3
-      .path.pull-right= repository.path
+    .span3.muted
+      .path.pull-right= repository.ssh_url
     .clearfix
   .row-fluid
     .span2
