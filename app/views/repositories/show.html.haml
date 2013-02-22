@@ -1,1 +1,75 @@
 - provide(:title, @repository.title)
+.row
+  .span8
+    %h1= @repository.title
+  .span4
+    .pull-right
+      .input-append{style: 'padding-top:10px'}
+        %input.span3{type: 'text', value: @repository.ssh_url }
+        %span.add-on
+          %i.icon-sitemap
+.clearfix
+.well.well-small
+  = @repository.description
+.row
+  .span9.muted
+    %i.icon-calendar
+    last updated
+    = time_ago_in_words(@repository.updated_at)
+    ago
+    created on
+    = @repository.created_at.strftime("%d.%m.%Y")
+  .span3
+    .pull-right
+      .dropdown
+        %a.btn.dropdown-toggle{'data-toggle' => 'dropdown', href: "#"}
+          %i.icon-cog
+          Options
+          %b.caret
+        %ul.dropdown-menu
+          %li
+            %a{href: '#add-contributors', 'data-toggle' => 'tab'}
+              %i.icon-plus
+              Add contributors 
+          %li.divider
+          %li
+            %a{href: '#delete-repository', 'data-toggle' => 'tab'}
+              %i.icon-trash
+              Delete Repository
+.clearfix
+
+.authored
+  authored by
+  = raw @repository.contributors[0..1].map { |contributor| link_to contributor.email, '#' }.join(", ")
+    
+  - if @repository.contributors.size > 2
+    %span.muted
+      and 
+      = link_to "#{(@repository.contributors.size-3)} other users", '#'
+
+%hr
+%ul.nav.nav-tabs{id: 'repository-tabs'}
+  %li.active
+    = link_to 'Files', '#'
+  %li
+    = link_to 'Commits', '#'
+
+.tab-content
+  #files.tab-pane.active
+    - unless @repository.commits.empty? 
+      .well.well-small.box
+        %ol
+          %li.commit
+            .row-fluid
+              .span9
+                .message= link_to @repository.commits.first.message_title, '#'
+                .time-author
+                  by
+                  = @repository.commits.first.committer_name 
+                  = time_ago_in_words(@repository.commits.first.committer_time)
+                  ago
+              .span3
+                .pull-right.short_hash
+                  = link_to @repository.commits.first.short_hash, '#', class: 'btn'
+              .clearfix
+      

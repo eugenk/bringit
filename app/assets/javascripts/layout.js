@@ -24,3 +24,4 @@ function setupAjax() {
 $(function() {
   setupAjax();
 });
+

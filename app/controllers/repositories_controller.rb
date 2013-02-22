@@ -28,7 +28,7 @@ class RepositoriesController < ApplicationController
     
     if @repository.save
       flash[:notice] = 'Repository was successfully created.'
-      @redirect_url = repository_path(@repository)
+      @redirect_url = repository_path(@repository.path)
       render template: 'layouts/_redirect', layout: false 
     else
       render action: '_new', layout: false 
