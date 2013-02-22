@@ -2,15 +2,10 @@
 %h1 Search '#{@term}'
 
 .row
-  .span3
-    = form_tag search_path, class: 'input-prepend input-append top-search', method: :get do
-      = search_field :repository, 'term'
-      = button_tag 'Search', class: 'btn btn-primary'
-  .span4  
+  .span6.back-button
+    = link_to 'Show all repositories', repositories_path, class: 'btn'
+  .span6  
     .pull-right= paginate @repositories
-  .span5.back-button
-    .pull-right
-      = link_to 'Show all repositories', repositories_path, class: 'btn'
 .clearfix    
 
 - if @repositories.empty?

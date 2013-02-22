@@ -114,6 +114,8 @@ GEM
     jquery-ui-rails (4.0.1)
       jquery-rails
       railties (>= 3.1.0)
+    js-routes (0.8.7)
+      rails (>= 3.2)
     json (1.7.7)
     kaminari (0.14.1)
       actionpack (>= 3.0.0)
@@ -157,6 +159,8 @@ GEM
       railties (= 3.2.12)
     rails3-generators (1.0.0)
       railties (>= 3.0.0)
+    rails3-jquery-autocomplete (1.0.11)
+      rails (~> 3.0)
     railties (3.2.12)
       actionpack (= 3.2.12)
       activesupport (= 3.2.12)
@@ -245,11 +249,13 @@ DEPENDENCIES
   inherited_resources
   jquery-rails
   jquery-ui-rails
+  js-routes
   kaminari
   mysql2
   quiet_assets
   rails (= 3.2.12)
   rails3-generators
+  rails3-jquery-autocomplete
   rspec-rails
   rugged
   rvm-capistrano

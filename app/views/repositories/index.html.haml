@@ -1,13 +1,7 @@
 - provide(:title, 'Repositories')
 %h1 Repositories
 
-.row
-  .span6
-    = form_tag search_path, class: 'input-prepend input-append top-search', method: :get do
-      = search_field :repository, 'term'
-      = button_tag 'Search', class: 'btn btn-primary'
-  .span6  
-    .pull-right= paginate @repositories
+.pull-right= paginate @repositories
 .clearfix    
 
 = render partial: 'repository', collection: @repositories

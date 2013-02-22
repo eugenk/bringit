@@ -11,10 +11,21 @@ $blue2: #EFF2F7;
 $blue3: #F9FAFC;
 
 body {
-  padding-top:60px;
+  padding-bottom:20px;
 }
 
 /* header */
+header.navbar {
+  .navbar-inner {
+    @include border-radius(0px);
+  }
+  .container {
+    @extend .container;
+  }
+  .dropdown-menu {
+    width:99%;
+  }
+}
 
 #logo {
   float: left;
@@ -80,7 +91,8 @@ footer {
 }
 
 .back-button {
-  margin-top:20px;
+  margin-bottom:10px;
+  margin-top:10px;
 }
 
 /* box */
@@ -126,5 +138,19 @@ footer {
   .browse-history {
     text-align:center;
      margin-right:-40px;
+  }
+}
+.form-search {
+  margin: 6px 0px 0px 0px;
+  button {
+    display:none;
+  }
+}
+.ui-autocomplete.ui-menu {
+  z-index:100 !important;
+  li {
+    a {
+      cursor:pointer;
+    }
   }
 }

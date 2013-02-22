@@ -7,7 +7,9 @@ Bringit::Application.routes.draw do
   
   post '/development/session' => 'sessions#create', as: :development_session
   
-  resources :repositories
+  resources :repositories do
+    get :autocomplete_repository_title, :on => :collection
+  end
   
   match '/search', to: 'repositories#search'
 end

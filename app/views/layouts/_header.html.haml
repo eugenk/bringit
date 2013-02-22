@@ -1,4 +1,4 @@
-%header.navbar.navbar-inverse.navbar-fixed-top
+%header.navbar.navbar-inverse.nav
   .navbar-inner
     .container
       = link_to raw("brin<strong>git</strong>"), root_path, id: "logo", class: "brand"
@@ -8,8 +8,20 @@
           %li= link_to "Repositories", repositories_path
         %ul.nav.pull-right
           - if user_signed_in?
-            %li.navbar-text= current_user.email
-            %li= link_to "Sign out", destroy_user_session_path
+            %li.dropdown
+              = link_to current_user.email, '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown'
+              %ul.dropdown-menu
+                %li= link_to raw('<i class="icon-cog"></i> Preferences'), '#'
+                %li= link_to raw('<i class="icon-sitemap"></i> Own repositories'), '#'
+                %li.divider
+                %li= link_to raw('<i class="icon-off"></i> Sign out'), destroy_user_session_path
           - else
             %li= link_to "Sign in", new_user_session_path
             %li= link_to "Sign up", new_user_registration_path
+        .search-wrapper.pull-left
+          = form_tag search_path, class: 'form-search navbar-search', method: :get do
+            .controls
+              %span.add-on
+                %i.icon-search
+              = autocomplete_field_tag :term, '', autocomplete_repository_title_repositories_path, class: 'span3 search-query', placeholder: 'Search repository...'
+              = button_tag 'Search', class: 'btn btn-primary'

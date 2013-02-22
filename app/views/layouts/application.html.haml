@@ -6,10 +6,11 @@
     = csrf_meta_tags
     = render 'layouts/shim'
   %body
-    = render 'layouts/development_bar' if development_mode?
     = render 'layouts/header'
+    = render 'layouts/development_bar' if development_mode?
     .container
       = render 'layouts/flash_messages'
       = yield
       = render 'layouts/footer'
     = javascript_include_tag "application"
+    = javascript_include_tag "autocomplete-rails.js" 

@@ -16,6 +16,10 @@ class Repository < ActiveRecord::Base
     errors.add :owners, 'has no owner'
   end
   
+  def autocomplete_value
+    "#{title}"
+  end
+  
   default_scope order: 'updated_at desc'
   scope :search, ->(term) { where "title LIKE ?", "%" << term << "%" }
   
