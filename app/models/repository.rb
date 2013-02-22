@@ -8,14 +8,14 @@ class Repository < ActiveRecord::Base
   
   before_validation do |repository|
     return unless repository.title
-    repository.path = repository.title.downcase.tr('^a-z0-9', ' ').split(' ').join('_')
+    repository.path = Repository.title_to_path(repository.title)
   end
   
   validate :validate_owner_existance
   VALID_TITLE_REGEX = /^[A-Za-z0-9_\.\-\ ]+$/
-  validates :title, presence: true, length: { maximum: 32, minimum: 3 }, 
+  validates :title, presence: true, length: { maximum: 32, minimum: 3 },
                     uniqueness: { case_sensitive: false }, format: VALID_TITLE_REGEX
-  VALID_PATH_REGEX = /^[a-z0-9_]+$/
+  VALID_PATH_REGEX = /^[a-z0-9_\.\-]+$/
   validates :path, presence: true, uniqueness: { case_sensitive: true }, format: VALID_PATH_REGEX
   
   def validate_owner_existance
@@ -33,6 +33,10 @@ class Repository < ActiveRecord::Base
   
   def contributors
     owners
+  end
+  
+  def self.title_to_path(title)
+    title.downcase.tr('^a-z0-9', ' ').gsub(/\ /, '_')
   end
   
   default_scope order: 'updated_at desc'

@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Repository do
   before do
+    #u = User.new(email: "eugenk@tzi.de", password: "password", password_confirmation: "password")
+    #r = Repository.new(title: 'Bringit - git web-interface', owners: [u])
     @user = User.new(email: "eugenk@tzi.de", 
                      password: "password", password_confirmation: "password")
     @repository = Repository.new(title: 'Bringit - git web-interface', owners: [@user])
@@ -25,9 +27,14 @@ describe Repository do
     end
   end
   
+  describe "should be valid after save" do
+    before { @repository.save }
+    it { should be_valid }
+  end
+  
   it "path is derived from title" do
     @repository.save
-    @repository.path.should == 'bringit_git_web_interface'
+    @repository.path.should == 'bringit___git_web_interface'
   end
   
   describe "when path is already taken" do
@@ -41,11 +48,10 @@ describe Repository do
   
   describe "when title has characters that are not allowed in the path" do
     it "should be valid" do
-      title_chars = %w[A B Z a b z 0 1 9 _ . -].push(' ')
-      titles = title_chars.map{ |s| "some#{s}title" }
+      title_chars = %w[A B Z]
+      titles = title_chars.map{ |s| "Bringit - g#{s}t web-interface" }
       titles.each do |t|
         @repository.title = t
-        @repository.save
         @repository.should be_valid
       end
     end
