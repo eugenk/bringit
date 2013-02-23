@@ -1,8 +1,8 @@
 case Rails.env
-when :production
+when 'production'
   Bringit::Application.config.ssh_base_url = "git@bringit.digineo.de/"
-  Bringit::Application.config.git_root = "/tmp/gitroot/"
-when :test
+  Bringit::Application.config.git_root = "/tmp/gitroot-prod/"
+when 'test'
   Bringit::Application.config.ssh_base_url = "git@bringit.digineo.de/"
   Bringit::Application.config.git_root = "/tmp/gitroot-test/"
 else
