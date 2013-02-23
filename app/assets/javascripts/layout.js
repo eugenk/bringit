@@ -11,12 +11,10 @@ function setupAjax() {
 	  var $this = $(this);
 	  $($this.data('replace')).html(data);
 	  $this.trigger('ajax:replaced');
-	  $($(this).data("update")).fadeIn();
+	  
+	  $($(this).data("update")).modal('show');
+	  
 	  $($(this).data("update")).find("input[type=text], select, textarea, input[password]").first().focus();
-	  $("button.close").click(function() {
-	  	$(this).parentsUntil("#modal").parent().fadeOut();
-	  	return false;
-	  });  
 	  setupAjax();
 	});
 }
