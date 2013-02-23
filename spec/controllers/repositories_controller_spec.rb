@@ -114,7 +114,7 @@ describe RepositoriesController do
     it "removes the repository" do
         expect {
           delete :destroy, { id: @repository.path }
-        }.to change(Repository, :count).by(0)
+        }.to change(Repository, :count).by(-1)
     end
   end
 end
