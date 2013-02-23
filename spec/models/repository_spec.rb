@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Repository do
   before do
-    #u = User.new(email: "eugenk@tzi.de", password: "password", password_confirmation: "password")
-    #r = Repository.new(title: 'Bringit - git web-interface', owners: [u])
+    system "rm -rf #{Bringit::Application.config.git_root}"
+    system "mkdir -p #{Bringit::Application.config.git_root}"
     @user = User.new(email: "eugenk@tzi.de", 
                      password: "password", password_confirmation: "password")
     @repository = Repository.new(title: 'Bringit - git web-interface', owners: [@user])
@@ -77,5 +77,19 @@ describe Repository do
   it "when ssh_url is derived from path and config" do
     @repository.save
     @repository.ssh_url.should == Bringit::Application.config.ssh_base_url + @repository.path + ".git"
+  end
+  
+  it "when repository is created in the filesystem" do
+    @repository.save
+    @repository.open_repo
+    @repository.should be_valid
+  end
+  
+  it "when repository is deleted from the filesystem" do
+    expect do
+      @repository.save
+      @repository.destroy
+      @repository.open_repo
+    end.to raise_error(RepositoryNotFoundError)
   end
 end

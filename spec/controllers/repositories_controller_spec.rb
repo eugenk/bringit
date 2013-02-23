@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe RepositoriesController do
-
-  #before { login_user }
+  before do 
+    system "rm -rf #{Bringit::Application.config.git_root}"
+    system "mkdir -p #{Bringit::Application.config.git_root}"
+  end
 
   describe "GET 'index'" do
     it "returns http success" do
