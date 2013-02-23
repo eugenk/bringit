@@ -1,8 +1,7 @@
 require 'digest/sha1'
 
 class Repository < ActiveRecord::Base
-  attr_accessible :description, :path, :title, :owners, :pushes, :commits
-  attr :repo
+  attr_accessible :description, :path, :title, :owners, :pushes, :commits, :repo
   
   has_many :repository_owners, foreign_key: 'repository_id', class_name: 'RepositoryOwner'
   has_many :owners, through: :repository_owners, class_name: 'User'
@@ -28,6 +27,10 @@ class Repository < ActiveRecord::Base
                     uniqueness: { case_sensitive: false }, format: VALID_TITLE_REGEX
   VALID_PATH_REGEX = /^[a-z0-9_\.\-]+$/
   validates :path, presence: true, uniqueness: { case_sensitive: true }, format: VALID_PATH_REGEX
+  
+  def to_param
+    path
+  end
   
   def validate_owner_existance
     return if owners && owners.size >= 1
@@ -63,56 +66,64 @@ class Repository < ActiveRecord::Base
   end
   
   def open_repo
-    repo = Rugged::Repository.new(local_path)
-  rescue 
-    raise RepositoryNotFoundError
+    @repo = Rugged::Repository.new(local_path)
+  #rescue 
+    #raise RepositoryNotFoundError
   end
   
   def add_commit(user, tmp_path, target_path, message)
-    open_repo unless repo
+    open_repo unless @repo.class == Rugged::Repository
     
     # Content
     file_content = File.open(tmp_path, 'rb').read
+    
+    blob_oid = Rugged::Blob.create(@repo, file_content)
     
     #Entry
     entry = {
       type: :blob, 
       name: target_path, 
-      oid: commit_sha(file_content), 
+      oid: blob_oid, 
       content: file_content,
       filemode: 33188
     }
     
     # Create Tree
     builder = Rugged::Tree::Builder.new
-    builder << entry
-    tree_sha = builder.write(repo)
+    unless @repo.empty?
+      old_tree = @repo.lookup(@repo.head.target).tree
+      old_tree.each_tree do |old_entry|
+        builder.insert(old_entry)
+      end
+    end
+    builder.insert(entry)
+    tree_oid = builder.write(@repo)
     
     # Created tree
-    tree = repo.lookup(tree_sha)
+    tree = @repo.lookup(tree_oid)
     
     # Commit Sha
-    commit_sha = Rugged::Commit.create(repo, author: user.author, 
+    commit_oid = Rugged::Commit.create(@repo, author: user.author, 
       message: message, committer: user.author, parents: commit_parents, tree: tree)
-    commit = repo.lookup(commit_sha)
+    commit = @repo.lookup(commit_oid)
     
-    
-    if repo.empty?
-      #Create reference
-      ref = Rugged::Reference.create(repo, 'refs/heads/master', commit_sha)
+    if @repo.empty?
+      ref = Rugged::Reference.create(@repo, 'refs/heads/master', commit_oid)
+    else
+      @repo.head.target = commit_oid
     end
+    
+    
+    save
   end
   
   def commit_parents
-    if repo.empty?
+    if @repo.empty?
       []
     else
-      [repo.head.target]
+      puts @repo.head.target
+      [@repo.head.target]
     end
-  end
-  
-  def commit_sha(file_content)
-    Digest::SHA1.hexdigest("blob #{file_content.size.to_s}\0#{file_content}")
   end
   
   default_scope order: 'updated_at desc'

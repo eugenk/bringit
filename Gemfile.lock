@@ -252,6 +252,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   kaminari
+  mime-types
   mysql2
   quiet_assets
   rails (= 3.2.12)
