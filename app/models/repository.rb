@@ -36,7 +36,7 @@ class Repository < ActiveRecord::Base
   end
   
   def local_path
-    Bringit::Application.config.git_root + path + ".git"
+    Bringit::Application.config.git_root + id + ".git"
   end
   
   def contributors
@@ -48,8 +48,7 @@ class Repository < ActiveRecord::Base
   end
   
   def create_repository
-    repo = Rugged::Repository.new(local_path)
-    Rugged::Repository.init_at('.', true)
+    repo = Rugged::Repository.init_at(local_path, true)
   end
   
   def delete_repository
