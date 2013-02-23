@@ -30,7 +30,7 @@ end
   Repository.create!({
     title: Faker::Lorem.words(rand(2)+2, true).join(' '),
     description: Faker::Lorem.paragraph(rand(3)+1),
-    owners: User.all[rand(10)..rand(10)+7],
+    owners: User.all[rand(6)..rand(6)+7],
   }).tap do |repo|
     5.times do
       repo.pushes.create!({
