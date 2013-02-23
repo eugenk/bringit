@@ -20,7 +20,6 @@ gem 'inherited_resources'
 gem 'mysql2'
 gem 'best_in_place'
 gem 'rails3-jquery-autocomplete'
-gem 'js-routes'
 gem 'carrierwave'
 
 group :assets do
