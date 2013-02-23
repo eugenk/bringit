@@ -188,7 +188,7 @@ GEM
       rspec-expectations (~> 2.12.0)
       rspec-mocks (~> 2.12.0)
     rubyzip (0.9.9)
-    rugged (0.16.0)
+    rugged (0.17.0.b7)
     rvm-capistrano (1.2.7)
       capistrano (>= 2.0.0)
     sass (3.2.6)
@@ -255,14 +255,13 @@ DEPENDENCIES
   jquery-ui-rails
   js-routes
   kaminari
-  mime-types
   mysql2
   quiet_assets
   rails (= 3.2.12)
   rails3-generators
   rails3-jquery-autocomplete
   rspec-rails
-  rugged
+  rugged (= 0.17.0.b7)
   rvm-capistrano
   sass-rails
   seed_dump

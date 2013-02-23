@@ -66,6 +66,23 @@ class Repository < ActiveRecord::Base
     raise RepositoryNotFoundError
   end
   
+  def new_index_entry(current_file,file_path)
+    now = Time.now
+    {
+      path: file_path,
+      oid: repo.write('xx', :blob),
+      mtime: now,
+      ctime: now,
+      file_size: File::size(current_file),
+      dev: 0,
+      ino: 0,
+      mode: 33199,
+      uid: 502,
+      gid: 501,
+      stage: 3
+    }
+  end
+  
   default_scope order: 'updated_at desc'
   scope :search, ->(term) { where "title LIKE ?", "%" << term << "%" }
   scope :identifier, ->(path) { where "path = ?", path }
