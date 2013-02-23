@@ -1,7 +1,7 @@
 class RepositoriesController < ApplicationController
   before_filter :require_login, only: [:new, :create]
   
-  autocomplete :repository, :title, full: true, extra_data: [:id], 
+  autocomplete :repository, :title, full: true, extra_data: [:path],
     display_value: :autocomplete_value, options: {appendTo: '.form-search .input-append'}
   
   def index
