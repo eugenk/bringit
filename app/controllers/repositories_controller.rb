@@ -48,4 +48,11 @@ class RepositoriesController < ApplicationController
     end
   end
   
+  def upload
+    uploader = FileUploader.new
+    uploader.store!(params[:file])
+    File.delete("#{Rails.root}/public#{uploader.url}")
+    render text: uploader.url
+  end
+  
 end

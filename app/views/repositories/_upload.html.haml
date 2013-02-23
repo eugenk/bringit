@@ -1,0 +1,13 @@
+= form_for(@repository, url: repository_upload_path(@repository.path), method: :post, html: {class: 'form-inline pull-right', multipart: true}) do |f|
+  .fileupload.fileupload-new{ 'data-provides' => 'fileupload' }
+    .input-append
+      .uneditable-input.span3
+        %i.icon-file.fileupload-exists
+        %span.fileupload-preview
+      %span.btn.btn-file
+        %span.fileupload-new Select File
+        %span.fileupload-exists Change
+        %input{ type: 'file', name: 'file' }
+      %a.btn.fileupload-exists{ 'data-dismiss' => 'fileupload', href: '#' } Remove
+    = button_tag "Upload file", class: 'btn btn-primary'
+.clearfix

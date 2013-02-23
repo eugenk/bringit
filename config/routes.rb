@@ -10,7 +10,10 @@ Bringit::Application.routes.draw do
   resources :repositories do
     get :autocomplete_repository_title, :on => :collection
     get '/repositories/:id' => "repositories#show"
+    post 'upload'
+    post '/repositories/:id/upload' => "repositories#upload"
   end
+  
   
   match '/search', to: 'repositories#search'
 end
