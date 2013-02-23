@@ -11,6 +11,10 @@ class Repository < ActiveRecord::Base
     repository.path = Repository.title_to_path(repository.title)
   end
   
+  before_create do |repository|
+    create_repository
+  end
+  
   validate :validate_owner_existance
   VALID_TITLE_REGEX = /^[A-Za-z0-9_\.\-\ ]+$/
   validates :title, presence: true, length: { maximum: 32, minimum: 3 },
@@ -31,12 +35,25 @@ class Repository < ActiveRecord::Base
     Bringit::Application.config.ssh_base_url + path + ".git"
   end
   
+  def local_path
+    Bringit::Application.config.git_root + path + ".git"
+  end
+  
   def contributors
     owners
   end
   
   def self.title_to_path(title)
     title.downcase.tr('^a-z0-9', ' ').gsub(/\ /, '_')
+  end
+  
+  def create_repository
+    repo = Rugged::Repository.new(local_path)
+    Rugged::Repository.init_at('.', true)
+  end
+  
+  def delete_repository
+    system "rm -rf #{local_path}"
   end
   
   default_scope order: 'updated_at desc'
