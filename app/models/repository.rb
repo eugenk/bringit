@@ -11,8 +11,12 @@ class Repository < ActiveRecord::Base
     repository.path = Repository.title_to_path(repository.title)
   end
   
-  before_create do |repository|
+  after_create do |repository|
     create_repository
+  end
+  
+  before_destroy do |repository|
+    destroy_repository
   end
   
   validate :validate_owner_existance
@@ -36,7 +40,7 @@ class Repository < ActiveRecord::Base
   end
   
   def local_path
-    Bringit::Application.config.git_root + id + ".git"
+    Bringit::Application.config.git_root + id.to_s + ".git"
   end
   
   def contributors
@@ -51,7 +55,7 @@ class Repository < ActiveRecord::Base
     repo = Rugged::Repository.init_at(local_path, true)
   end
   
-  def delete_repository
+  def destroy_repository
     system "rm -rf #{local_path}"
   end
   
