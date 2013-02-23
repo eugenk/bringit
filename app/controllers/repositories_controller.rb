@@ -36,4 +36,16 @@ class RepositoriesController < ApplicationController
     end
   end
   
+  def destroy
+    @repository = Repository.identifier(params[:id]).first
+    
+    if @repository.destroy
+      flash[:notice] = 'Repository was successfully removed.'
+      redirect_to repositories_path
+    else
+      flash[:error] = 'Repository can not be removed.'
+      redirect_to @repository
+    end
+  end
+  
 end
