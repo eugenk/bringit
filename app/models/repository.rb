@@ -1,5 +1,6 @@
 class Repository < ActiveRecord::Base
   attr_accessible :description, :path, :title, :owners, :pushes, :commits
+  attr :repo
   
   has_many :repository_owners, foreign_key: 'repository_id', class_name: 'RepositoryOwner'
   has_many :owners, through: :repository_owners, class_name: 'User'
@@ -57,6 +58,12 @@ class Repository < ActiveRecord::Base
   
   def destroy_repository
     system "rm -rf #{local_path}"
+  end
+  
+  def open_repo
+    repo = Rugged::Repository.new(local_path)
+  rescue 
+    raise RepositoryNotFoundError
   end
   
   default_scope order: 'updated_at desc'
