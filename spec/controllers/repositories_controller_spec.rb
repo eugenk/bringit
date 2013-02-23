@@ -105,4 +105,16 @@ describe RepositoriesController do
       end
     end
   end
+  
+  describe "DELETE" do
+    before do
+      login_user
+      @repository = FactoryGirl.create(:repository)
+    end
+    it "removes the repository" do
+        expect {
+          delete :destroy, { id: @repository.path }
+        }.to change(Repository, :count).by(0)
+    end
+  end
 end
