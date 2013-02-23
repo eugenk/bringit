@@ -92,7 +92,7 @@ class Repository < ActiveRecord::Base
     builder = Rugged::Tree::Builder.new
     unless @repo.empty?
       old_tree = @repo.lookup(@repo.head.target).tree
-      old_tree.each_tree do |old_entry|
+      old_tree.each do |old_entry|
         builder.insert(old_entry)
       end
     end
