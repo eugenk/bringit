@@ -1,3 +1,5 @@
+require 'digest/sha1'
+
 class Repository < ActiveRecord::Base
   attr_accessible :description, :path, :title, :owners, :pushes, :commits
   attr :repo
@@ -66,21 +68,51 @@ class Repository < ActiveRecord::Base
     raise RepositoryNotFoundError
   end
   
-  def new_index_entry(current_file,file_path)
-    now = Time.now
-    {
-      path: file_path,
-      oid: repo.write('xx', :blob),
-      mtime: now,
-      ctime: now,
-      file_size: File::size(current_file),
-      dev: 0,
-      ino: 0,
-      mode: 33199,
-      uid: 502,
-      gid: 501,
-      stage: 3
+  def add_commit(user, tmp_path, target_path, message)
+    open_repo unless repo
+    
+    # Content
+    file_content = File.open(tmp_path, 'rb').read
+    
+    #Entry
+    entry = {
+      type: :blob, 
+      name: target_path, 
+      oid: commit_sha(file_content), 
+      content: file_content,
+      filemode: 33188
     }
+    
+    # Create Tree
+    builder = Rugged::Tree::Builder.new
+    builder << entry
+    tree_sha = builder.write(repo)
+    
+    # Created tree
+    tree = repo.lookup(tree_sha)
+    
+    # Commit Sha
+    commit_sha = Rugged::Commit.create(repo, author: user.author, 
+      message: message, committer: user.author, parents: commit_parents, tree: tree)
+    commit = repo.lookup(commit_sha)
+    
+    
+    if repo.empty?
+      #Create reference
+      ref = Rugged::Reference.create(repo, 'refs/heads/master', commit_sha)
+    end
+  end
+  
+  def commit_parents
+    if repo.empty?
+      []
+    else
+      [repo.head.target]
+    end
+  end
+  
+  def commit_sha(file_content)
+    Digest::SHA1.hexdigest("blob #{file_content.size.to_s}\0#{file_content}")
   end
   
   default_scope order: 'updated_at desc'
