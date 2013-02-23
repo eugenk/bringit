@@ -1,0 +1,2 @@
+class RepositoryNotFoundError < IOError 
+end
