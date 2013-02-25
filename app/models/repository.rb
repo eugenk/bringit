@@ -149,15 +149,6 @@ class Repository < ActiveRecord::Base
     end
   end
   
-  def folder_contents_head(dir_path='')
-    open_repo
-    if !@repo.empty? && @repo.head && @repo.head.target
-      folder_contents(@repo.head.target, dir_path)
-    else
-      []
-    end
-  end
-  
   def path_exists_head?(url='')
     open_repo
     if !@repo.empty? && @repo.head && @repo.head.target
@@ -172,14 +163,35 @@ class Repository < ActiveRecord::Base
     path_exists_rugged?(@repo.lookup(commit_oid), url)
   end
   
+  def path_exists_rugged?(rugged_commit, url='')
+    if url.empty?
+      true
+    else
+      tree = rugged_commit.tree
+      nil != get_object(rugged_commit, url)
+    end
+  rescue Rugged::OdbError
+    false
+  end
+  
+  def folder_contents_head(dir_path='')
+    open_repo
+    if !@repo.empty? && @repo.head && @repo.head.target
+      folder_contents(@repo.head.target, dir_path)
+    else
+      []
+    end
+  end
+  
   def folder_contents(commit_oid, dir_path='')
     open_repo
     folder_contents_rugged(@repo.lookup(commit_oid), dir_path)
   end
   
   def folder_contents_rugged(rugged_commit, dir_path='')
-    tree = get_object(rugged_commit, dir_path)
+    return [] unless path_exists_rugged?(rugged_commit, dir_path)
     
+    tree = get_object(rugged_commit, dir_path)
     contents = []
     
     if tree.type == :tree
@@ -215,6 +227,7 @@ class Repository < ActiveRecord::Base
   def get_object(rugged_commit, object_path='')
     object = rugged_commit.tree
     object_path.split('/').each do |part|
+      return nil unless object[part]
       object = @repo.lookup(object[part][:oid]) unless part.empty?
     end
     
@@ -237,6 +250,8 @@ class Repository < ActiveRecord::Base
   
   
   def get_current_file_rugged(rugged_commit, url='')
+    return nil unless path_exists_rugged?(rugged_commit, url)
+    
     object = get_object(rugged_commit, url)
     
     if object.type == :blob
@@ -254,19 +269,6 @@ class Repository < ActiveRecord::Base
     else
       nil
     end
-  end
-  
-  def path_exists_rugged?(rugged_commit, url='')
-    if url.empty?
-      true
-    else
-      tree = rugged_commit.tree
-      get_object(rugged_commit, url)
-      
-      true
-    end
-  rescue Rugged::OdbError
-    false
   end
   
   default_scope order: 'updated_at desc'
