@@ -102,6 +102,6 @@ class RepositoriesController < ApplicationController
     @current_file = @repository.get_current_file_head(@url)
     raise ActionController::RoutingError.new('Not Found') unless @current_file
     
-    render text: @current_file[:content], content_type: @current_file[:mime_type]
+    render text: @current_file[:content], content_type: Mime::Type.lookup('application/force-download')
   end
 end
