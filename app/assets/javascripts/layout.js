@@ -42,7 +42,8 @@ $(function() {
 	});
   	$('#create-confirm').on('show', function() {
 		$(this).find('form').submit(function() {
-			window.location.href = $(this).attr('action')+'/'+$(this).find('input[type=text]').val();
+			var url = $(this).find('input[name=url]').val();
+			window.location.href = $(this).attr('action')+'/'+url+(url == '' ? '' : '/')+$(this).find('input[type=text]').val();
 			return false;
 		});
 	});

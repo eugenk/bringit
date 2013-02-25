@@ -2,7 +2,8 @@
   .modal-header
     %a.close{ 'data-dismiss' => 'modal' } x
     %h3 Create directory
-  = form_tag browse_repository_path(@repository.path, @url), class: 'form-horizontal', method: :get do
+  = form_tag repository_path(@repository.path), class: 'form-horizontal', method: :get do
+    = hidden_field_tag 'url', @url
     .modal-body
       .control-group
         = label_tag 'Directory name', nil, class: 'control-label'
