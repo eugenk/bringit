@@ -52,3 +52,8 @@ $(function() {
 		return false;
 	});
 });
+
+(function() {
+var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
+uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'feedback.digineo.de/customer_site/2/widget.js';var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+})();
