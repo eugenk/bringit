@@ -67,8 +67,8 @@ class Repository < ActiveRecord::Base
   
   def open_repo
     @repo = Rugged::Repository.new(local_path)
-  #rescue 
-    #raise RepositoryNotFoundError
+  rescue 
+    raise RepositoryNotFoundError
   end
   
   def add_file(user, tmp_path, target_path, message)
@@ -145,6 +145,34 @@ class Repository < ActiveRecord::Base
     else
       Commit.identifiers(rugged_commit.parents.map { |c| c.oid }, self)
     end
+  end
+  
+  # can throw error: Rugged::OdbError: Object not found - failed to find pack entry
+  def folder_contents(commit_oid, dir)
+    open_repo
+    folder_contents(@repo.lookup(commit_oid), dir)
+  end
+  
+  def folder_contents_rugged(rugged_commit, dir)
+    tree = rugged_commit.tree
+    dir.split('/').each do |part|
+      tree = @repo.lookup(tree[part].oid) unless part.empty?
+    end
+    
+    contents = []
+    tree.each_tree do |subdir|
+      contents << {
+        type: :dir,
+        name: subdir[:name]
+      }
+    tree.each_blob do |file|
+      contents << {
+        type: :file,
+        name: file[:name]
+      }
+    end
+    
+    contents
   end
   
   default_scope order: 'updated_at desc'
