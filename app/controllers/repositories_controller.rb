@@ -53,7 +53,13 @@ class RepositoriesController < ApplicationController
         respond_with_bip @repository
       end
     else
-      respond_with_bip @repository
+      if params[:repository][:title]
+        flash[:error] = @repository.errors.messages.map { |field, error| "#{field} #{error.join(", ")}." }.join(" ")
+        @repository.reload
+        redirect_to @repository
+      else
+        respond_with_bip @repository
+      end
     end
   end
   
