@@ -74,6 +74,12 @@ class RepositoriesController < ApplicationController
   end
   
   def raw
+    @repository = Repository.identifier(params[:id]).first!
+    @url = params[:url] || ''
     
+    @current_file = @repository.get_current_file_head(@url)
+    raise ActionController::RoutingError.new('Not Found') unless @current_file
+    
+    render text: @current_file[:content], content_type: @current_file[:mime_type]
   end
 end

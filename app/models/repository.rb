@@ -241,7 +241,7 @@ class Repository < ActiveRecord::Base
     if object.type == :blob
       filename = url.split('/')[-1]
       ext = File.extname(filename)[1..-1]
-      mime_type = Mime::Type.lookup_by_extension(ext) || 'text/plain'
+      mime_type = Mime::Type.lookup_by_extension(ext) || Mime::TEXT
       mime_category = mime_type.to_s.split('/')[0]
       {
         name: filename,
