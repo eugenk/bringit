@@ -21,7 +21,7 @@
     %tbody
       - @contents.each do |entry|
         %tr
-          %td
+          %td{ style: 'text-align: center' }
             - if entry[:type] == :dir
               %i.icon-folder-close
             - else

@@ -107,11 +107,12 @@ footer {
     h1 {
       @extend h4;
       a {
-        color:$textColor;
+        @extend .btn;
+        @extend .btn-primary;
       }
     }
     .path {
-      padding-top:10px;
+      padding-top:12px;
     }
   }
   .commit {
