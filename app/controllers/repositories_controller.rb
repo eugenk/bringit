@@ -61,7 +61,7 @@ class RepositoriesController < ApplicationController
       uploader = FileUploader.new
       uploader.store!(params[:file])
       tmp_path = "#{Rails.root}/public#{uploader.url}"
-      @repository.add_commit(current_user, tmp_path, params[:file].original_filename, params[:message])
+      @repository.add_file(current_user, tmp_path, params[:file].original_filename, params[:message])
       File.delete(tmp_path)
       flash[:success] = "File was added"
       redirect_to @repository

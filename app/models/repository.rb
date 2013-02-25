@@ -71,7 +71,7 @@ class Repository < ActiveRecord::Base
     #raise RepositoryNotFoundError
   end
   
-  def add_commit(user, tmp_path, target_path, message)
+  def add_file(user, tmp_path, target_path, message)
     open_repo unless @repo.class == Rugged::Repository
     
     # Content
@@ -105,7 +105,7 @@ class Repository < ActiveRecord::Base
     # Commit Sha
     commit_oid = Rugged::Commit.create(@repo, author: user.author, 
       message: message, committer: user.author, parents: commit_parents, tree: tree)
-    commit = @repo.lookup(commit_oid)
+    rugged_commit = @repo.lookup(commit_oid)
     
     if @repo.empty?
       ref = Rugged::Reference.create(@repo, 'refs/heads/master', commit_oid)
@@ -113,8 +113,11 @@ class Repository < ActiveRecord::Base
       @repo.head.target = commit_oid
     end
     
+    touch
     
-    save
+    push = build_push(user)
+    commit = build_commit(user, push, rugged_commit)
+    commit.save
   end
   
   def commit_parents
@@ -123,6 +126,24 @@ class Repository < ActiveRecord::Base
     else
       puts @repo.head.target
       [@repo.head.target]
+    end
+  end
+  
+  def build_commit(user, push, rugged_commit)
+    Commit.new(author_email: rugged_commit.author[:email], author_name: rugged_commit.author[:name], author_time: rugged_commit.author[:time],
+      committer_email: rugged_commit.committer[:email], committer_name: rugged_commit.committer[:name], committer_time: rugged_commit.committer[:time],
+      push: push, commit_hash: rugged_commit.oid, message: rugged_commit.message, parents: get_parents(rugged_commit))
+  end
+  
+  def build_push(user)
+    Push.new(push_type: 'web', author: user, repository: self)
+  end
+  
+  def get_parents(rugged_commit)
+    if rugged_commit.parents.empty?
+      []
+    else
+      Commit.identifiers(rugged_commit.parents.map { |c| c.oid }, self)
     end
   end
   

@@ -13,6 +13,10 @@ class Commit < ActiveRecord::Base
   
   default_scope order: 'committer_time desc'
   
+  scope :identifiers, ->(oids, repository) do
+    Commit.where("commit_hash IN (?)", oids).select { |commit| commit.repository == repository }
+  end
+  
   def add_parent(parent)
     return if parent == self || parents.include?(parent) 
     parents << parent
