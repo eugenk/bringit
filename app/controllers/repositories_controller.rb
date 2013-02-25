@@ -1,5 +1,5 @@
 class RepositoriesController < ApplicationController
-  before_filter :require_login, only: [:new, :create]
+  before_filter :require_login, only: [:new, :create, :upload, :destroy]
   
   autocomplete :repository, :title, full: true, extra_data: [:path],
     display_value: :autocomplete_value, options: {appendTo: '.form-search .input-append'}

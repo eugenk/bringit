@@ -7,5 +7,6 @@
       %th{ style: 'width:35%;' } Last commit
   %tbody
 
-%hr    
-= render partial: 'upload'
+- if user_signed_in?
+  %hr    
+  = render partial: 'upload'

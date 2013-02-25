@@ -22,6 +22,7 @@ gem 'best_in_place'
 gem 'rails3-jquery-autocomplete'
 gem 'carrierwave'
 gem 'mime-types'
+gem 'js-routes'
 
 group :assets do
   gem 'sass-rails'

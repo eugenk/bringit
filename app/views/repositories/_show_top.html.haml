@@ -18,20 +18,20 @@
     ago
     created on
     = @repository.created_at.strftime("%d.%m.%Y")
-  .span3
-    .pull-right
-      .dropdown
-        %a.btn.dropdown-toggle{'data-toggle' => 'dropdown', href: "#"}
-          %i.icon-cog
-          Options
-          %b.caret
-        %ul.dropdown-menu
-          %li
-            %a{href: '#add-contributors', 'data-toggle' => 'tab'}
-              %i.icon-plus
-              Add contributors 
-          %li.divider
-          %li
+  - if user_signed_in?
+    .span3
+      .pull-right
+        .dropdown
+          %a.btn.dropdown-toggle{'data-toggle' => 'dropdown', href: "#"}
+            %i.icon-cog
+            Options
+            %b.caret
+          %ul.dropdown-menu
+            %li
+              %a{href: '#add-contributors', 'data-toggle' => 'tab'}
+                %i.icon-plus
+                Add contributors 
+            %li.divider
             %li= link_to raw('<i class="icon-trash"></i> Delete repository'), repository_path(@repository.path), method: :delete,
               'data-confirm' => "Are you sure to remove the repository #{@repository.title} permanently?", 'data-id' => @repository.path, 
               'data-head' => 'Remove repository', class: 'delete-confirm'

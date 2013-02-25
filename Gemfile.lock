@@ -117,6 +117,8 @@ GEM
     jquery-ui-rails (4.0.1)
       jquery-rails
       railties (>= 3.1.0)
+    js-routes (0.8.7)
+      rails (>= 3.2)
     json (1.7.7)
     kaminari (0.14.1)
       actionpack (>= 3.0.0)
@@ -251,6 +253,7 @@ DEPENDENCIES
   inherited_resources
   jquery-rails
   jquery-ui-rails
+  js-routes
   kaminari
   mime-types
   mysql2
