@@ -40,5 +40,15 @@ $(function() {
 			$(this).parentsUntil('form').parent().submit();
 		});
 	});
+  	$('#create-confirm').on('show', function() {
+		$(this).find('form').submit(function() {
+			window.location.href = $(this).attr('action')+'/'+$(this).find('input[type=text]').val();
+			return false;
+		});
+	});
+  	$('.create-confirm').click(function(e) {
+		e.preventDefault();
+		$('#create-confirm').modal('show');
+		return false;
+	});
 });
-

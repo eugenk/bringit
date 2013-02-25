@@ -194,3 +194,8 @@ footer {
     @include box-sizing(border-box);
   }
 }
+.modal-input {
+  form {
+    margin: 0;
+  }
+}
