@@ -66,13 +66,14 @@ class Repository < ActiveRecord::Base
   end
   
   def open_repo
+    return if @repo.class == Rugged::Repository
     @repo = Rugged::Repository.new(local_path)
   rescue 
     raise RepositoryNotFoundError
   end
   
   def add_file(user, tmp_path, target_path, message)
-    open_repo unless @repo.class == Rugged::Repository
+    open_repo
     
     # Content
     file_content = File.open(tmp_path, 'rb').read
@@ -147,15 +148,20 @@ class Repository < ActiveRecord::Base
     end
   end
   
-  # can throw error: Rugged::OdbError: Object not found - failed to find pack entry
-  def folder_contents(commit_oid, dir)
+  def folder_contents_head(dir_path='')
     open_repo
-    folder_contents(@repo.lookup(commit_oid), dir)
+    folder_contents(@repo.head.target, dir_path)
   end
   
-  def folder_contents_rugged(rugged_commit, dir)
+  # can throw error: Rugged::OdbError: Object not found - failed to find pack entry
+  def folder_contents(commit_oid, dir_path='')
+    open_repo
+    folder_contents_rugged(@repo.lookup(commit_oid), dir_path)
+  end
+  
+  def folder_contents_rugged(rugged_commit, dir_path='')
     tree = rugged_commit.tree
-    dir.split('/').each do |part|
+    dir_path.split('/').each do |part|
       tree = @repo.lookup(tree[part].oid) unless part.empty?
     end
     
@@ -165,6 +171,8 @@ class Repository < ActiveRecord::Base
         type: :dir,
         name: subdir[:name]
       }
+    end
+    
     tree.each_blob do |file|
       contents << {
         type: :file,
