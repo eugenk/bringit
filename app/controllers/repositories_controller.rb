@@ -65,11 +65,8 @@ class RepositoriesController < ApplicationController
       flash[:error] = "Please choose a file to upload"
       redirect_to @repository
     else
-      uploader = FileUploader.new
-      uploader.store!(params[:file])
-      tmp_path = "#{Rails.root}/public#{uploader.url}"
+      puts tmp_path = params[:file].tempfile
       @repository.add_file(current_user, tmp_path, params[:file].original_filename, params[:message])
-      File.delete(tmp_path)
       flash[:success] = "File was added"
       redirect_to @repository
     end

@@ -51,9 +51,6 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 1.0.0)
-    carrierwave (0.8.0)
-      activemodel (>= 3.2.0)
-      activesupport (>= 3.2.0)
     childprocess (0.3.8)
       ffi (~> 1.0, >= 1.0.11)
     chunky_png (1.2.7)
@@ -237,7 +234,6 @@ DEPENDENCIES
   cancan
   capistrano
   capybara
-  carrierwave
   coffee-rails
   compass
   compass-rails
@@ -255,7 +251,6 @@ DEPENDENCIES
   jquery-ui-rails
   js-routes
   kaminari
-  mime-types
   mysql2
   quiet_assets
   rails (= 3.2.12)
