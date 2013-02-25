@@ -150,7 +150,7 @@ class Repository < ActiveRecord::Base
   
   def folder_contents_head(dir_path='')
     open_repo
-    if @repo.head && @repo.head.target
+    if !@repo.empty? && @repo.head && @repo.head.target
       folder_contents(@repo.head.target, dir_path)
     else
       []
@@ -159,10 +159,10 @@ class Repository < ActiveRecord::Base
   
   def path_exists_head?(url='')
     open_repo
-    if @repo.head && @repo.head.target
+    if !@repo.empty? && @repo.head && @repo.head.target
       path_exists?(@repo.head.target, url)
     else
-      false
+      url == ''
     end
   end
   

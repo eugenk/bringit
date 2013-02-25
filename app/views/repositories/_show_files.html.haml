@@ -7,27 +7,30 @@
       %li
         = link_to crumb[:name], crumb[:path]
         %span.divider /
-          
-%table.table.table-condensed.table-hover
-  %thead
-    %tr
-      %th{ style: 'width:10%;' } &nbsp;
-      %th{ style: 'width:30%;' } File name
-      %th{ style: 'width:25s%;' } Last modified
-      %th{ style: 'width:35%;' } Last commit
-  %tbody
-    - @contents.each do |entry|
+- if @contents.empty?
+  .muted
+    This folder is empty
+- else
+  %table.table.table-condensed.table-hover
+    %thead
       %tr
-        %td
-          - if entry[:type] == :dir
-            %i.icon-folder-close
-          - else
-            %i.icon-file
-        %td
-          = link_to entry[:name], browse_repository_path({ id:@repository.path , url: entry[:path]})
-        %td &nbsp;
-        %td &nbsp;
-
+        %th{ style: 'width:10%;' } &nbsp;
+        %th{ style: 'width:30%;' } File name
+        %th{ style: 'width:25s%;' } Last modified
+        %th{ style: 'width:35%;' } Last commit
+    %tbody
+      - @contents.each do |entry|
+        %tr
+          %td
+            - if entry[:type] == :dir
+              %i.icon-folder-close
+            - else
+              %i.icon-file
+          %td
+            = link_to entry[:name], browse_repository_path({ id:@repository.path , url: entry[:path]})
+          %td &nbsp;
+          %td &nbsp;
+  
 - if user_signed_in?
   %hr    
   = render partial: 'upload'
