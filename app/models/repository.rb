@@ -66,53 +66,94 @@ class Repository < ActiveRecord::Base
     system "rm -rf #{local_path}"
   end
   
-  def open_repo
-    return if @repo.class == Rugged::Repository
-    @repo = Rugged::Repository.new(local_path)
+  def repo
+    @repo ||= Rugged::Repository.new(local_path)
   rescue 
     raise RepositoryNotFoundError
   end
   
-  def add_file(user, tmp_path, target_path, message)
-    open_repo
+  def build_tree(entry, tree, path_parts)
+    builder = Rugged::Tree::Builder.new
     
+    if tree
+      old_entry = nil
+      
+      tree.each do |e|
+        builder.insert(e)
+        old_entry = e if e[:name] == path_parts.first
+      end
+      
+      if old_entry
+        if old_entry[:type] == :tree
+          build_tree_tree(builder, entry, old_entry, path_parts)
+        else
+          build_tree_blob(builder, entry, path_parts)
+        end
+      else
+        if path_parts.size == 1
+          build_tree_blob(builder, entry, path_parts)
+        else
+          build_tree_tree(builder, entry, nil, path_parts)
+        end    
+      end
+      
+    elsif path_parts.size == 1
+      build_tree_blob(builder, entry, path_parts)
+    else
+      build_tree_tree(builder, entry, nil, path_parts)
+    end
+    tree_oid = builder.write(repo)
+    
+    repo.lookup(tree_oid)
+  end
+  
+  def build_tree_tree(builder, entry, old_entry, path_parts)
+    new_tree = build_tree(entry, old_entry, path_parts[1..-1])
+    tree_entry = {
+      type: :tree, 
+      name: path_parts.first, 
+      oid: new_tree.oid, 
+      filemode: 33188
+    }
+    builder.insert(tree_entry)
+  end
+  
+  def build_tree_blob(builder, entry, path_parts)
+    entry[:name] = path_parts.first
+    builder.insert(entry)
+  end
+  
+  def add_file(user, tmp_path, target_path, message)
     # Content
     file_content = File.open(tmp_path, 'rb').read
-    
-    blob_oid = Rugged::Blob.create(@repo, file_content)
+    blob_oid = Rugged::Blob.create(repo, file_content)
     
     #Entry
     entry = {
       type: :blob, 
-      name: target_path, 
+      name: nil, 
       oid: blob_oid, 
       content: file_content,
       filemode: 33188
     }
     
-    # Create Tree
-    builder = Rugged::Tree::Builder.new
-    unless @repo.empty?
-      old_tree = @repo.lookup(@repo.head.target).tree
-      old_tree.each do |old_entry|
-        builder.insert(old_entry)
-      end
+    # TreeBuilder
+    if repo.empty?
+      old_tree = nil
+    else
+      old_tree = repo.lookup(repo.head.target).tree 
     end
-    builder.insert(entry)
-    tree_oid = builder.write(@repo)
-    
-    # Created tree
-    tree = @repo.lookup(tree_oid)
+    tree = build_tree(entry, old_tree, target_path.split('/'))
     
     # Commit Sha
-    commit_oid = Rugged::Commit.create(@repo, author: user.author, 
+    commit_oid = Rugged::Commit.create(repo, author: user.author, 
       message: message, committer: user.author, parents: commit_parents, tree: tree)
-    rugged_commit = @repo.lookup(commit_oid)
+    rugged_commit = repo.lookup(commit_oid)
     
-    if @repo.empty?
-      ref = Rugged::Reference.create(@repo, 'refs/heads/master', commit_oid)
+    if repo.empty?
+      ref = Rugged::Reference.create(repo, 'refs/heads/master', commit_oid)
     else
-      @repo.head.target = commit_oid
+      repo.head.target = commit_oid
     end
     
     touch
@@ -123,11 +164,11 @@ class Repository < ActiveRecord::Base
   end
   
   def commit_parents
-    if @repo.empty?
+    if repo.empty?
       []
     else
-      puts @repo.head.target
-      [@repo.head.target]
+      puts repo.head.target
+      [repo.head.target]
     end
   end
   
@@ -150,17 +191,15 @@ class Repository < ActiveRecord::Base
   end
   
   def path_exists_head?(url='')
-    open_repo
-    if !@repo.empty? && @repo.head && @repo.head.target
-      path_exists?(@repo.head.target, url)
+    if !repo.empty? && repo.head && repo.head.target
+      path_exists?(repo.head.target, url)
     else
       url == ''
     end
   end
   
   def path_exists?(commit_oid, url='')
-    open_repo
-    path_exists_rugged?(@repo.lookup(commit_oid), url)
+    path_exists_rugged?(repo.lookup(commit_oid), url)
   end
   
   def path_exists_rugged?(rugged_commit, url='')
@@ -175,17 +214,15 @@ class Repository < ActiveRecord::Base
   end
   
   def folder_contents_head(dir_path='')
-    open_repo
-    if !@repo.empty? && @repo.head && @repo.head.target
-      folder_contents(@repo.head.target, dir_path)
+    if !repo.empty? && repo.head && repo.head.target
+      folder_contents(repo.head.target, dir_path)
     else
       []
     end
   end
   
   def folder_contents(commit_oid, dir_path='')
-    open_repo
-    folder_contents_rugged(@repo.lookup(commit_oid), dir_path)
+    folder_contents_rugged(repo.lookup(commit_oid), dir_path)
   end
   
   def folder_contents_rugged(rugged_commit, dir_path='')
@@ -228,24 +265,22 @@ class Repository < ActiveRecord::Base
     object = rugged_commit.tree
     object_path.split('/').each do |part|
       return nil unless object[part]
-      object = @repo.lookup(object[part][:oid]) unless part.empty?
+      object = repo.lookup(object[part][:oid]) unless part.empty?
     end
     
     object
   end
   
   def get_current_file_head(url='')
-    open_repo
-    if !@repo.empty? && @repo.head && @repo.head.target
-      get_current_file(@repo.head.target, url)
+    if !repo.empty? && repo.head && repo.head.target
+      get_current_file(repo.head.target, url)
     else
       nil
     end
   end
   
   def get_current_file(commit_oid, url='')
-    open_repo
-    get_current_file_rugged(@repo.lookup(commit_oid), url)
+    get_current_file_rugged(repo.lookup(commit_oid), url)
   end
   
   

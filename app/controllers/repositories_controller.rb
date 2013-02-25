@@ -86,7 +86,10 @@ class RepositoriesController < ApplicationController
       redirect_to @repository
     else
       puts tmp_path = params[:file].tempfile
-      @repository.add_file(current_user, tmp_path, params[:file].original_filename, params[:message])
+      file_path = params[:url] || ''
+      file_path << '/' unless file_path.empty?
+      file_path << params[:file].original_filename
+      @repository.add_file(current_user, tmp_path, file_path, params[:message])
       flash[:success] = "File was added"
       redirect_to @repository
     end
