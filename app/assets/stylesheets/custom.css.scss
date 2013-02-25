@@ -160,3 +160,15 @@ footer {
 #repository_description {
   height:100px;
 }
+.read-file {
+  .btn-group {
+    margin-top: 7px;
+  }
+}
+.image-content {
+  text-align: center;
+  padding: 10px 0;
+  img {
+    max-width: 95%;
+  }
+}

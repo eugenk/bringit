@@ -22,6 +22,7 @@ class RepositoriesController < ApplicationController
     
     @contents = @repository.folder_contents_head(@url)
     @breadcrumbs = @url.split('/')
+    @current_file = @repository.get_current_file_head(@url)
   end
   
   def new
@@ -72,4 +73,7 @@ class RepositoriesController < ApplicationController
     end
   end
   
+  def raw
+    
+  end
 end

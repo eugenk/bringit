@@ -220,6 +220,41 @@ class Repository < ActiveRecord::Base
     object
   end
   
+  def get_current_file_head(url='')
+    open_repo
+    if !@repo.empty? && @repo.head && @repo.head.target
+      get_current_file(@repo.head.target, url)
+    else
+      nil
+    end
+  end
+  
+  def get_current_file(commit_oid, url='')
+    open_repo
+    get_current_file_rugged(@repo.lookup(commit_oid), url)
+  end
+  
+  
+  def get_current_file_rugged(rugged_commit, url='')
+    object = get_object(rugged_commit, url)
+    
+    if object.type == :blob
+      filename = url.split('/')[-1]
+      ext = File.extname(filename)[1..-1]
+      mime_type = Mime::Type.lookup_by_extension(ext) || 'text/plain'
+      mime_category = mime_type.to_s.split('/')[0]
+      {
+        name: filename,
+        size: object.size,
+        content: object.content,
+        mime_type: mime_type,
+        mime_category: mime_category
+      }
+    else
+      nil
+    end
+  end
+  
   def path_exists_rugged?(rugged_commit, url='')
     if url.empty?
       true
