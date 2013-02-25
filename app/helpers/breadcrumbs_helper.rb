@@ -11,5 +11,8 @@ module Breadcrubs
            path: repository_path(repository.path, crumbs[0..i].join('/'))
          }
         end)
+    result.last[:last] = true
+    
+    result
   end
 end
