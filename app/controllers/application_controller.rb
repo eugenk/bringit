@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   
   helper_method :development_mode?
   
+  protected
   def development_mode?
     Rails.env.development?
   end

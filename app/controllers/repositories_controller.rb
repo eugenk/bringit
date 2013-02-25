@@ -14,7 +14,14 @@ class RepositoriesController < ApplicationController
   end
   
   def show
-    @repository = Repository.identifier(params[:id]).first
+    @repository = Repository.identifier(params[:id]).first!
+    
+    @url = params[:url] || ''
+    @url = @url[0..-2] if(@url[-1] == '/')
+    @url = '' unless @repository.path_exists_head?(@url)
+    
+    @contents = @repository.folder_contents_head(@url)
+    @breadcrumbs = @url.split('/')
   end
   
   def new
@@ -37,7 +44,7 @@ class RepositoriesController < ApplicationController
   end
   
   def destroy
-    @repository = Repository.identifier(params[:id]).first
+    @repository = Repository.identifier(params[:id]).first!
     
     if @repository.destroy
       flash[:notice] = 'Repository was successfully removed.'
@@ -49,7 +56,7 @@ class RepositoriesController < ApplicationController
   end
   
   def upload
-    @repository = Repository.identifier(params[:repository_id]).first
+    @repository = Repository.identifier(params[:repository_id]).first!
     
     if !params[:message] || params[:message].empty?
       flash[:error] = "Please enter a commit message"

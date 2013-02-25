@@ -150,37 +150,87 @@ class Repository < ActiveRecord::Base
   
   def folder_contents_head(dir_path='')
     open_repo
-    folder_contents(@repo.head.target, dir_path)
+    if @repo.head && @repo.head.target
+      folder_contents(@repo.head.target, dir_path)
+    else
+      []
+    end
   end
   
-  # can throw error: Rugged::OdbError: Object not found - failed to find pack entry
+  def path_exists_head?(url='')
+    open_repo
+    if @repo.head && @repo.head.target
+      path_exists?(@repo.head.target, url)
+    else
+      false
+    end
+  end
+  
+  def path_exists?(commit_oid, url='')
+    open_repo
+    path_exists_rugged?(@repo.lookup(commit_oid), url)
+  end
+  
   def folder_contents(commit_oid, dir_path='')
     open_repo
     folder_contents_rugged(@repo.lookup(commit_oid), dir_path)
   end
   
   def folder_contents_rugged(rugged_commit, dir_path='')
-    tree = rugged_commit.tree
-    dir_path.split('/').each do |part|
-      tree = @repo.lookup(tree[part].oid) unless part.empty?
-    end
+    tree = get_object(rugged_commit, dir_path)
     
     contents = []
-    tree.each_tree do |subdir|
-      contents << {
-        type: :dir,
-        name: subdir[:name]
-      }
-    end
     
-    tree.each_blob do |file|
-      contents << {
-        type: :file,
-        name: file[:name]
-      }
+    if tree.type == :tree
+      tree.each_tree do |subdir|
+        path_file = dir_path.dup
+        path_file << '/' unless dir_path.empty?
+        path_file << subdir[:name]
+        
+        contents << {
+          type: :dir,
+          name: subdir[:name],
+          path: path_file
+        }
+      end
+      
+      tree.each_blob do |file|
+        path_file = dir_path.dup
+        path_file << '/' unless dir_path.empty?
+        path_file << file[:name]
+  
+        contents << {
+          type: :file,
+          name: file[:name],
+          path: path_file
+        }
+      end
     end
     
     contents
+  end
+  
+  # can throw error: Rugged::OdbError: Object not found - failed to find pack entry
+  def get_object(rugged_commit, object_path='')
+    object = rugged_commit.tree
+    object_path.split('/').each do |part|
+      object = @repo.lookup(object[part][:oid]) unless part.empty?
+    end
+    
+    object
+  end
+  
+  def path_exists_rugged?(rugged_commit, url='')
+    if url.empty?
+      true
+    else
+      tree = rugged_commit.tree
+      get_object(rugged_commit, url)
+      
+      true
+    end
+  rescue Rugged::OdbError
+    false
   end
   
   default_scope order: 'updated_at desc'
