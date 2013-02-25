@@ -1,0 +1,2 @@
+class ExpectedTreeError < IOError 
+end
