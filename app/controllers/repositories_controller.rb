@@ -1,5 +1,5 @@
 class RepositoriesController < ApplicationController
-  before_filter :require_login, only: [:new, :create, :upload, :destroy]
+  before_filter :require_login, only: [:new, :create, :upload, :destroy, :update]
   
   autocomplete :repository, :title, full: true, extra_data: [:path],
     display_value: :autocomplete_value, options: {appendTo: '.form-search .input-append'}
@@ -41,6 +41,19 @@ class RepositoriesController < ApplicationController
     else
       flash[:error] = @repository.errors.messages.map { |field, error| "#{field} #{error.join(", ")}." }.join(" ")
       render action: '_new', layout: false 
+    end
+  end
+  
+  def update
+    @repository = Repository.identifier(params[:id]).first!
+    if @repository.update_attributes(params[:repository])
+      if params[:repository][:title]
+        redirect_to @repository, notice: 'Repository was successfully changed.'
+      else
+        respond_with_bip @repository
+      end
+    else
+      respond_with_bip @repository
     end
   end
   

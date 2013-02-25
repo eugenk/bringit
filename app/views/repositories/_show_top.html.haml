@@ -1,6 +1,14 @@
 .row
   .span8
-    %h1= @repository.title
+    %h1.repository-title
+      - if user_signed_in?
+        %span.changeable-title= @repository.title
+        = form_for(@repository, url: repository_path(@repository.path), method: :post, html: {class: 'form-inline'}) do |f|
+          .input-append
+            = f.text_field :title, maxlength: 32
+            = button_tag "Update", class: 'btn btn-primary'
+      - else
+        = @repository.title
   .span4
     .pull-right
       .input-append{style: 'padding-top:10px'}
@@ -9,7 +17,8 @@
           %i.icon-sitemap
 .clearfix
 .well.well-small
-  = @repository.description
+  = best_in_place_if user_signed_in?, @repository, :description, type: :textarea, classes: 'repository-description'
+  - @repository.description
 .row
   .span9.muted
     %i.icon-calendar

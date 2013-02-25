@@ -8,28 +8,36 @@ function setupAjax() {
 	$('[data-remote][data-replace]')
 	.data('type', 'html')
 	.on('ajax:success', function(event, data) {
-	  var $this = $(this);
-	  $($this.data('replace')).html(data);
-	  $this.trigger('ajax:replaced');
+		var $this = $(this);
+		$($this.data('replace')).html(data);
+		$this.trigger('ajax:replaced');
 	  
-	  $($(this).data("update")).modal('show');
-	  
-	  $($(this).data("update")).find("input[type=text], select, textarea, input[password]").first().focus();
-	  setupAjax();
+		$($(this).data("update")).modal('show');
+
+		$($(this).data("update")).find("input[type=text], select, textarea, input[password]").first().focus();
+		setupAjax();
 	});
 }
 
 $(function() {
   	setupAjax();
   	$('#delete-confirm').on('show', function() {
-	  $(this).find('.btn-danger').attr('href', $(this).data('url'));
-	  $(this).find('h3').html($(this).data('head'));
-	  $(this).find('.modal-body p').html($(this).data('confirm'));
+		$(this).find('.btn-danger').attr('href', $(this).data('url'));
+		$(this).find('h3').html($(this).data('head'));
+		$(this).find('.modal-body p').html($(this).data('confirm'));
 	});
   	$('.delete-confirm').click(function(e) {
-	  e.preventDefault();
-	  $('#delete-confirm').data('id', $(this).data('id')).data('url', $(this).attr("href")).data('head', $(this).data('head')).data('confirm', $(this).data('confirm')).modal('show');
-	  return false;
+		e.preventDefault();
+		$('#delete-confirm').data('id', $(this).data('id')).data('url', $(this).attr("href")).data('head', $(this).data('head')).data('confirm', $(this).data('confirm')).modal('show');
+		return false;
+	});
+	$(".best_in_place").best_in_place();
+	$('.repository-title span.changeable-title').click(function() {
+		$(this).hide();
+		$(this).find('~ form').show();
+		$(this).find('~ form').find('input').blur(function() {
+			$(this).parentsUntil('form').parent().submit();
+		});
 	});
 });
 

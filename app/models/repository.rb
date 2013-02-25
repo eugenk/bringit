@@ -1,7 +1,8 @@
 require 'digest/sha1'
 
 class Repository < ActiveRecord::Base
-  attr_accessible :description, :path, :title, :owners, :pushes, :commits, :repo
+  attr_accessible :description, :title, :owners
+  attr_protected :path, :pushes, :commits, :repo
   
   has_many :repository_owners, foreign_key: 'repository_id', class_name: 'RepositoryOwner'
   has_many :owners, through: :repository_owners, class_name: 'User'
@@ -28,13 +29,13 @@ class Repository < ActiveRecord::Base
   VALID_PATH_REGEX = /^[a-z0-9_\.\-]+$/
   validates :path, presence: true, uniqueness: { case_sensitive: true }, format: VALID_PATH_REGEX
   
-  def to_param
-    path
-  end
-  
   def validate_owner_existance
     return if owners && owners.size >= 1
     errors.add :owners, 'has no owner'
+  end
+  
+  def to_param
+    path
   end
   
   def autocomplete_value
