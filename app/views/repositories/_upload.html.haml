@@ -10,5 +10,5 @@
         %input{ type: 'file', name: 'file' }
       %a.btn.fileupload-exists{ 'data-dismiss' => 'fileupload', href: '#' } Remove
       %input{ type: 'text', name: 'message', placeholder: 'Commit message...', style: 'margin-left:5px;' }
-    = button_tag "Upload file", class: 'btn btn-primary'
+    = button_tag raw('<i class="icon-upload"></i> Upload file'), class: 'btn btn-primary'
 .clearfix
