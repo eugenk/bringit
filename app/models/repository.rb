@@ -85,7 +85,7 @@ class Repository < ActiveRecord::Base
       
       if old_entry
         if old_entry[:type] == :tree
-          build_tree_tree(builder, entry, old_entry, path_parts)
+          build_tree_tree(builder, entry, repo.lookup(old_entry[:oid]), path_parts)
         else
           build_tree_blob(builder, entry, path_parts)
         end
@@ -113,7 +113,7 @@ class Repository < ActiveRecord::Base
       type: :tree, 
       name: path_parts.first, 
       oid: new_tree.oid, 
-      filemode: 33188
+      filemode: 16384
     }
     builder.insert(tree_entry)
   end
