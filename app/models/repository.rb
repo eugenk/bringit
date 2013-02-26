@@ -135,7 +135,7 @@ class Repository < ActiveRecord::Base
   end
 
   def add_file(user, tmp_path, target_path, message)
-    add_file_contents(user, File.open(tmp_path, 'rb').read, target_path, message)
+    commit_file(user, File.open(tmp_path, 'rb').read, target_path, message)
   end
   
   def commit_file(user, file_contents, target_path, message)
