@@ -81,7 +81,7 @@ describe Repository do
   
   it "when repository is created in the filesystem" do
     @repository.save
-    @repository.open_repo
+    @repository.repo
     @repository.should be_valid
   end
   
@@ -89,7 +89,7 @@ describe Repository do
     expect do
       @repository.save
       @repository.destroy
-      @repository.open_repo
+      @repository.repo
     end.to raise_error(RepositoryNotFoundError)
   end
 end

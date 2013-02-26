@@ -13,13 +13,7 @@ gem 'font-awesome-rails'
 gem 'haml'
 gem 'haml-rails'
 gem 'foreigner'
-#gem 'rugged', '0.17.0.b7' # has an encoding bug. using custom path
-case RUBY_PLATFORM # custom configuration working only for two computers
-when /darwin/
-  gem 'rugged', path: '/Users/jalyna/Documents/awe13/rugged'
-when /linux/
-  gem 'rugged', path: '/home/eugen/rugged'
-end
+gem 'rugged', '0.17.0.b7' # has an encoding bug. 
 gem 'simple_form'
 gem 'compass'
 gem 'inherited_resources'
