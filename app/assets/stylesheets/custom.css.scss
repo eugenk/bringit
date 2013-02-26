@@ -172,22 +172,7 @@ footer {
     max-width: 95%;
   }
 }
-.repository-title {
-  form {
-    margin: 0;
-    padding: 0;
-    display: none;
-    button {
-      display: none;
-    }
-    input {
-      @extend h1;
-      height: auto;
-      width: 800px;
-      margin: 0;
-    }
-  }
-}
+
 .repository-description {
   textarea {
     width: 100%;
@@ -254,4 +239,15 @@ footer {
 }
 .repository-description .editable-notice {
   font-size:$baseFontSize*2.75;   
+}
+#edit-title-form {
+  margin: 0;
+  padding: 0;
+  display: none;
+  input {
+    @extend h1;
+    height: auto;
+    width: 800px;
+    margin: 0;
+  }
 }

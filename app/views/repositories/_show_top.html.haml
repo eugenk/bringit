@@ -5,12 +5,12 @@
         %span.editable-notice 
           %i.icon-pencil
         %span.changeable-title= @repository.title
-        = form_for(@repository, url: repository_path(@repository.path), method: :post, html: {class: 'form-inline'}) do |f|
-          .input-append
-            = f.text_field :title, maxlength: 32
-            = button_tag "Update", class: 'btn btn-primary'
       - else
         = @repository.title
+    
+    = form_for(@repository, url: repository_path(@repository), method: :post, html: {class: 'form-inline', id: 'edit-title-form'}) do |f|
+      .input-append
+        = f.text_field :title, maxlength: 32
   .span4
     .pull-right
       .input-append{style: 'padding-top:10px'}

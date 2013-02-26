@@ -43,11 +43,9 @@ $(function() {
 	$(".best_in_place").best_in_place();
 	$('.repository-title span.changeable-title').click(function() {
 		$(this).hide();
-		$(this).find('~ form').show();
-		$(this).find('~ form input[type=text]').val($(this).text());
-		$(this).find('~ form').find('input').blur(function() {
-			$(this).parentsUntil('form').parent().submit();
-		});
+		$('#edit-title-form').show();
+		$('#edit-title-form').find('input[type=text]').val($(this).text());
+		$('#edit-title-form').find('input[type=text]').focus();
 	});
 	initCreateModal();
 });
