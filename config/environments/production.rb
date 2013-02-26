@@ -64,4 +64,10 @@ Bringit::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
+
+  config.middleware.use "ExceptionNotifier",
+  :email_prefix => "[bringit] ",
+  :sender_address => "noreply@bringit.digineo.de",
+  :exception_recipients => %w{ bringit.awe@gmail.com }
+  config.action_mailer.delivery_method = :sendmail
 end

@@ -52,3 +52,7 @@ group :deployment do
   gem 'capistrano'
   gem 'rvm-capistrano'
 end
+
+group :production do
+  gem 'exception_notification', '~> 2.6'
+end
