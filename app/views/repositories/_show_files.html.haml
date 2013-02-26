@@ -31,7 +31,7 @@
               - else
                 %i.icon-file
             %td
-              = link_to entry[:name], browse_repository_path(@repository.path, entry[:path])
+              = link_to entry[:name].force_encoding('UTF-8'), browse_repository_path(@repository.path, entry[:path]) #FIXME force_encoding is needed due to errors in rugged
             %td &nbsp;
             %td &nbsp;
 
