@@ -102,6 +102,9 @@ class Repository < ActiveRecord::Base
     else
       build_tree_tree(builder, entry, nil, path_parts)
     end
+    builder.reject! do |e|
+      e[:type] == :tree && repo.lookup(e[:oid]).count == 0
+    end
     tree_oid = builder.write(repo)
     
     repo.lookup(tree_oid)
@@ -119,23 +122,31 @@ class Repository < ActiveRecord::Base
   end
   
   def build_tree_blob(builder, entry, path_parts)
-    entry[:name] = path_parts.first
-    builder.insert(entry)
+    if entry
+      entry[:name] = path_parts.first
+      builder.insert(entry)
+    else
+      builder.reject! { |e| e[:name] == path_parts.first }
+    end
+  end
+  
+  def delete_file(user, target_path)
+    add_file(user, nil, target_path, "Delete file #{target_path}")
   end
   
   def add_file(user, tmp_path, target_path, message)
-    # Content
-    file_content = File.open(tmp_path, 'rb').read
-    blob_oid = Rugged::Blob.create(repo, file_content)
-    
     #Entry
-    entry = {
-      type: :blob, 
-      name: nil, 
-      oid: blob_oid, 
-      content: file_content,
-      filemode: 33188
-    }
+    entry = nil
+    if tmp_path
+      file_content = File.open(tmp_path, 'rb').read
+      entry = {
+        type: :blob, 
+        name: nil, 
+        oid: Rugged::Blob.create(repo, file_content), 
+        content: file_content,
+        filemode: 33188
+      }
+    end
     
     # TreeBuilder
     if repo.empty?
@@ -148,7 +159,7 @@ class Repository < ActiveRecord::Base
     
     # Commit Sha
     commit_oid = Rugged::Commit.create(repo, author: user.author, 
-      message: message.encode(Encoding.find("utf-8")), committer: user.author, parents: commit_parents, tree: tree)
+      message: message, committer: user.author, parents: commit_parents, tree: tree)
     rugged_commit = repo.lookup(commit_oid)
     
     if repo.empty?
@@ -260,17 +271,6 @@ class Repository < ActiveRecord::Base
     contents
   end
   
-  # can throw error: Rugged::OdbError: Object not found - failed to find pack entry
-  def get_object(rugged_commit, object_path='')
-    object = rugged_commit.tree
-    object_path.split('/').each do |part|
-      return nil unless object[part]
-      object = repo.lookup(object[part][:oid]) unless part.empty?
-    end
-    
-    object
-  end
-  
   def get_current_file_head(url='')
     if !repo.empty? && repo.head && repo.head.target
       get_current_file(repo.head.target, url)
@@ -304,6 +304,17 @@ class Repository < ActiveRecord::Base
     else
       nil
     end
+  end
+  
+  # can throw error: Rugged::OdbError: Object not found - failed to find pack entry
+  def get_object(rugged_commit, object_path='')
+    object = rugged_commit.tree
+    object_path.split('/').each do |part|
+      return nil unless object[part]
+      object = repo.lookup(object[part][:oid]) unless part.empty?
+    end
+    
+    object
   end
   
   default_scope order: 'updated_at desc'

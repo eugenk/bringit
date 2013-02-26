@@ -7,7 +7,9 @@
         = link_to raw('<i class="icon-edit"></i> Edit'), '#', class: 'btn btn-primary' if @current_file[:mime_category] == 'text' && user_signed_in?
         = link_to raw('<i class="icon-download-alt"></i> Download'), raw_repository_path(@repository, @url), class: 'btn'
         = link_to 'History', '#', class: 'btn'
-        = link_to raw('<i class="icon-trash"></i> Delete'), '#', class: 'btn' if user_signed_in?
+        = link_to raw('<i class="icon-trash"></i> Delete'), delete_file_repository_path(@repository.path, @url), method: :delete,
+              'data-confirm' => "Are you sure to delete the file #{@current_file[:name]}?", 
+              'data-head' => 'Delete file', class: 'btn delete-confirm' if user_signed_in?
   .clearfix
   - case @current_file[:mime_category]
   - when 'text'

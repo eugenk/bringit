@@ -1,5 +1,5 @@
 class RepositoriesController < ApplicationController
-  before_filter :require_login, only: [:new, :create, :upload, :destroy, :update]
+  before_filter :require_login, only: [:new, :create, :upload, :destroy, :update, :delete_file]
   
   autocomplete :repository, :title, full: true, extra_data: [:path],
     display_value: :autocomplete_value, options: {appendTo: '.form-search .input-append'}
@@ -108,5 +108,20 @@ class RepositoriesController < ApplicationController
     raise ActionController::RoutingError.new('Not Found') unless @current_file
     
     render text: @current_file[:content], content_type: Mime::Type.lookup('application/force-download')
+  end
+  
+  def delete_file
+    @repository = Repository.identifier(params[:id]).first!
+    
+    @url = params[:url] || ''
+    @url = @url[0..-2] if(@url[-1] == '/')
+    raise ActionController::RoutingError.new('Not Found') unless @repository.path_exists_head?(@url)
+    
+    @current_file = @repository.get_current_file_head(@url)
+    raise ActionController::RoutingError.new('Not Found') unless @current_file
+    
+    @repository.delete_file(current_user, @url)
+    flash[:success] = 'File was deleted'
+    redirect_to repository_path(@repository.path)
   end
 end
