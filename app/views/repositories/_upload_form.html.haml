@@ -1,0 +1,33 @@
+.modal-header
+  %a.close{ 'data-dismiss' => 'modal' } x
+  %h3 Upload file
+= form_for(@repository, url: repository_upload_path(@repository.path), method: :post, html: {class: 'form-horizontal', multipart: true}) do |f|
+  = hidden_field_tag 'url', @url
+  .modal-body
+    = render 'layouts/flash_messages'
+    .control-group
+      = label_tag 'directory', 'Directory name', class: 'control-label'
+      .controls
+        %span.help-block
+          = @url + '/'
+        = text_field_tag 'directory', @directory || '', class: 'input-xlarge'
+    .control-group
+      = label_tag 'file', raw('<abbr class="required">*</abbr> File'), class: 'control-label', required: true
+      .controls
+        .fileupload.fileupload-new{ 'data-provides' => 'fileupload' }
+          .input-append
+            .uneditable-input.span2
+              %i.icon-file.fileupload-exists
+              %span.fileupload-preview
+            %span.btn.btn-file
+              %span.fileupload-new Select File
+              %span.fileupload-exists Change
+              %input{ type: 'file', name: 'file' }
+            %a.btn.fileupload-exists{ 'data-dismiss' => 'fileupload', href: '#' } Remove
+      .control-group
+        = label_tag 'message', raw('<abbr class="required">*</abbr> Commit message'), class: 'control-label'
+        .controls
+          = text_area_tag 'message', @message || '', class: 'input-xlarge'
+  .modal-footer
+    = button_tag raw('<i class="icon-upload"></i> Upload File'), class: 'btn btn-primary'
+    %a.btn{ href: '#', 'data-dismiss' => 'modal' } Cancel

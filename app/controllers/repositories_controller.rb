@@ -77,21 +77,26 @@ class RepositoriesController < ApplicationController
   
   def upload
     @repository = Repository.identifier(params[:repository_id]).first!
+    @url = params[:url] || ''
+    @directory = params[:directory]
     
     if !params[:message] || params[:message].empty?
       flash[:error] = "Please enter a commit message"
-      redirect_to @repository
+      redirect_to browse_repository_path(@repository.path, @url)
     elsif !params[:file]
       flash[:error] = "Please choose a file to upload"
-      redirect_to @repository
+      redirect_to browse_repository_path(@repository.path, @url)
     else
       puts tmp_path = params[:file].tempfile
-      file_path = params[:url] || ''
+      file_path = @url
       file_path << '/' unless file_path.empty?
+      file_path << @directory unless @directory.empty?
+      file_path << '/' unless file_path[-1] == '/'
+      suburl = file_path.dup
       file_path << params[:file].original_filename
       @repository.add_file(current_user, tmp_path, file_path, params[:message])
-      flash[:success] = "File was added"
-      redirect_to @repository
+      flash[:success] = 'File was added'
+      redirect_to browse_repository_path(@repository.path, suburl)
     end
   end
   

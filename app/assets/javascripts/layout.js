@@ -19,6 +19,15 @@ function setupAjax() {
 	});
 }
 
+function initCreateModal() {
+	$('.create-confirm').click(function(e) {
+		e.preventDefault();
+		$('#create-confirm').modal('show');
+		return false;
+	});
+}
+
+
 $(function() {
   	setupAjax();
   	$('#delete-confirm').on('show', function() {
@@ -40,18 +49,7 @@ $(function() {
 			$(this).parentsUntil('form').parent().submit();
 		});
 	});
-  	$('#create-confirm').on('show', function() {
-		$(this).find('form').submit(function() {
-			var url = $(this).find('input[name=url]').val();
-			window.location.href = $(this).attr('action')+'/'+url+(url == '' ? '' : '/')+$(this).find('input[type=text]').val();
-			return false;
-		});
-	});
-  	$('.create-confirm').click(function(e) {
-		e.preventDefault();
-		$('#create-confirm').modal('show');
-		return false;
-	});
+	initCreateModal();
 });
 
 (function() {
