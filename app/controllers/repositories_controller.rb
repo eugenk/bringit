@@ -1,5 +1,5 @@
 class RepositoriesController < ApplicationController
-  before_filter :require_login, only: [:new, :create, :upload, :destroy, :update, :delete_file]
+  before_filter :require_login, only: [:new, :create, :upload, :destroy, :update, :delete_file, :update_file]
   
   autocomplete :repository, :title, full: true, extra_data: [:path],
     display_value: :autocomplete_value, options: {appendTo: '.form-search .input-append'}
@@ -99,6 +99,18 @@ class RepositoriesController < ApplicationController
       redirect_to browse_repository_path(@repository.path, suburl)
     end
   end
+
+  def update_file
+    get_file
+    if !params[:message] || params[:message].empty?
+      flash[:error] = "Please enter a commit message"
+      redirect_to browse_repository_path(@repository.path, @url)
+    else
+      @repository.commit_file(current_user, params[:content], @url, params[:message])
+      flash[:success] = 'File was committed'
+      redirect_to browse_repository_path(@repository.path, @url)
+    end
+  end
   
   def raw
     @repository = Repository.identifier(params[:id]).first!
@@ -111,6 +123,14 @@ class RepositoriesController < ApplicationController
   end
   
   def delete_file
+    get_file
+    @repository.delete_file(current_user, @url)
+    flash[:success] = 'File was deleted'
+    redirect_to repository_path(@repository.path)
+  end
+
+  protected
+  def get_file
     @repository = Repository.identifier(params[:id]).first!
     
     @url = params[:url] || ''
@@ -119,9 +139,5 @@ class RepositoriesController < ApplicationController
     
     @current_file = @repository.get_current_file_head(@url)
     raise ActionController::RoutingError.new('Not Found') unless @current_file
-    
-    @repository.delete_file(current_user, @url)
-    flash[:success] = 'File was deleted'
-    redirect_to repository_path(@repository.path)
   end
 end

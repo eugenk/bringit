@@ -131,19 +131,22 @@ class Repository < ActiveRecord::Base
   end
   
   def delete_file(user, target_path)
-    add_file(user, nil, target_path, "Delete file #{target_path}")
+    commit_file(user, nil, target_path, "Delete file #{target_path}")
+  end
+
+  def add_file(user, tmp_path, target_path, message)
+    add_file_contents(user, File.open(tmp_path, 'rb').read, target_path, message)
   end
   
-  def add_file(user, tmp_path, target_path, message)
+  def commit_file(user, file_contents, target_path, message)
     #Entry
     entry = nil
-    if tmp_path
-      file_content = File.open(tmp_path, 'rb').read
+    if file_contents
       entry = {
         type: :blob, 
         name: nil, 
-        oid: Rugged::Blob.create(repo, file_content), 
-        content: file_content,
+        oid: Rugged::Blob.create(repo, file_contents), 
+        content: file_contents,
         filemode: 33188
       }
     end

@@ -4,7 +4,7 @@
       %h2= @current_file[:name]
     .span6
       .btn-group.pull-right
-        = link_to raw('<i class="icon-edit"></i> Edit'), '#', class: 'btn edit-file', 'data-replace' => '<i class="icon-edit"></i> Update' if @current_file[:mime_category] == 'text' && user_signed_in?
+        = link_to raw('<i class="icon-edit"></i> Edit'), '#', class: 'btn edit-file', 'data-replace' => '<i class="icon-edit"></i> Commit changes' if @current_file[:mime_category] == 'text' && user_signed_in?
         = link_to raw('<i class="icon-download-alt"></i> Download'), raw_repository_path(@repository, @url), class: 'btn'
         = link_to 'History', '#', class: 'btn'
         = link_to raw('<i class="icon-trash"></i> Delete'), delete_file_repository_path(@repository.path, @url), method: :delete,
@@ -18,9 +18,9 @@
         = form_for(@repository, url: update_file_repository_path(@repository.path, @url), method: :post, html: {class: 'form-horizontal edit-form'}) do |f|
           - if user_signed_in?
             .hidden-options
-              .pull-right
+              .pull-right.well.well-small
                 = label_tag 'message', raw('<abbr class="required">*</abbr> Commit message')
-                = text_area_tag 'message', @message || '', class: 'input-xlarge'
+                = text_area_tag 'message', @message || '', class: 'input-xxlarge'
               .clearfix  
           = text_area_tag 'content', @current_file[:content], class: 'input-xxlarge', id: 'code-area', 
             'data-mime-type' => get_mime_string(@current_file[:name], @current_file[:mime_type])
