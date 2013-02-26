@@ -3,7 +3,7 @@ class Push < ActiveRecord::Base
   
   belongs_to :author, class_name: 'User'
   belongs_to :repository
-  has_many :commits, class_name: 'Commit', foreign_key: 'push_id'
+  has_many :commits
   
   validates_inclusion_of :push_type, in: ['web', 'ssh']
 end

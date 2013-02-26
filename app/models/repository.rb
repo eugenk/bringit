@@ -14,13 +14,9 @@ class Repository < ActiveRecord::Base
     repository.path = Repository.title_to_path(repository.title)
   end
   
-  after_create do |repository|
-    create_repository
-  end
+  after_create :create_repository
   
-  before_destroy do |repository|
-    destroy_repository
-  end
+  before_destroy :destroy_repository
   
   validate :validate_owner_existance
   VALID_TITLE_REGEX = /^[A-Za-z0-9_\.\-\ ]{3,32}$/
