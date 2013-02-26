@@ -5,5 +5,5 @@ class Push < ActiveRecord::Base
   belongs_to :repository
   has_many :commits, class_name: 'Commit', foreign_key: 'push_id'
   
-  validates :push_type, presence: true, included_in: ['web', 'ssh']
+  validates_inclusion_of :push_type, in: ['web', 'ssh']
 end

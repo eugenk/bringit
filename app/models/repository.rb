@@ -23,8 +23,8 @@ class Repository < ActiveRecord::Base
   end
   
   validate :validate_owner_existance
-  VALID_TITLE_REGEX = /^[A-Za-z0-9_\.\-\ ]+$/
-  validates :title, presence: true, length: { maximum: 32, minimum: 3 },
+  VALID_TITLE_REGEX = /^[A-Za-z0-9_\.\-\ ]{3,32}$/
+  validates :title, presence: true,
                     uniqueness: { case_sensitive: false }, format: VALID_TITLE_REGEX
   VALID_PATH_REGEX = /^[a-z0-9_\.\-]+$/
   validates :path, presence: true, uniqueness: { case_sensitive: true }, format: VALID_PATH_REGEX
