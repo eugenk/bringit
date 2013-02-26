@@ -16,9 +16,6 @@ module BreadcrumbsHelper
     
     result.last[:last] = true
     
-    puts "xxxxx"
-    puts result
-    
     result
   end
 end

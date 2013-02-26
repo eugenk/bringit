@@ -143,11 +143,12 @@ class Repository < ActiveRecord::Base
     else
       old_tree = repo.lookup(repo.head.target).tree 
     end
+    
     tree = build_tree(entry, old_tree, target_path.split('/'))
     
     # Commit Sha
     commit_oid = Rugged::Commit.create(repo, author: user.author, 
-      message: message, committer: user.author, parents: commit_parents, tree: tree)
+      message: message.encode(Encoding.find("utf-8")), committer: user.author, parents: commit_parents, tree: tree)
     rugged_commit = repo.lookup(commit_oid)
     
     if repo.empty?
@@ -167,7 +168,6 @@ class Repository < ActiveRecord::Base
     if repo.empty?
       []
     else
-      puts repo.head.target
       [repo.head.target]
     end
   end

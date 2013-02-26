@@ -31,7 +31,7 @@
               - else
                 %i.icon-file
             %td
-              = link_to entry[:name], browse_repository_path({ id:@repository.path , url: entry[:path]})
+              = link_to entry[:name], browse_repository_path(@repository.path, entry[:path])
             %td &nbsp;
             %td &nbsp;
 

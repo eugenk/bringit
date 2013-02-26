@@ -87,11 +87,11 @@ class RepositoriesController < ApplicationController
       flash[:error] = "Please choose a file to upload"
       redirect_to browse_repository_path(@repository.path, @url)
     else
-      puts tmp_path = params[:file].tempfile
+      tmp_path = params[:file].tempfile
       file_path = @url
       file_path << '/' unless file_path.empty?
       file_path << @directory unless @directory.empty?
-      file_path << '/' unless file_path[-1] == '/'
+      file_path << '/' if file_path[-1] != '/' && !file_path.empty?
       suburl = file_path.dup
       file_path << params[:file].original_filename
       @repository.add_file(current_user, tmp_path, file_path, params[:message])
