@@ -251,7 +251,8 @@ class Repository < ActiveRecord::Base
         contents << {
           type: :dir,
           name: subdir[:name],
-          path: path_file
+          path: path_file,
+          size: nil
         }
       end
       
@@ -263,7 +264,8 @@ class Repository < ActiveRecord::Base
         contents << {
           type: :file,
           name: file[:name],
-          path: path_file
+          path: path_file,
+          size: file[:size]
         }
       end
     end

@@ -4,7 +4,7 @@
       %h2= @current_file[:name]
     .span6
       .btn-group.pull-right
-        = link_to raw('<i class="icon-edit"></i> Edit'), '#', class: 'btn btn-primary' if @current_file[:mime_category] == 'text' && user_signed_in?
+        = link_to raw('<i class="icon-edit"></i> Edit'), '#', class: 'btn edit-file', 'data-replace' => '<i class="icon-edit"></i> Update' if @current_file[:mime_category] == 'text' && user_signed_in?
         = link_to raw('<i class="icon-download-alt"></i> Download'), raw_repository_path(@repository, @url), class: 'btn'
         = link_to 'History', '#', class: 'btn'
         = link_to raw('<i class="icon-trash"></i> Delete'), delete_file_repository_path(@repository.path, @url), method: :delete,
@@ -13,9 +13,22 @@
   .clearfix
   - case @current_file[:mime_category]
   - when 'text'
-    .file-content
-      = form_for(@repository, url: update_file_repository_path(@repository.path, @url), method: :post, html: {class: 'form-horizontal'}) do |f|
-        = text_area_tag 'content', @current_file[:content], class: 'input-xxlarge', id: 'code-area', 'data-mime-type' => @current_file[:mime_type]
+    - if @current_file[:size] <= Bringit::Application.config.max_read_filesize
+      .file-content
+        = form_for(@repository, url: update_file_repository_path(@repository.path, @url), method: :post, html: {class: 'form-horizontal edit-form'}) do |f|
+          - if user_signed_in?
+            .hidden-options
+              .pull-right
+                = label_tag 'message', raw('<abbr class="required">*</abbr> Commit message')
+                = text_area_tag 'message', @message || '', class: 'input-xlarge'
+              .clearfix  
+          = text_area_tag 'content', @current_file[:content], class: 'input-xxlarge', id: 'code-area', 
+            'data-mime-type' => get_mime_string(@current_file[:name], @current_file[:mime_type])
+              
+    - else 
+      .alert.alert-info
+        File too large to display.
+      = link_to raw('<i class="icon-download-alt"></i> Download'), raw_repository_path(@repository, @url), class: 'btn'
   - when 'image'
     .image-content
       = image_tag raw_repository_path(@repository, @url), alt: @current_file[:name]

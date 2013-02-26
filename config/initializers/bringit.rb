@@ -9,3 +9,6 @@ else
   Bringit::Application.config.ssh_base_url = "git@localhost/"
   Bringit::Application.config.git_root = "/tmp/gitroot/"
 end
+
+Bringit::Application.config.max_read_filesize = 512 * 1024
+

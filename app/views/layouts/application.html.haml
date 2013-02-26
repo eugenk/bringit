@@ -5,7 +5,6 @@
     = stylesheet_link_tag "application", media: "all"
     = csrf_meta_tags
     = render 'layouts/shim'
-    = requirejs_include_tag
   %body
     = render 'layouts/header'
     = render 'layouts/development_bar' if development_mode?

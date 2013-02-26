@@ -6,4 +6,6 @@
 //= require best_in_place
 //= require autocomplete-rails
 //= require codemirror
-//= require_tree .
+//= require bootstrap-fileupload.min.js
+//= require layout
+//= require repository
