@@ -13,9 +13,14 @@
   .clearfix
   - case @current_file[:mime_category]
   - when 'text'
-    .file-content
-      %pre
-        = @current_file[:content]
+    - if @current_file[:size] <= 524288
+      .file-content
+        %pre
+          = @current_file[:content]
+    - else 
+      .alert.alert-info
+        File too large to display.
+      = link_to raw('<i class="icon-download-alt"></i> Download'), raw_repository_path(@repository, @url), class: 'btn'
   - when 'image'
     .image-content
       = image_tag raw_repository_path(@repository, @url), alt: @current_file[:name]
