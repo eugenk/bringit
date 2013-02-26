@@ -1,3 +1,8 @@
+PATH
+  remote: /home/eugen/rugged
+  specs:
+    rugged (0.17.0.b7)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -185,7 +190,6 @@ GEM
       rspec-expectations (~> 2.12.0)
       rspec-mocks (~> 2.12.0)
     rubyzip (0.9.9)
-    rugged (0.17.0.b7)
     rvm-capistrano (1.2.7)
       capistrano (>= 2.0.0)
     sass (3.2.6)
@@ -257,7 +261,7 @@ DEPENDENCIES
   rails3-generators
   rails3-jquery-autocomplete
   rspec-rails
-  rugged (= 0.17.0.b7)
+  rugged!
   rvm-capistrano
   sass-rails
   seed_dump
