@@ -197,7 +197,7 @@ class Repository < ActiveRecord::Base
     if rugged_commit.parents.empty?
       []
     else
-      Commit.identifiers(rugged_commit.parents.map { |c| c.oid }, self)
+      commits.identifiers(rugged_commit.parents.map { |c| c.oid }, self)
     end
   end
   
