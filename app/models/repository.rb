@@ -39,11 +39,11 @@ class Repository < ActiveRecord::Base
   end
   
   def ssh_url
-    Bringit::Application.config.ssh_base_url + path + ".git"
+    "#{Bringit::Application.config.ssh_base_url}#{path}.git"
   end
   
   def local_path
-    Bringit::Application.config.git_root + id.to_s + ".git"
+    "#{Bringit::Application.config.git_root}#{id.to_s}.git"
   end
   
   def contributors
