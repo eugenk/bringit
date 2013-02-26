@@ -21,12 +21,12 @@
             %span.btn.btn-file
               %span.fileupload-new Select File
               %span.fileupload-exists Change
-              %input{ type: 'file', name: 'file' }
+              %input{ type: 'file', name: 'file', required: true }
             %a.btn.fileupload-exists{ 'data-dismiss' => 'fileupload', href: '#' } Remove
       .control-group
         = label_tag 'message', raw('<abbr class="required">*</abbr> Commit message'), class: 'control-label'
         .controls
-          = text_area_tag 'message', @message || '', class: 'input-xlarge'
+          = text_area_tag 'message', @message || '', class: 'input-xlarge', required: true
   .modal-footer
     = button_tag raw('<i class="icon-upload"></i> Upload File'), class: 'btn btn-primary'
     %a.btn{ href: '#', 'data-dismiss' => 'modal' } Cancel

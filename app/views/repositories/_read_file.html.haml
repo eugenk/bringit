@@ -19,7 +19,7 @@
             .hidden-options
               .pull-right.well.well-small
                 = label_tag 'message', raw('<abbr class="required">*</abbr> Commit message')
-                = text_area_tag 'message', @message || '', class: 'input-xxlarge'
+                = text_area_tag 'message', @message || '', class: 'input-xxlarge', required: true
               .clearfix  
           = text_area_tag 'content', @current_file[:content], class: 'input-xxlarge', id: 'code-area', 
             'data-mime-type' => get_mime_string(@current_file[:name], @current_file[:mime_type])

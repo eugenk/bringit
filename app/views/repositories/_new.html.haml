@@ -5,7 +5,7 @@
   = render 'layouts/flash_messages'
   = simple_form_for(@repository, html: {class: 'form-horizontal', 'data-remote' => true, 
       "data-replace" => '#modal', "data-update" => '#modal'}) do |f|
-    = f.input :title, input_html: { class: 'input-xlarge' }
+    = f.input :title, input_html: { class: 'input-xlarge', required: true }
     = f.input :description, input_html: { class: 'input-xlarge' }
     .control-group
       .controls= f.button :submit, class: 'btn btn-primary'
