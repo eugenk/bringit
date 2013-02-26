@@ -18,7 +18,7 @@ class RepositoriesController < ApplicationController
     
     @url = params[:url] || ''
     @url = @url[0..-2] if(@url[-1] == '/')
-    #@url = '' unless @repository.path_exists_head?(@url)
+    raise ActionController::RoutingError.new('Not Found') unless @repository.path_exists_head?(@url)
     
     @contents = @repository.folder_contents_head(@url)
     @breadcrumbs = @url.split('/')
