@@ -54,6 +54,6 @@
   - if @repository.contributors.size > 2
     %span.muted
       and 
-      = link_to "#{(@repository.contributors.size-3)} other users", '#'
+      = link_to "#{(@repository.contributors.size-3)} other #{(@repository.contributors.size-3) > 1 ? 'users' : 'user'}", '#'
 
 %hr

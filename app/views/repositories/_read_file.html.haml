@@ -14,8 +14,8 @@
   - case @current_file[:mime_category]
   - when 'text'
     .file-content
-      %pre
-        = @current_file[:content]
+      = form_for(@repository, url: update_file_repository_path(@repository.path, @url), method: :post, html: {class: 'form-horizontal'}) do |f|
+        = text_area_tag 'content', @current_file[:content], class: 'input-xxlarge', id: 'code-area', 'data-mime-type' => @current_file[:mime_type]
   - when 'image'
     .image-content
       = image_tag raw_repository_path(@repository, @url), alt: @current_file[:name]

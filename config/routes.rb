@@ -16,6 +16,7 @@ Bringit::Application.routes.draw do
   match '/raw/repositories/:id/:url' => "repositories#raw", constraints: { url: /.*/ }, as: :raw_repository
   post '/repositories/:id' => "repositories#update"
   delete '/delete_file/repositories/:id/:url' => "repositories#delete_file", constraints: { url: /.*/ }, as: :delete_file_repository
+  post '/update_file/repositories/:id/:url' => "repositories#update_file", constraints: { url: /.*/ }, as: :update_file_repository
   
   
   match '/search', to: 'repositories#search'

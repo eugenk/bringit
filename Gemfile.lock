@@ -54,6 +54,8 @@ GEM
     childprocess (0.3.8)
       ffi (~> 1.0, >= 1.0.11)
     chunky_png (1.2.7)
+    codemirror-rails (3.02)
+      railties (~> 3.0)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
       railties (~> 3.2.0)
@@ -171,6 +173,8 @@ GEM
     rake (10.0.3)
     rdoc (3.12.1)
       json (~> 1.4)
+    requirejs-rails (0.9.1)
+      railties (>= 3.1.1, < 3.3)
     responders (0.9.3)
       railties (~> 3.1)
     rspec-core (2.12.2)
@@ -234,6 +238,7 @@ DEPENDENCIES
   cancan
   capistrano
   capybara
+  codemirror-rails
   coffee-rails
   compass
   compass-rails
@@ -256,6 +261,7 @@ DEPENDENCIES
   rails (= 3.2.12)
   rails3-generators
   rails3-jquery-autocomplete
+  requirejs-rails
   rspec-rails
   rugged (= 0.17.0.b7)
   rvm-capistrano
