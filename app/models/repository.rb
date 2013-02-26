@@ -55,11 +55,12 @@ class Repository < ActiveRecord::Base
   end
   
   def create_repository
-    repo = Rugged::Repository.init_at(local_path, true)
+    @repo = Rugged::Repository.init_at(local_path, true)
   end
   
   def destroy_repository
     system "rm -rf #{local_path}"
+    @repo = nil
   end
   
   def repo
