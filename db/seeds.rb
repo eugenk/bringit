@@ -20,7 +20,7 @@ end
     owners: User.all[rand(3)..rand(3)+5],
   }).tap do |repo|
     5.times do
-      repo.commit_file(repo.owners.first, Faker::Lorem.sentences(rand(7)+1).join('\n'), "#{Faker::Name.name}.txt", Faker::Lorem.sentences(rand(2)+1).join('\n'))
+      repo.commit_file(repo.owners.first, Faker::Lorem.sentences(rand(7)+1).join('\n'), "#{Faker::Name.name}.txt", Faker::Lorem.sentences(rand(2)+1).join("\n"))
     end
   end
 end
