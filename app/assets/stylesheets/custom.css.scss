@@ -234,3 +234,24 @@ footer {
   display:none;
   margin-bottom:10px;
 }
+.repository-title, .repository-description {
+  position:relative;
+  .editable-notice {
+    position:absolute;
+    top:0px;
+    left:-1em;
+    color:$grayMediumLight;
+    @include transition-property(all);
+    @include transition-duration(0.2s);
+    @include transition-timing-function(ease-in-out);
+  }
+  &:hover .editable-notice {
+    color:$textColor;
+  }
+  .changeable-title, .changeable-description   {
+    cursor:pointer;
+  }
+}
+.repository-description .editable-notice {
+  font-size:$baseFontSize*2.75;   
+}
