@@ -15,11 +15,7 @@ class RepositoriesController < ApplicationController
   
   def show
     @repository = Repository.identifier(params[:id]).first!
-    
-    @url = params[:url] || ''
-    @url = @url[0..-2] if(@url[-1] == '/')
-    raise ActionController::RoutingError.new('Not Found') unless @repository.path_exists_head?(@url)
-    
+    @url = @repository.get_url(params[:url])
     @contents = @repository.folder_contents_head(@url)
     @breadcrumbs = @url.split('/')
     @current_file = @repository.get_current_file_head(@url)
@@ -77,7 +73,7 @@ class RepositoriesController < ApplicationController
   
   def upload
     @repository = Repository.identifier(params[:repository_id]).first!
-    @url = params[:url] || ''
+    @url = @repository.get_url(params[:url])
     @directory = params[:directory]
     
     if !params[:message] || params[:message].empty?
@@ -114,10 +110,8 @@ class RepositoriesController < ApplicationController
   
   def raw
     @repository = Repository.identifier(params[:id]).first!
-    @url = params[:url] || ''
-    
+    @url = @repository.get_url(params[:url])
     @current_file = @repository.get_current_file_head(@url)
-    raise ActionController::RoutingError.new('Not Found') unless @current_file
     
     render text: @current_file[:content], content_type: Mime::Type.lookup('application/force-download')
   end
@@ -132,12 +126,7 @@ class RepositoriesController < ApplicationController
   protected
   def get_file
     @repository = Repository.identifier(params[:id]).first!
-    
-    @url = params[:url] || ''
-    @url = @url[0..-2] if(@url[-1] == '/')
-    raise ActionController::RoutingError.new('Not Found') unless @repository.path_exists_head?(@url)
-    
+    @url = @repository.get_url(params[:url])
     @current_file = @repository.get_current_file_head(@url)
-    raise ActionController::RoutingError.new('Not Found') unless @current_file
   end
 end

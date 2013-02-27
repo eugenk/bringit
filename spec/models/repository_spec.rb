@@ -92,4 +92,98 @@ describe Repository do
       @repository.repo
     end.to raise_error(RepositoryNotFoundError)
   end
+  
+  describe "can commit file" do
+    before do
+      @repository.save
+      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file.txt', 'Some commit message')
+    end
+    it { should be_valid }
+    it "should exist a commit in the database" do
+      @repository.commits.last.message.should == 'Some commit message'
+    end
+    it "should exist as head target" do
+      @repository.path_exists_head?('path/file.txt').should == true
+    end
+    it "should have the right name" do
+      @repository.get_current_file_head('path/file.txt')[:name].should == 'file.txt'
+    end
+    it "should have the right content" do
+      @repository.get_current_file_head('path/file.txt')[:content].should == 'Some content'
+    end
+    it "should have the right mime type" do
+      @repository.get_current_file_head('path/file.txt')[:mime_type].should == Mime::Type.lookup('text/plain')
+    end
+  end
+  
+  describe "can delete file" do
+    before do
+      @repository.save
+      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file.txt', 'Some commit message')
+      @repository.delete_file(@repository.owners.first, 'path/file.txt')
+    end
+    it "should exist a commit in the database" do
+      @repository.commits.last.message.should == 'Delete file path/file.txt'
+    end
+    it "should not exist in repository" do
+      @repository.path_exists_head?('path/file.txt').should == false
+    end
+  end
+  
+  describe "can read folder" do
+    before do
+      @repository.save
+      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file1.txt', 'Some commit message')
+      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file2.txt', 'Some commit 2')
+    end
+    
+    it "should read the right number of contents" do
+      @repository.folder_contents_head.size.should == 1
+    end
+    
+    it "should read the right contents in folder" do
+      @repository.folder_contents_head.should == [{
+        type: :dir,
+        name: 'path',
+        path: 'path'
+      }]
+    end
+    
+    it "subfolder should read the right number of contents" do
+      @repository.folder_contents_head('path').size.should == 2
+    end
+    
+    
+    it "should read the right contents in subfolder" do
+      @repository.folder_contents_head('path').should == [{
+        type: :file,
+        name: 'file1.txt',
+        path: 'path/file1.txt'
+      },{
+        type: :file,
+        name: 'file2.txt',
+        path: 'path/file2.txt'
+      }]
+    end
+    
+  end
+  
+  describe "can overwrite file" do
+    before do
+      @repository.save
+      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file.txt', 'Some commit message')
+      @repository.commit_file(@repository.owners.first, 'Some content2', 'path/file.txt', 'Some commit message2')
+    end
+    it "should exist commit in the database" do
+      @repository.commits.last.message.should == 'Some commit message2'
+    end
+    it "should have the right name" do
+      @repository.get_current_file_head('path/file.txt')[:name].should == 'file.txt'
+    end
+    it "should have the right content" do
+      @repository.get_current_file_head('path/file.txt')[:content].should == 'Some content2'
+    end
+  end
+  
+  
 end

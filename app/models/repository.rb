@@ -155,6 +155,15 @@ class Repository < ActiveRecord::Base
     get_current_file_rugged(repo.lookup(commit_oid), url)
   end
   
+  def get_url(url)
+    url ||= '' 
+    url = url[0..-2] if(url[-1] == '/')
+    
+    raise ActionController::RoutingError.new('Not Found') unless path_exists_head?(url)
+    
+    url
+  end
+  
   # PROTECTED METHODS
   
   protected
