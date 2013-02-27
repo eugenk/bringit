@@ -184,14 +184,38 @@ class Repository < ActiveRecord::Base
     entry_info_rugged(get_commit(commit_oid), url)
   end
   
+  def entry_info_list(url)
+    rugged_commit = get_commit
+    if !rugged_commit
+      []
+    else
+      entry_info_list_rugged(rugged_commit, url)
+    end
+  end
+  
   # PROTECTED METHODS
 
   protected
+  
+  def entry_info_list_rugged(rugged_commit, url, entries=[])
+    object = get_object(rugged_commit, url)
+    changing_rugged_commit = get_commit_of_last_change(url, object.oid, rugged_commit)
+   
+    if(changing_rugged_commit == rugged_commit)
+      entries
+    else
+      entries << build_entry_info(changing_rugged_commit, url)
+      entry_info_list_rugged(changing_rugged_commit, url, entries)
+    end
+  end
 
   def entry_info_rugged(rugged_commit, url)
     object = get_object(rugged_commit, url)
     changing_rugged_commit = get_commit_of_last_change(url, object.oid, rugged_commit)
-
+    build_entry_info(changing_rugged_commit, url)
+  end
+  
+  def build_entry_info(changing_rugged_commit, url)
     {
       committer_name: changing_rugged_commit.committer[:name],
       committer_email: changing_rugged_commit.committer[:email],
