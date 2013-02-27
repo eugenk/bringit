@@ -1,8 +1,13 @@
 - provide(:title, 'Repositories')
 %h1 Repositories
-
-.pull-right= paginate @repositories
-.clearfix    
+.row
+  .span4
+    = link_to new_repository_path, remote: true, "data-replace" => '#modal', "data-update" => '#modal', class: 'btn', style: 'margin-bottom: 10px;' do
+      %i.icon-plus
+      Create repository
+  .span8
+    .pull-right= paginate @repositories
+.clearfix
 
 = render partial: 'repository', collection: @repositories
   
