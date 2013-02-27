@@ -264,3 +264,6 @@ h2.commit-date {
     @include border-radius(4px);
   }
 }
+#commits .pagination {
+  margin:0 0 10px 0;
+}

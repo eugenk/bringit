@@ -1,6 +1,6 @@
 .pull-right= paginate @commits
 .clearfix
 
-%ol
-  - group_commits(@commits).each do |group| 
-    = render partial: 'commit_group', locals: {group: group }
+
+- group_commits(@commits).each do |group| 
+  = render partial: 'commit_group', locals: {group: group }
