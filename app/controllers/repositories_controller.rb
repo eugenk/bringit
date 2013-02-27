@@ -73,8 +73,8 @@ class RepositoriesController < ApplicationController
   
   def upload
     @repository = Repository.identifier(params[:repository_id]).first!
-    @url = @repository.get_url(params[:url])
-    @directory = params[:directory]
+    @url = params[:url] || ''
+    @url = url[0..-2] if(@url[-1] == '/')
     params[:message].strip!
     
     if !params[:message] || params[:message].empty?
@@ -85,7 +85,7 @@ class RepositoriesController < ApplicationController
       redirect_to browse_repository_path(@repository.path, @url)
     else
       tmp_path = params[:file].tempfile
-      file_path = @repository.build_target_path(@url, @directory, params[:file].original_filename)
+      file_path = @repository.build_target_path(@url, params[:file].original_filename)
       @repository.add_file(current_user, tmp_path, file_path, params[:message])
       flash[:success] = 'File was added'
       redirect_to browse_repository_path(@repository.path, file_path.split("/")[0..-2].join("/"))

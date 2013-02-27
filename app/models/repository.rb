@@ -160,10 +160,8 @@ class Repository < ActiveRecord::Base
     url
   end
   
-  def build_target_path(url, directory, file_name)
+  def build_target_path(url, file_name)
     file_path = url
-    file_path << '/' unless file_path.empty?
-    file_path << directory unless directory.empty?
     file_path << '/' if file_path[-1] != '/' && !file_path.empty?
     file_path << file_name
     

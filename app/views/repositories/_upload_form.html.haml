@@ -2,14 +2,12 @@
   %a.close{ 'data-dismiss' => 'modal' } x
   %h3 Upload file
 = form_for(@repository, url: repository_upload_path(@repository.path), method: :post, html: {class: 'form-horizontal', multipart: true}) do |f|
-  = hidden_field_tag 'url', @url
   .modal-body
     .control-group
-      = label_tag 'directory', 'Directory name', class: 'control-label'
+      = label_tag 'url', 'Path', class: 'control-label'
       .controls
         %span.help-block
-          = @url + '/'
-        = text_field_tag 'directory', @directory || '', class: 'input-xlarge'
+        = text_field_tag 'url', @url, class: 'input-xlarge'
     .control-group
       = label_tag 'file', raw('<abbr class="required">*</abbr> File'), class: 'control-label', required: true
       .controls
