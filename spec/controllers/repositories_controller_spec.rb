@@ -46,6 +46,10 @@ describe RepositoriesController do
       repository = FactoryGirl.create(:repository)
       get 'show', {id: repository.path}
       assigns(:repository).should eq(repository)
+      assigns(:url).should eq('')
+      assigns(:contents).should eq([])
+      assigns(:breadcrumbs).should eq([])
+      assigns(:current_file).should eq(nil)
     end
   end
     
