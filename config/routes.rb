@@ -18,6 +18,7 @@ Bringit::Application.routes.draw do
   delete '/delete_file/repositories/:id/:url' => "repositories#delete_file", constraints: { url: /.*/ }, as: :delete_file_repository
   post '/update_file/repositories/:id/:url' => "repositories#update_file", constraints: { url: /.*/ }, as: :update_file_repository
   
+  match '/commits/:id/:oid' => "repositories#show", as: :browse_commits
   match '/commits/:id/:oid/:url' => "repositories#show", constraints: { url: /.*/ }, as: :browse_commits
   
   match '/commits/:id' => "repositories#commits", as: :commits
