@@ -84,15 +84,10 @@ class RepositoriesController < ApplicationController
       redirect_to browse_repository_path(@repository.path, @url)
     else
       tmp_path = params[:file].tempfile
-      file_path = @url
-      file_path << '/' unless file_path.empty?
-      file_path << @directory unless @directory.empty?
-      file_path << '/' if file_path[-1] != '/' && !file_path.empty?
-      suburl = file_path.dup
-      file_path << params[:file].original_filename
+      file_path = @repository.build_target_path(@url, @directory, params[:file].original_filename)
       @repository.add_file(current_user, tmp_path, file_path, params[:message])
       flash[:success] = 'File was added'
-      redirect_to browse_repository_path(@repository.path, suburl)
+      redirect_to browse_repository_path(@repository.path, file_path.split("/")[0..-2].join("/"))
     end
   end
 
