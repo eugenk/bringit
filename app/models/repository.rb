@@ -114,6 +114,8 @@ class Repository < ActiveRecord::Base
     push = build_push(user)
     commit = build_commit(user, push, rugged_commit)
     commit.save
+    
+    commit
   end
   
   def path_exists_head?(url='')

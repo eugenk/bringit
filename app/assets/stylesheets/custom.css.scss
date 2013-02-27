@@ -96,7 +96,10 @@ footer {
 }
 
 /* box */
-.box {
+.commit-group {
+  background:$blue2;
+}
+.box, .repository-commits {
   background:$blue2;
   .top {
     margin:-10px -10px 10px -10px;
@@ -249,5 +252,15 @@ footer {
     height: auto;
     width: 800px;
     margin: 0;
+  }
+}
+h2.commit-date {
+  @extend h4;
+}
+.repository-commits {
+  margin-left: 0px;
+  background:none;
+  .commit {
+    @include border-radius(4px);
   }
 }

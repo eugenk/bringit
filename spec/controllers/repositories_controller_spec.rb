@@ -19,6 +19,22 @@ describe RepositoriesController do
     end
   end
   
+  describe "GET 'commits'" do
+    it "returns http success" do
+      repository = FactoryGicrl.create(:repository)
+      get 'commits', {id: repository.path}
+      response.should be_success
+    end
+    
+    it "assigns all commits as @commits" do
+      repository = FactoryGirl.create(:repository)
+      commit = repository.commit_file(repository.owners.first, "file_contents", 'file.txt', 'message')
+      get 'commits', {id: repository.path}
+      assigns(:repository).should eq(repository)
+      assigns(:commits).should eq([commit])
+    end
+  end
+  
   describe "GET 'search'" do
     it "returns http success" do
       get 'search'
