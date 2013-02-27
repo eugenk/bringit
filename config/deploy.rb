@@ -49,8 +49,9 @@ namespace :deploy do
     run "ln -fs #{shared_path}/secret_token.rb #{latest_release}/config/initializers/"
   end
   task :reset do
-    run "rm -rf #{Rails.root}/data/gitroot/"
-    run "mkdir -p #{Rails.root}/data/gitroot/"
+    run "echo '#{File.join(current_path,'data','gitroot')}'"
+    run "rm -rf #{File.join(current_path,'data','gitroot')}"
+    run "mkdir -p #{File.join(current_path,'data','gitroot')}"
     run "cd #{current_path} && bundle exec rake db:migrate:reset db:seed", env: { RAILS_ENV: 'production' }
   end
   task :init do
