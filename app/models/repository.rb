@@ -119,15 +119,30 @@ class Repository < ActiveRecord::Base
   end
   
   def path_exists?(commit_oid=nil, url='')
-    path_exists_rugged?(repo.lookup(commit_oid || repo.head.target), url)
+    rugged_commit = get_commit(commit_oid)
+    if !rugged_commit && url.empty?
+      true
+    else
+      path_exists_rugged?(rugged_commit, url)
+    end
   end
   
-  def folder_contents(commit_oid=nil, dir_path='')
-    folder_contents_rugged(repo.lookup(commit_oid || repo.head.target), dir_path)
+  def folder_contents(commit_oid=nil, url='')
+    rugged_commit = get_commit(commit_oid)
+    if !rugged_commit && url.empty?
+      []
+    else
+      folder_contents_rugged(rugged_commit, url)
+    end
   end
   
-  def get_current_file(commit_oid, url='')
-    get_current_file_rugged(repo.lookup(commit_oid), url)
+  def get_current_file(commit_oid=nil, url='')
+    rugged_commit = get_commit(commit_oid)
+    if !rugged_commit && url.empty?
+      nil
+    else
+      get_current_file_rugged(rugged_commit, url)
+    end
   end
   
   def get_url(oid=nil, url=nil)
@@ -147,9 +162,21 @@ class Repository < ActiveRecord::Base
     file_path
   end
   
+  def is_head?(commit_oid=nil)
+    commit_oid == nil || (!repo.empty? && commit_oid == repo.head.target)
+  end
+  
   # PROTECTED METHODS
   
   protected
+  def get_commit(commit_oid=nil)
+    if repo.empty?
+      nil
+    else
+      repo.lookup(commit_oid || repo.head.target)
+    end
+  end
+  
   def commit_parents
     if repo.empty?
       []
@@ -187,16 +214,16 @@ class Repository < ActiveRecord::Base
     false
   end
   
-  def folder_contents_rugged(rugged_commit, dir_path='')
-    return [] unless path_exists_rugged?(rugged_commit, dir_path)
+  def folder_contents_rugged(rugged_commit, url='')
+    return [] unless path_exists_rugged?(rugged_commit, url)
     
-    tree = get_object(rugged_commit, dir_path)
+    tree = get_object(rugged_commit, url)
     contents = []
     
     if tree.type == :tree
       tree.each_tree do |subdir|
-        path_file = dir_path.dup
-        path_file << '/' unless dir_path.empty?
+        path_file = url.dup
+        path_file << '/' unless url.empty?
         path_file << subdir[:name]
         
         contents << {
@@ -207,8 +234,8 @@ class Repository < ActiveRecord::Base
       end
       
       tree.each_blob do |file|
-        path_file = dir_path.dup
-        path_file << '/' unless dir_path.empty?
+        path_file = url.dup
+        path_file << '/' unless url.empty?
         path_file << file[:name]
   
         contents << {

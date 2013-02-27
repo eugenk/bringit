@@ -48,6 +48,7 @@ $(function() {
 		$('#edit-title-form').find('input[type=text]').focus();
 	});
 	initCreateModal();
+	$('[data-toggle=tooltip]').tooltip({placement: 'left'});
 });
 
 (function() {

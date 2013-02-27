@@ -21,7 +21,7 @@ describe RepositoriesController do
   
   describe "GET 'commits'" do
     it "returns http success" do
-      repository = FactoryGicrl.create(:repository)
+      repository = FactoryGirl.create(:repository)
       get 'commits', {id: repository.path}
       response.should be_success
     end

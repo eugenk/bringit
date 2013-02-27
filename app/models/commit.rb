@@ -20,6 +20,11 @@ class Commit < ActiveRecord::Base
     where("commit_hash IN (?)", oids).select { |commit| commit.repository == repository }
   end
   
+  scope :identifier, ->(oid) do
+    where("commit_hash = ?", oid)
+  end
+  
+  
   def add_parent(parent)
     return if parent == self || parents.include?(parent) 
     parents << parent

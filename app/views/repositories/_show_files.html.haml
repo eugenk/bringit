@@ -1,5 +1,8 @@
 %ul.breadcrumb
-  - repository_breadcrumbs(@repository, @breadcrumbs).each do |crumb|
+  - unless @is_head
+    %li
+      %span.label.label-info= @current_commit.short_hash
+  - repository_breadcrumbs(@repository, @breadcrumbs,@is_head,@oid).each do |crumb|
     - if crumb[:last]
       %li.active
         = crumb[:name]
@@ -31,10 +34,13 @@
               - else
                 %i.icon-file
             %td
-              = link_to entry[:name].force_encoding('UTF-8'), browse_repository_path(@repository.path, entry[:path]) #FIXME force_encoding is needed due to errors in rugged
+              - if @is_head
+                = link_to entry[:name].force_encoding('UTF-8'), browse_repository_path(@repository.path, entry[:path]) #FIXME force_encoding is needed due to errors in rugged
+              - else
+                = link_to entry[:name].force_encoding('UTF-8'), browse_commits_path(@repository.path, @oid, entry[:path]) #FIXME force_encoding is needed due to errors in rugged              
             %td &nbsp;
             %td &nbsp;
 
   - if user_signed_in?
-    %hr    
+    %hr
     = render partial: 'upload'

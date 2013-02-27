@@ -1,30 +1,49 @@
 - provide(:title, @repository.title)
 
-= render partial: 'show_top'
+- if @is_head
+  = render partial: 'show_top'
+- else
+  .row
+    .span8
+      %h1.repository-title
+        = link_to @repository.title, repository_path(@repository.path)
+    .span4
+      .pull-right
+        .input-append{style: 'padding-top:10px'}
+          %input.span3{type: 'text', value: @repository.ssh_url }
+          %span.add-on
+            %i.icon-sitemap
+  .clearfix
+
 
 %ul.nav.nav-tabs{id: 'repository-tabs'}
   %li.active
-    = link_to 'Files', repository_path(@repository.path)
+    - if @is_head
+      = link_to 'Files', repository_path(@repository.path)
+    - else
+      = link_to 'Files', browse_commits_root_path(@repository.path, @oid)
   %li
     = link_to 'Commits', commits_path(@repository.path)
 
 .tab-content
   #files.tab-pane.active
     - unless @repository.commits.empty? 
+      - commit = (@is_head ? @repository.commits.first : @current_commit)
+        
       .well.well-small.box
         %ol
           %li.commit
             .row-fluid
               .span9
-                .message= link_to @repository.commits.first.message_title, '#'
+                .message= link_to commit.message_title, browse_commits_root_path(@repository.path, commit.commit_hash)
                 .time-author
                   by
-                  = @repository.commits.first.committer_name 
-                  = time_ago_in_words(@repository.commits.first.committer_time)
+                  = commit.committer_name 
+                  = time_ago_in_words(commit.committer_time)
                   ago
               .span3
                 .pull-right.short_hash
-                  = link_to @repository.commits.first.short_hash, '#', class: 'btn'
+                  = link_to commit.short_hash, browse_commits_root_path(@repository.path, commit.commit_hash), class: 'btn'
               .clearfix
     = render partial: 'show_files'
      

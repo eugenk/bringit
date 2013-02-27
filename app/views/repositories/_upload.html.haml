@@ -1,5 +1,9 @@
 .pull-right
-  = link_to raw('<i class="icon-upload"></i> Upload file'), '#', method: :get, class: 'create-confirm btn btn-primary'
-  .modal-input
-    #create-confirm.modal.fade
-      = render 'upload_form'
+  - if @is_head
+    = link_to raw('<i class="icon-upload"></i> Upload file'), '#', class: 'create-confirm btn btn-primary'
+    .modal-input
+      #create-confirm.modal.fade
+        = render 'upload_form'
+  - else
+    = link_to raw('<i class="icon-upload"></i> Upload file'), '#', class: 'btn btn-primary disabled', 'data-toggle' => 'tooltip', 
+      'data-original-title' => 'You cannot upload files in history'

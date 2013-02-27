@@ -16,7 +16,7 @@
           %li.commit
             .row-fluid
               .span9
-                .message= link_to commit.message_title, repositories_path
+                .message= link_to commit.message_title, browse_commits_root_path(repository.path, commit.commit_hash)
                 .time-author
                   by
                   = commit.committer_name 
@@ -24,5 +24,5 @@
                   ago
               .span3
                 .pull-right.short_hash
-                  = link_to commit.short_hash, repositories_path, class: 'btn'
+                  = link_to commit.short_hash, browse_commits_root_path(repository.path, commit.commit_hash), class: 'btn'
               .clearfix
