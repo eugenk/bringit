@@ -25,6 +25,7 @@ header.navbar {
   .dropdown-menu {
     width:99%;
   }
+  margin-bottom:0px;
 }
 
 #logo {
@@ -227,14 +228,14 @@ footer {
   .editable-notice {
     position:absolute;
     top:0px;
-    left:-1em;
-    color:$grayMediumLight;
+    left:-1.3em;
+    color:rgba(0,0,0,0.1);
     @include transition-property(all);
     @include transition-duration(0.2s);
     @include transition-timing-function(ease-in-out);
   }
   &:hover .editable-notice {
-    color:$textColor;
+     color:rgba(0,0,0,0.4);
   }
   .changeable-title, .changeable-description   {
     cursor:pointer;
@@ -264,6 +265,6 @@ h2.commit-date {
     @include border-radius(4px);
   }
 }
-#commits .pagination {
+.pagination {
   margin:0 0 10px 0;
 }
