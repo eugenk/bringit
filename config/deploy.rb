@@ -49,8 +49,8 @@ namespace :deploy do
     run "ln -fs #{shared_path}/secret_token.rb #{latest_release}/config/initializers/"
   end
   task :reset do
-    run "rm -rf /tmp/gitroot"
-    run "mkdir -p /tmp/gitroot"
+    run "rm -rf #{Bringit::Application.config.git_root}"
+    run "mkdir -p #{Bringit::Application.config.git_root}"
     run "cd #{current_path} && bundle exec rake db:migrate:reset db:seed", env: { RAILS_ENV: 'production' }
   end
   task :init do
