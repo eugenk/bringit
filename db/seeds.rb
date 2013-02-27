@@ -5,7 +5,7 @@ User.create!({
   password_confirmation: "password"
 })
 
-20.times do |n|
+10.times do |n|
   User.create!({ 
     email: Faker::Internet.email,
     password: "password#{n}",
@@ -13,35 +13,14 @@ User.create!({
   })
 end
 
-
-def create_commit(push, parents = [])
-  push.commits.create!({
-    commit_hash: SecureRandom.hex(20),
-    committer_name: Faker::Name.name,
-    committer_email: Faker::Internet.email,
-    committer_time: Time.now - rand(28*3600*24),
-    message: Faker::Lorem.sentences(rand(2)+1).join('\n'),
-    push: push,
-    parents: parents
-  })
-end
-
-30.times do
+10.times do
   Repository.create!({
     title: Faker::Lorem.words(rand(2)+2, true).join(' '),
     description: Faker::Lorem.paragraph(rand(3)+1),
-    owners: User.all[rand(6)..rand(6)+7],
+    owners: User.all[rand(3)..rand(3)+5],
   }).tap do |repo|
     5.times do
-      repo.pushes.create!({
-        author: repo.owners.first,
-        push_type: 'web',
-        repository: repo
-      }).tap do |push|
-        3.times do
-          create_commit(push, [create_commit(push), create_commit(push)])
-        end
-      end
+      repo.commit_file(repo.owners.first, Faker::Lorem.sentences(rand(7)+1).join('\n'), "#{Faker::Name.name}.txt", Faker::Lorem.sentences(rand(2)+1).join("\n"))
     end
   end
 end

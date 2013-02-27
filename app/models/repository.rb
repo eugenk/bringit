@@ -21,13 +21,9 @@ class Repository < ActiveRecord::Base
     repository.path = Repository.title_to_path(repository.title)
   end
   
-  after_create do |repository|
-    create_repository
-  end
+  after_create :create_repository
   
-  before_destroy do |repository|
-    destroy_repository
-  end
+  before_destroy :destroy_repository
   
   validate :validate_owner_existance
   VALID_TITLE_REGEX = /^[A-Za-z0-9_\.\-\ ]{3,32}$/
@@ -50,11 +46,11 @@ class Repository < ActiveRecord::Base
   end
   
   def ssh_url
-    Bringit::Application.config.ssh_base_url + path + ".git"
+    "#{Bringit::Application.config.ssh_base_url}#{path}.git"
   end
   
   def local_path
-    Bringit::Application.config.git_root + id.to_s + ".git"
+    "#{Bringit::Application.config.git_root}#{id.to_s}.git"
   end
   
   def contributors
@@ -189,7 +185,7 @@ class Repository < ActiveRecord::Base
     if rugged_commit.parents.empty?
       []
     else
-      Commit.identifiers(rugged_commit.parents.map { |c| c.oid }, self)
+      commits.identifiers(rugged_commit.parents.map { |c| c.oid }, self)
     end
   end
   
