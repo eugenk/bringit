@@ -155,7 +155,7 @@ class Repository < ActiveRecord::Base
   end
   
   def build_target_path(url, file_name)
-    file_path = url
+    file_path = url.dup
     file_path << '/' if file_path[-1] != '/' && !file_path.empty?
     file_path << file_name
     
@@ -168,12 +168,13 @@ class Repository < ActiveRecord::Base
 
   def entries_info(commit_oid=nil, url_path='')
     rugged_commit = get_commit(commit_oid)
-    if !rugged_commit && url.empty?
+    if !rugged_commit && url_path.empty?
       []
     else
       contents = folder_contents_rugged(rugged_commit, url_path)
       contents.map do |e|
-        entry_info_rugged(rugged_commit, "#{url_path}/#{e[:name]}")
+        file_path = build_target_path(url_path, e[:name])
+        entry_info_rugged(rugged_commit, file_path)
       end
     end
   end
@@ -194,7 +195,7 @@ class Repository < ActiveRecord::Base
     {
       committer_name: changing_rugged_commit.committer[:name],
       committer_email: changing_rugged_commit.committer[:email],
-      commtter_time: changing_rugged_commit.committer[:time],
+      committer_time: ActionController::Base.helpers.time_ago_in_words(changing_rugged_commit.committer[:time]) + ' ago',
       message: Commit.message_title(changing_rugged_commit.message),
       oid: changing_rugged_commit.oid,
       filename: url.split('/')[-1]

@@ -23,6 +23,7 @@ Bringit::Application.routes.draw do
   match '/commits/:id/:oid/:url' => "repositories#show", constraints: { url: /.*/ }, as: :browse_commits
   
   match '/commits/:id' => "repositories#commits", as: :commits
+  match '/entries/:id' => "repositories#entries_info", as: :entries
   
   match '/search', to: 'repositories#search'
 end

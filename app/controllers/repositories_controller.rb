@@ -23,6 +23,13 @@ class RepositoriesController < ApplicationController
     @breadcrumbs = @url.split('/')
     @current_file = @repository.get_current_file(@oid, @url)
   end
+  
+  def entries_info
+    @repository = Repository.identifier(params[:id]).first!
+    @oid = params[:oid]
+    @url = @repository.get_url(@oid, params[:url])
+    render json: @repository.entries_info(@oid, @url)
+  end
 
   def commits
     @repository = Repository.identifier(params[:id]).first!

@@ -35,7 +35,7 @@ class Commit < ActiveRecord::Base
   end
   
   def title
-    message_title(message)
+    Commit.message_title(message)
   end
   
   def self.message_title(message)
