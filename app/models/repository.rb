@@ -118,47 +118,23 @@ class Repository < ActiveRecord::Base
     commit
   end
   
-  def path_exists_head?(url='')
-    if !repo.empty? && repo.head && repo.head.target
-      path_exists?(repo.head.target, url)
-    else
-      url == ''
-    end
+  def path_exists?(commit_oid=nil, url='')
+    path_exists_rugged?(repo.lookup(commit_oid || repo.head.target), url)
   end
   
-  def path_exists?(commit_oid, url='')
-    path_exists_rugged?(repo.lookup(commit_oid), url)
-  end
-  
-  def folder_contents_head(dir_path='')
-    if !repo.empty? && repo.head && repo.head.target
-      folder_contents(repo.head.target, dir_path)
-    else
-      []
-    end
-  end
-  
-  def folder_contents(commit_oid, dir_path='')
-    folder_contents_rugged(repo.lookup(commit_oid), dir_path)
-  end
-  
-  def get_current_file_head(url='')
-    if !repo.empty? && repo.head && repo.head.target
-      get_current_file(repo.head.target, url)
-    else
-      nil
-    end
+  def folder_contents(commit_oid=nil, dir_path='')
+    folder_contents_rugged(repo.lookup(commit_oid || repo.head.target), dir_path)
   end
   
   def get_current_file(commit_oid, url='')
     get_current_file_rugged(repo.lookup(commit_oid), url)
   end
   
-  def get_url(url)
+  def get_url(oid=nil, url=nil)
     url ||= '' 
     url = url[0..-2] if(url[-1] == '/')
     
-    raise ActionController::RoutingError.new('Not Found') unless path_exists_head?(url)
+    raise ActionController::RoutingError.new('Not Found') unless path_exists?(oid, url)
     
     url
   end

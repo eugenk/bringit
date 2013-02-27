@@ -103,16 +103,16 @@ describe Repository do
       @repository.commits.last.message.should == 'Some commit message'
     end
     it "should exist as head target" do
-      @repository.path_exists_head?('path/file.txt').should == true
+      @repository.path_exists?(nil, 'path/file.txt').should == true
     end
     it "should have the right name" do
-      @repository.get_current_file_head('path/file.txt')[:name].should == 'file.txt'
+      @repository.get_current_file(nil, 'path/file.txt')[:name].should == 'file.txt'
     end
     it "should have the right content" do
-      @repository.get_current_file_head('path/file.txt')[:content].should == 'Some content'
+      @repository.get_current_file(nil, 'path/file.txt')[:content].should == 'Some content'
     end
     it "should have the right mime type" do
-      @repository.get_current_file_head('path/file.txt')[:mime_type].should == Mime::Type.lookup('text/plain')
+      @repository.get_current_file(nil, 'path/file.txt')[:mime_type].should == Mime::Type.lookup('text/plain')
     end
   end
   
@@ -126,7 +126,7 @@ describe Repository do
       @repository.commits.last.message.should == 'Delete file path/file.txt'
     end
     it "should not exist in repository" do
-      @repository.path_exists_head?('path/file.txt').should == false
+      @repository.path_exists?(nil, 'path/file.txt').should == false
     end
   end
   
@@ -138,11 +138,11 @@ describe Repository do
     end
     
     it "should read the right number of contents" do
-      @repository.folder_contents_head.size.should == 1
+      @repository.folder_contents.size.should == 1
     end
     
     it "should read the right contents in folder" do
-      @repository.folder_contents_head.should == [{
+      @repository.folder_contents.should == [{
         type: :dir,
         name: 'path',
         path: 'path'
@@ -150,12 +150,12 @@ describe Repository do
     end
     
     it "subfolder should read the right number of contents" do
-      @repository.folder_contents_head('path').size.should == 2
+      @repository.folder_contents(nil, 'path').size.should == 2
     end
     
     
     it "should read the right contents in subfolder" do
-      @repository.folder_contents_head('path').should == [{
+      @repository.folder_contents(nil, 'path').should == [{
         type: :file,
         name: 'file1.txt',
         path: 'path/file1.txt'
@@ -178,10 +178,10 @@ describe Repository do
       @repository.commits.last.message.should == 'Some commit message2'
     end
     it "should have the right name" do
-      @repository.get_current_file_head('path/file.txt')[:name].should == 'file.txt'
+      @repository.get_current_file(nil, 'path/file.txt')[:name].should == 'file.txt'
     end
     it "should have the right content" do
-      @repository.get_current_file_head('path/file.txt')[:content].should == 'Some content2'
+      @repository.get_current_file(nil, 'path/file.txt')[:content].should == 'Some content2'
     end
   end
   

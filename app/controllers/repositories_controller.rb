@@ -15,10 +15,11 @@ class RepositoriesController < ApplicationController
   
   def show
     @repository = Repository.identifier(params[:id]).first!
-    @url = @repository.get_url(params[:url])
-    @contents = @repository.folder_contents_head(@url)
+    @oid = params[:oid]
+    @url = @repository.get_url(@oid, params[:url])
+    @contents = @repository.folder_contents(@oid, @url)
     @breadcrumbs = @url.split('/')
-    @current_file = @repository.get_current_file_head(@url)
+    @current_file = @repository.get_current_file(@oid, @url)
   end
 
   def commits
@@ -112,7 +113,7 @@ class RepositoriesController < ApplicationController
   
   def raw
     @repository = Repository.identifier(params[:id]).first!
-    @url = @repository.get_url(params[:url])
+    @url = @repository.get_url(nil, params[:url])
     @current_file = @repository.get_current_file_head(@url)
     
     render text: @current_file[:content], content_type: Mime::Type.lookup('application/force-download')
@@ -128,7 +129,7 @@ class RepositoriesController < ApplicationController
   protected
   def get_file
     @repository = Repository.identifier(params[:id]).first!
-    @url = @repository.get_url(params[:url])
+    @url = @repository.get_url(nil, params[:url])
     @current_file = @repository.get_current_file_head(@url)
   end
 end
