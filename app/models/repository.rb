@@ -165,10 +165,65 @@ class Repository < ActiveRecord::Base
   def is_head?(commit_oid=nil)
     commit_oid == nil || (!repo.empty? && commit_oid == repo.head.target)
   end
+
+  def entries_info(commit_oid=nil, url_path='')
+    rugged_commit = get_commit(commit_oid)
+    if !rugged_commit && url.empty?
+      []
+    else
+      contents = folder_contents_rugged(rugged_commit, url_path)
+      contents.map do |e|
+        entry_info_rugged(rugged_commit, "#{url_path}/#{e[:name]}")
+      end
+    end
+  end
+
+  def entry_info(url, commit_oid=nil)
+    rugged_commit = get_commit(commit_oid)
+    entry_info_rugged(get_commit(commit_oid), url)
+  end
   
   # PROTECTED METHODS
-  
+
   protected
+
+  def entry_info_rugged(rugged_commit, url)
+    object = get_object(rugged_commit, url)
+    changing_rugged_commit = get_commit_of_last_change(url, object.oid, rugged_commit)
+
+    {
+      committer_name: changing_rugged_commit.committer[:name],
+      committer_email: changing_rugged_commit.committer[:email],
+      commtter_time: changing_rugged_commit.committer[:time],
+      message: Commit.message_title(changing_rugged_commit.message),
+      oid: changing_rugged_commit.oid,
+      filename: url.split('/')[-1]
+    }
+  end
+  
+  def get_commit_of_last_change(url, previous_entry_oid=nil, rugged_commit=nil, previous_rugged_commit=nil)
+    rugged_commit ||= repo.lookup(repo.head.target)
+
+    if path_exists_rugged?(rugged_commit, url)
+      object = get_object(rugged_commit, url)
+      previous_entry_oid ||= object.oid
+      if object.oid == previous_entry_oid
+        if rugged_commit.parents.empty?
+          rugged_commit
+        else
+          parents = rugged_commit.parents.sort_by do |p|
+            get_commit_of_last_change(url, previous_entry_oid, p, rugged_commit).committer[:time]
+          end
+          get_commit_of_last_change(url, previous_entry_oid, parents[-1], rugged_commit)
+        end
+      else
+        previous_rugged_commit
+      end
+    else
+      previous_rugged_commit
+    end
+  end
+
   def get_commit(commit_oid=nil)
     if repo.empty?
       nil

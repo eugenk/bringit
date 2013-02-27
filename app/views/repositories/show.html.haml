@@ -35,7 +35,7 @@
           %li.commit
             .row-fluid
               .span9
-                .message= link_to commit.message_title, browse_commits_root_path(@repository.path, commit.commit_hash)
+                .message= link_to commit.title, browse_commits_root_path(@repository.path, commit.commit_hash)
                 .time-author
                   by
                   = commit.committer_name 

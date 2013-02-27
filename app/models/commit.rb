@@ -34,7 +34,11 @@ class Commit < ActiveRecord::Base
     commit_hash[0..6]
   end
   
-  def message_title
+  def title
+    message_title(message)
+  end
+  
+  def self.message_title(message)
     message.split('\n').first
   end
 end

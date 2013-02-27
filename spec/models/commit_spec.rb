@@ -87,7 +87,7 @@ describe Commit do
     @commit.short_hash.size.should == 7
   end
   
-  it "when message_title returns only first line of message" do
-    @commit.message_title.should == @commit.message.split('\n').first
+  it "when title returns only first line of message" do
+    @commit.title.should == @commit.message.split('\n').first
   end
 end
