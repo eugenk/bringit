@@ -1,0 +1,17 @@
+- provide(:title, "Commits of #{@repository.title}")
+
+= render partial: 'show_top'
+
+%ul.nav.nav-tabs{id: 'repository-tabs'}
+  %li
+    = link_to 'Files', repository_path(@repository.path)
+  %li.active
+    = link_to 'Commits', commits_path(@repository.path)
+
+.tab-content
+  #commits.tab-pane.active
+    - if @repository.commits.empty?
+      .muted
+        No commits in this repository.
+    - else
+      = render partial: 'commits'
