@@ -1,5 +1,6 @@
 # RVM
 require 'rvm/capistrano'
+require_relative 'initializers/bringit'
 set :rvm_ruby_string, '1.9.3@bringit'
 set :rvm_type, :system
 
