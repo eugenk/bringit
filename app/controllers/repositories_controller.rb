@@ -75,6 +75,7 @@ class RepositoriesController < ApplicationController
     @repository = Repository.identifier(params[:repository_id]).first!
     @url = @repository.get_url(params[:url])
     @directory = params[:directory]
+    params[:message].strip!
     
     if !params[:message] || params[:message].empty?
       flash[:error] = "Please enter a commit message"
@@ -92,6 +93,7 @@ class RepositoriesController < ApplicationController
   end
 
   def update_file
+    params[:message].strip!
     get_file
     if !params[:message] || params[:message].empty?
       flash[:error] = "Please enter a commit message"
