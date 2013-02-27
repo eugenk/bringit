@@ -8,6 +8,7 @@ class Repository < ActiveRecord::Base
   has_many :owners, through: :repository_owners, class_name: 'User'
   has_many :pushes, class_name: 'Push', foreign_key: 'repository_id'
   has_many :commits, class_name: 'Commit', through: :pushes, :limit => 3
+  has_many :all_commits, class_name: 'Commit', through: :pushes
   
   default_scope order: 'updated_at desc'
   scope :search, ->(term) { where "title LIKE ?", "%" << term << "%" }

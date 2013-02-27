@@ -4,9 +4,9 @@
 
 %ul.nav.nav-tabs{id: 'repository-tabs'}
   %li.active
-    = link_to 'Files', '#'
+    = link_to 'Files', repository_path(@repository.path)
   %li
-    = link_to 'Commits', '#'
+    = link_to 'Commits', commits_path(@repository.path)
 
 .tab-content
   #files.tab-pane.active

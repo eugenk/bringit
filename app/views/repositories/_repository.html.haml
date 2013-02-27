@@ -9,7 +9,7 @@
     .span2
       %i.icon-sitemap.icon-4x
       .browse-history
-        = link_to 'Browse History', repositories_path, class: 'btn'
+        = link_to 'Browse History', commits_path(repository.path), class: 'btn'
     .span10
       %ol
         - repository.commits.each do |commit|

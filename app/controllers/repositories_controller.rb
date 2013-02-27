@@ -20,6 +20,11 @@ class RepositoriesController < ApplicationController
     @breadcrumbs = @url.split('/')
     @current_file = @repository.get_current_file_head(@url)
   end
+
+  def commits
+    @repository = Repository.identifier(params[:id]).first!
+    @commits = @repository.all_commits.page params[:page]
+  end
   
   def new
     @repository = Repository.new

@@ -11,6 +11,9 @@ class Commit < ActiveRecord::Base
   validates :commit_hash, presence: true, length: { maximum: 40, minimum: 40 }, format: VALID_HASH_REGEX
   validates :message, presence: true
   
+  paginates_per 10
+  max_paginates_per 50
+  
   default_scope order: 'committer_time desc'
   
   scope :identifiers, ->(oids, repository) do
