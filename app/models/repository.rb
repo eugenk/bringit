@@ -197,13 +197,13 @@ class Repository < ActiveRecord::Base
 
   protected
   
-  def entry_info_list_rugged(rugged_commit, url, file_existed_previously=true, entries=[])
+  def entry_info_list_rugged(rugged_commit, url, entries=[])
     if object = get_object(rugged_commit, url)
       changing_rugged_commit = get_commit_of_last_change(url, object.oid, rugged_commit)
       if changing_rugged_commit
         new_entry = changing_rugged_commit.oid
         new_entries = changing_rugged_commit.parents.map do |p|
-          entry_info_list_rugged(p, url, true)
+          entry_info_list_rugged(p, url)
         end
         entries.push(new_entry).concat(new_entries.flatten)
       else
@@ -211,7 +211,7 @@ class Repository < ActiveRecord::Base
       end
     else
       new_entries = rugged_commit.parents.map do |p|
-        entry_info_list_rugged(p, url, false, entries)
+        entry_info_list_rugged(p, url, entries)
       end
 
       new_entries.flatten
@@ -238,20 +238,17 @@ class Repository < ActiveRecord::Base
   def get_commit_of_last_change(url, previous_entry_oid=nil, rugged_commit=nil, previous_rugged_commit=nil)
     rugged_commit ||= repo.lookup(repo.head.target)
 
-    if path_exists_rugged?(rugged_commit, url)
-      object = get_object(rugged_commit, url)
-      previous_entry_oid ||= object.oid
-      if object.oid == previous_entry_oid
-        if rugged_commit.parents.empty?
-          rugged_commit
-        else
-          parents = rugged_commit.parents.sort_by do |p|
-            get_commit_of_last_change(url, previous_entry_oid, p, rugged_commit).committer[:time]
-          end
-          get_commit_of_last_change(url, previous_entry_oid, parents[-1], rugged_commit)
-        end
+    object = get_object(rugged_commit, url)
+    object_oid = object ? object.oid : nil
+    previous_entry_oid ||= object_oid
+    if object_oid == previous_entry_oid
+      if rugged_commit.parents.empty?
+        rugged_commit
       else
-        previous_rugged_commit
+        parents = rugged_commit.parents.sort_by do |p|
+          get_commit_of_last_change(url, previous_entry_oid, p, rugged_commit).committer[:time]
+        end
+        get_commit_of_last_change(url, previous_entry_oid, parents[-1], rugged_commit)
       end
     else
       previous_rugged_commit
