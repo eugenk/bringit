@@ -10,3 +10,4 @@
 //= require layout
 //= require repository
 //= require moment
+//= require jquery.truncate
