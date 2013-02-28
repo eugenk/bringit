@@ -1,0 +1,10 @@
+%ul.nav.nav-tabs{id: 'repository-tabs'}
+  %li{ class: (@commits ? '' : 'active') }
+    - if @is_head
+      = link_to 'Files', repository_path(@repository.path)
+    - elsif @oid
+      = link_to 'Files', browse_commits_root_path(@repository.path, @oid)
+    - else
+      = link_to 'Files', repository_path(@repository.path)
+  %li{ class: (@commits ? 'active' : '') }
+    = link_to 'Commits', commits_path(@repository.path)

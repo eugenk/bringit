@@ -1,0 +1,7 @@
+= render partial: 'breadcrumbs'
+.pull-right= paginate @commits
+.clearfix
+
+
+- group_commits(@commits).each do |group| 
+  = render partial: 'commit_group', locals: {group: group }

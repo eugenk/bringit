@@ -17,7 +17,7 @@ class Commit < ActiveRecord::Base
   default_scope order: 'committer_time desc, id desc'
   
   scope :identifiers, ->(oids, repository) do
-    where("commit_hash IN (?)", oids).select { |commit| commit.repository == repository }
+    where("commit_hash IN (?)", oids).joins(:push).where("pushes.repository_id = ?", repository.id)
   end
   
   scope :identifier, ->(oid) do

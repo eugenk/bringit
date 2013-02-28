@@ -1,49 +1,9 @@
 .well.well-small.read-file
-  .row-fluid
-    .span6
-      %h2= @current_file[:name]
-    .span6
-      .btn-group.pull-right
-        - if @current_file[:mime_category] == 'text' && user_signed_in? && @is_head
-          = link_to raw('<i class="icon-edit"></i> Edit'), '#', class: 'btn edit-file', 
-            'data-replace' => '<i class="icon-edit"></i> Commit changes' 
-        - else
-          = link_to raw('<i class="icon-edit"></i> Edit'), '#', class: 'btn disabled', 'data-toggle' => 'tooltip', 
-              'data-original-title' => 'You cannot edit files in history'
-        - if @is_head   
-          = link_to raw('<i class="icon-download-alt"></i> Download'), raw_repository_path(@repository, @url), class: 'btn'   
-        - else  
-          = link_to raw('<i class="icon-download-alt"></i> Download'), raw_commits_path(@repository, @oid, @url), class: 'btn'
-        
-        = link_to 'History', '#', class: 'btn'
-        - if user_signed_in? && @is_head
-          = link_to raw('<i class="icon-trash"></i> Delete'), delete_file_repository_path(@repository.path, @url), method: :delete,
-                class: 'btn' 
-        - else
-          = link_to raw('<i class="icon-trash"></i> Delete'), '#', class: 'btn disabled', 'data-toggle' => 'tooltip', 
-              'data-original-title' => 'You cannot delete files in history'
-  .clearfix
+  = render partial: 'read_file_options' 
+  
   - case @current_file[:mime_category]
   - when 'text'
-    - if @current_file[:size] <= Bringit::Application.config.max_read_filesize
-      .file-content
-        = form_for(@repository, url: update_file_repository_path(@repository.path, @url), method: :post, html: {class: 'form-horizontal edit-form'}) do |f|
-          - if user_signed_in? && @is_head
-            .hidden-options
-              .pull-right.well.well-small
-                = label_tag 'message', raw('<abbr class="required">*</abbr> Message')
-                = text_area_tag 'message', @message || '', class: 'input-xxlarge'
-              .clearfix  
-          = text_area_tag 'content', @current_file[:content], class: 'input-xxlarge', id: 'code-area', 
-            'data-mime-type' => get_mime_string(@current_file[:name], @current_file[:mime_type])
-              
-    - else 
-      .alert.alert-info
-        File too large to display.
-        - if @is_head
-          = link_to raw('<i class="icon-download-alt"></i> Download'), raw_repository_path(@repository, @url), class: 'btn'   
-        - else  
-          = link_to raw('<i class="icon-download-alt"></i> Download'), raw_commits_path(@repository, @oid, @url), class: 'btn'
+    = render partial: 'read_file_text' 
   - when 'image'
     .image-content
       - if @is_head
@@ -53,7 +13,4 @@
   - else 
     .alert.alert-info
       Cannot display this filetype.
-    - if @is_head
-      = link_to raw('<i class="icon-download-alt"></i> Download'), raw_repository_path(@repository, @url), class: 'btn'   
-    - else  
-      = link_to raw('<i class="icon-download-alt"></i> Download'), raw_commits_path(@repository, @oid, @url), class: 'btn'
+    = render partial: 'download_file' 

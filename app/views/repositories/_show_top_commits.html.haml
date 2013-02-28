@@ -1,0 +1,11 @@
+.row
+  .span8
+    %h1.repository-title
+      = link_to @repository.title, repository_path(@repository.path)
+  .span4
+    .pull-right
+      .input-append{style: 'padding-top:10px'}
+        %input.span3{type: 'text', value: @repository.ssh_url }
+        %span.add-on
+          %i.icon-sitemap
+.clearfix

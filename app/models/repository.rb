@@ -202,7 +202,7 @@ class Repository < ActiveRecord::Base
     if object
       changing_rugged_commit = get_commit_of_last_change(url, object.oid, rugged_commit)
       if changing_rugged_commit
-        new_entry = build_entry_info(changing_rugged_commit, url)
+        new_entry = changing_rugged_commit.oid
         new_entries = changing_rugged_commit.parents.map do |p|
           entry_info_list_rugged(p, url)
         end

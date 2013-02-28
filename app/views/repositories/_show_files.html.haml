@@ -1,15 +1,4 @@
-%ul.breadcrumb
-  - unless @is_head
-    %li
-      %span.label.label-info= @current_commit.short_hash
-  - repository_breadcrumbs(@repository, @breadcrumbs,@is_head,@oid).each do |crumb|
-    - if crumb[:last]
-      %li.active
-        = crumb[:name]
-    - else
-      %li
-        = link_to crumb[:name], crumb[:path]
-        %span.divider /
+= render partial: 'breadcrumbs'
 
 - if @current_file
   = render partial: 'read_file'

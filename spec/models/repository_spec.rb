@@ -123,7 +123,7 @@ describe Repository do
       @repository.delete_file(@repository.owners.first, 'path/file.txt')
     end
     it "should exist a commit in the database" do
-      @repository.commits.last.message.should == 'Delete file path/file.txt'
+      @repository.all_commits.first.message.should == 'Delete file path/file.txt'
     end
     it "should not exist in repository" do
       @repository.path_exists?(nil, 'path/file.txt').should == false
@@ -175,7 +175,7 @@ describe Repository do
       @repository.commit_file(@repository.owners.first, 'Some content2', 'path/file.txt', 'Some commit message2')
     end
     it "should exist commit in the database" do
-      @repository.commits.last.message.should == 'Some commit message2'
+      @repository.all_commits.first.message.should == 'Some commit message2'
     end
     it "should have the right name" do
       @repository.get_current_file(nil, 'path/file.txt')[:name].should == 'file.txt'

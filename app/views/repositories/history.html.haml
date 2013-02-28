@@ -1,0 +1,5 @@
+- provide(:title, "History of #{@repository.title} / #{@current_file[:name].force_encoding('UTF-8')}")
+
+= render partial: 'show_top'
+
+= render partial: 'commits_history'

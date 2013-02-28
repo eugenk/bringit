@@ -3,27 +3,9 @@
 - if @is_head
   = render partial: 'show_top'
 - else
-  .row
-    .span8
-      %h1.repository-title
-        = link_to @repository.title, repository_path(@repository.path)
-    .span4
-      .pull-right
-        .input-append{style: 'padding-top:10px'}
-          %input.span3{type: 'text', value: @repository.ssh_url }
-          %span.add-on
-            %i.icon-sitemap
-  .clearfix
+  = render partial: 'show_top_commits'  
 
-
-%ul.nav.nav-tabs{id: 'repository-tabs'}
-  %li.active
-    - if @is_head
-      = link_to 'Files', repository_path(@repository.path)
-    - else
-      = link_to 'Files', browse_commits_root_path(@repository.path, @oid)
-  %li
-    = link_to 'Commits', commits_path(@repository.path)
+= render partial: 'show_tabs'
 
 .tab-content
   #files.tab-pane.active

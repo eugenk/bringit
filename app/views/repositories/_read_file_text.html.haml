@@ -1,0 +1,16 @@
+- if @current_file[:size] <= Bringit::Application.config.max_read_filesize
+  .file-content
+    = form_for(@repository, url: update_file_repository_path(@repository.path, @url), method: :post, html: {class: 'form-horizontal edit-form'}) do |f|
+      - if user_signed_in? && @is_head
+        .hidden-options
+          .pull-right.well.well-small
+            = label_tag 'message', raw('<abbr class="required">*</abbr> Message')
+            = text_area_tag 'message', @message || '', class: 'input-xxlarge'
+          .clearfix  
+      = text_area_tag 'content', @current_file[:content], class: 'input-xxlarge', id: 'code-area', 
+        'data-mime-type' => get_mime_string(@current_file[:name], @current_file[:mime_type])
+          
+- else 
+  .alert.alert-info
+    File too large to display.
+    = render partial: 'download_file' 

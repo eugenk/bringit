@@ -2,11 +2,7 @@
 
 = render partial: 'show_top'
 
-%ul.nav.nav-tabs{id: 'repository-tabs'}
-  %li
-    = link_to 'Files', repository_path(@repository.path)
-  %li.active
-    = link_to 'Commits', commits_path(@repository.path)
+= render partial: 'show_tabs'
 
 .tab-content
   #commits.tab-pane.active

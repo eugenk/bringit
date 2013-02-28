@@ -130,6 +130,17 @@ class RepositoriesController < ApplicationController
     render text: @current_file[:content], content_type: Mime::Type.lookup('application/force-download')
   end
   
+  def history
+    @repository = Repository.identifier(params[:id]).first!
+    @oid = params[:oid]
+    @url = @repository.get_url(@oid, params[:url])
+    @is_head = @repository.is_head?(@oid)
+    @current_commit = @is_head ? nil : @repository.all_commits.identifier(@oid).first!
+    @current_file = @repository.get_current_file(@oid, @url)
+    @breadcrumbs = @url.split('/')
+    @commits = Commit.identifiers(@repository.entry_info_list(@url, @oid), @repository).page params[:page]
+  end
+  
   def delete_file
     get_file
     @repository.delete_file(current_user, @url)
