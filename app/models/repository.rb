@@ -238,14 +238,14 @@ class Repository < ActiveRecord::Base
       if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
           files_contents << {
           name: e[:name],
-          path: "#{directory}#{e[:name]}", #FIXME: enter real path
+          path: "#{directory}#{e[:name]}",
           diff: 'diff not available', #FIXME: enter diff
           type: :change
         }
       elsif !parent_tree[e[:name]]
         files_contents << {
           name: e[:name],
-          path: "#{directory}#{e[:name]}", #FIXME: enter real path
+          path: "#{directory}#{e[:name]}",
           diff: repo.lookup(e[:oid]).content, #FIXME: use correct diff syntax
           type: :add
         }
@@ -255,7 +255,7 @@ class Repository < ActiveRecord::Base
       if !current_tree[e[:name]]
         files_contents << {
           name: e[:name],
-          path: "#{directory}#{e[:name]}", #FIXME: enter real path
+          path: "#{directory}#{e[:name]}",
           diff: '', #FIXME: use correct diff syntax
           type: :delete
         }
