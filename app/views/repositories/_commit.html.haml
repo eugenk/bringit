@@ -16,10 +16,10 @@
               %i.icon-file 
               Show
           - else
-            = link_to '#', class: 'btn disabled' do
+            = link_to '#', class: 'btn disabled', 'data-toggle' => 'tooltip', 'data-original-title' => 'You cannot download a deleted file' do
               %i.icon-download
               Download
-            = link_to '#', class: 'btn disabled' do
+            = link_to '#', class: 'btn disabled', 'data-toggle' => 'tooltip', 'data-original-title' => 'You cannot view a deleted file' do
               %i.icon-file
               Show
           = link_to commit.short_hash, browse_commits_root_path(@repository.path, commit.commit_hash), class: 'btn'
