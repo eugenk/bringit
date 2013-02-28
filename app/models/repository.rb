@@ -228,7 +228,7 @@ class Repository < ActiveRecord::Base
     end
 
     parent_tree.each_tree do |e|
-      if current_tree[e[:name]]
+      if !current_tree[e[:name]]
         files_contents.concat(get_changed_files_contents(repo.lookup(current_tree[e[:name]][:oid]), repo.lookup(e[:oid]), "#{directory}#{e[:name]}/"))
       end
     end
@@ -280,7 +280,7 @@ class Repository < ActiveRecord::Base
       committer_name: changing_rugged_commit.committer[:name],
       committer_email: changing_rugged_commit.committer[:email],
       committer_time: changing_rugged_commit.committer[:time].iso8601,
-      message: Commit.message_title(changing_rugged_commit.title),
+      message: Commit.message_title(changing_rugged_commit.message),
       oid: changing_rugged_commit.oid,
       filename: url.split('/')[-1]
     }
