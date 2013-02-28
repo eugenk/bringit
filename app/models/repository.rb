@@ -201,10 +201,36 @@ class Repository < ActiveRecord::Base
       entry_info_list_rugged(rugged_commit, url)
     end
   end
+
+  def get_changed_files(commit_oid=nil)
+    rugged_commit = get_commit(commit_oid)
+    if !rugged_commit
+      []
+    else
+      get_changed_files_rugged(rugged_commit)
+    end
+  end
   
   # PROTECTED METHODS
 
   protected
+
+  def entry_info_rugged(rugged_commit, url)
+    object = get_object(rugged_commit, url)
+    changing_rugged_commit = get_commit_of_last_change(url, object.oid, rugged_commit)
+    build_entry_info(changing_rugged_commit, url)
+  end
+  
+  def build_entry_info(changing_rugged_commit, url)
+    {
+      committer_name: changing_rugged_commit.committer[:name],
+      committer_email: changing_rugged_commit.committer[:email],
+      committer_time: changing_rugged_commit.committer[:time].iso8601,
+      message: Commit.message_title(changing_rugged_commit.message),
+      oid: changing_rugged_commit.oid,
+      filename: url.split('/')[-1]
+    }
+  end
   
   def entry_info_list_rugged(rugged_commit, url)
     entries = []
@@ -231,21 +257,8 @@ class Repository < ActiveRecord::Base
     
   end
 
-  def entry_info_rugged(rugged_commit, url)
-    object = get_object(rugged_commit, url)
-    changing_rugged_commit = get_commit_of_last_change(url, object.oid, rugged_commit)
-    build_entry_info(changing_rugged_commit, url)
-  end
-  
-  def build_entry_info(changing_rugged_commit, url)
-    {
-      committer_name: changing_rugged_commit.committer[:name],
-      committer_email: changing_rugged_commit.committer[:email],
-      committer_time: changing_rugged_commit.committer[:time].iso8601,
-      message: Commit.message_title(changing_rugged_commit.message),
-      oid: changing_rugged_commit.oid,
-      filename: url.split('/')[-1]
-    }
+  def get_changed_files_rugged(rugged_commit) 
+    []
   end
   
   def get_commit_of_last_change(url, previous_entry_oid=nil, rugged_commit=nil, previous_rugged_commit=nil)
