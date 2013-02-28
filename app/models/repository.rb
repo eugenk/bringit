@@ -210,6 +210,60 @@ class Repository < ActiveRecord::Base
       get_changed_files_rugged(rugged_commit)
     end
   end
+
+  def get_changed_files_rugged(rugged_commit)
+    changed_files_infos = rugged_commit.parents.map do |p|
+      get_changed_files_contents(rugged_commit.tree, p.tree)
+    end
+
+    changed_files_infos.flatten
+  end
+
+  def get_changed_files_contents(current_tree, parent_tree, directory='')
+    files_contents = []
+    current_tree.each_tree do |e|
+      if parent_tree[e[:name]]
+        files_contents.concat(get_changed_files_contents(repo.lookup(e[:oid]), repo.lookup(parent_tree[e[:name]][:oid]), "#{directory}#{e[:name]}/"))
+      end
+    end
+
+    parent_tree.each_tree do |e|
+      if current_tree[e[:name]]
+        files_contents.concat(get_changed_files_contents(repo.lookup(current_tree[e[:name]][:oid]), repo.lookup(e[:oid]), "#{directory}#{e[:name]}/"))
+      end
+    end
+
+    # get diff from current directory
+    current_tree.each_blob do |e|
+      if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
+          files_contents << {
+          name: e[:name],
+          path: "#{directory}#{e[:name]}", #FIXME: enter real path
+          diff: 'diff not available', #FIXME: enter diff
+          type: :change
+        }
+      elsif !parent_tree[e[:name]]
+        files_contents << {
+          name: e[:name],
+          path: "#{directory}#{e[:name]}", #FIXME: enter real path
+          diff: repo.lookup(e[:oid]).content, #FIXME: use correct diff syntax
+          type: :add
+        }
+      end
+    end
+    parent_tree.each_blob do |e|
+      if !current_tree[e[:name]]
+        files_contents << {
+          name: e[:name],
+          path: "#{directory}#{e[:name]}", #FIXME: enter real path
+          diff: '', #FIXME: use correct diff syntax
+          type: :delete
+        }
+      end
+    end
+
+    files_contents
+  end
   
   # PROTECTED METHODS
 
@@ -226,7 +280,7 @@ class Repository < ActiveRecord::Base
       committer_name: changing_rugged_commit.committer[:name],
       committer_email: changing_rugged_commit.committer[:email],
       committer_time: changing_rugged_commit.committer[:time].iso8601,
-      message: Commit.message_title(changing_rugged_commit.message),
+      message: Commit.message_title(changing_rugged_commit.title),
       oid: changing_rugged_commit.oid,
       filename: url.split('/')[-1]
     }
@@ -254,39 +308,8 @@ class Repository < ActiveRecord::Base
     else
       entries
     end
-    
   end
 
-  def get_changed_files_rugged(rugged_commit) 
-    changed_files_infos = rugged_commit.parents.map do |p|
-      get_changed_files_contents(rugged_commit, p)
-    end
-
-    changed_files_infos.flatten
-  end
-
-  def get_changed_files_contents(rugged_commit, parent)
-    files_contents = []
-    rugged_commit.tree.each do |e|
-      if parent.tree[e[:name]]
-
-      else
-        if e[:oid] != parent.tree[e[:name]][:oid]
-          files_contents << {
-          name: e[:name],
-          path: e[:name], #FIXME: enter real path
-          diff: "" #FIXME: enter diff
-        }
-        end
-      end
-    end
-  end
-
-  #{
-  #  path: "path/to/filename",
-  #  name: "filename",
-  #  diff: "something"
-  #}
   
   def get_commit_of_last_change(url, previous_entry_oid=nil, rugged_commit=nil, previous_rugged_commit=nil)
     rugged_commit ||= repo.lookup(repo.head.target)
