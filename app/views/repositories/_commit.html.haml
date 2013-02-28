@@ -15,7 +15,7 @@
             = link_to browse_commits_path(@repository.path, commit.commit_hash, @url), class: 'btn' do
               %i.icon-file 
               Show
-          - else
+          - elsif @current_file
             = link_to '#', class: 'btn disabled', 'data-toggle' => 'tooltip', 'data-original-title' => 'You cannot download a deleted file' do
               %i.icon-download
               Download
