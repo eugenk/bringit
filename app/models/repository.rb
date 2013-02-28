@@ -152,6 +152,16 @@ class Repository < ActiveRecord::Base
     
     url
   end
+
+  def get_branches
+    repo.refs.map do |r|
+      {
+        refname: r.name,
+        name: r.name.split('/')[-1],
+        oid: r.target
+      }
+    end
+  end
   
   def build_target_path(url, file_name)
     file_path = url.dup
