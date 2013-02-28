@@ -274,3 +274,22 @@ h2.commit-date {
     text-shadow: 0 0 0;
   }
 }
+.message {
+  h2 {
+    @extend h4;
+    margin-top:0px;
+    a {
+      
+    }
+  }
+  .full-message {
+    display:none;
+  }
+  .open-full {
+    color:rgba(0,0,0,0.2);
+    &:hover {
+      text-decoration:none;
+      color:rgba(0,0,0,0.4);
+    }
+  }
+}

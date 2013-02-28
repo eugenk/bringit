@@ -73,8 +73,19 @@ $(function() {
 				html += ' ['+value.committer_name+']';
 				table.find("tr[data-id="+key+"] td.last-commit").html(html);
 			});
+			$(".file-table tr td.last-commit a").truncate({
+			    width: 400,
+    			token: '&hellip;'
+			});
 		});	
 	}
+	
+	$(".message .open-full").click(function() {
+		var msg = $(this).parentsUntil(".message").parent();
+		msg.find(".full-message").slideToggle();
+		$(this).find("i").toggleClass("icon-minus");
+		return false;
+	});
 });
 
 $.fn.relatizeTimestamps = function() {
