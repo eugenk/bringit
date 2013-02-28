@@ -1,7 +1,16 @@
 %ul.breadcrumb
-  - unless @is_head
-    %li
-      %span.label.label-info= @current_commit.short_hash
+  %li.git-branch
+    .dropdown
+      = link_to '#', class: 'dropdown-toggle', 'data-toggle' => 'dropdown' do
+        %span.label{ class: (@current_commit ? 'label-info' : 'label-default') }
+          - if @current_commit
+            = @current_commit.short_hash
+          - else
+            master
+      %ul.dropdown-menu{ role: 'menu', 'aria-labelledby' => 'dropdownMenu' }
+        - get_branches(@repository, @current_commit).each do |b|
+          %li
+            = link_to b[:name], b[:url]
   - repository_breadcrumbs(@repository, @breadcrumbs,@is_head,@oid).each do |crumb|
     - if crumb[:last]
       %li.active
