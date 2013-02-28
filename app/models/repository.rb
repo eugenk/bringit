@@ -199,17 +199,23 @@ class Repository < ActiveRecord::Base
   
   def entry_info_list_rugged(rugged_commit, url, entries=[])
     object = get_object(rugged_commit, url)
-    changing_rugged_commit = get_commit_of_last_change(url, object ? object.oid : nil, rugged_commit)
-
-    if !changing_rugged_commit
-      entries
-    elsif changing_rugged_commit == rugged_commit
-      entries << build_entry_info(rugged_commit, url)
+    if object
+      changing_rugged_commit = get_commit_of_last_change(url, object.oid, rugged_commit)
+      if changing_rugged_commit
+        new_entry = build_entry_info(changing_rugged_commit, url)
+        new_entries = changing_rugged_commit.parents.map do |p|
+          entry_info_list_rugged(p, url)
+        end
+        entries.push(new_entry).concat(new_entries)
+      else
+        entries
+      end
     else
-      entries << build_entry_info(changing_rugged_commit, url)
-      entries.concat(changing_rugged_commit.parents.map do |p|
+      new_entries = rugged_commit.parents.map do |p|
         entry_info_list_rugged(p, url, entries)
-      end)
+      end
+      
+      new_entries.flatten
     end
   end
 
