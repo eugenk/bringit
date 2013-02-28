@@ -10,10 +10,17 @@
     .span5
       .pull-right.short_hash
         .btn-group.pull-right
-          = link_to commit.short_hash, browse_commits_root_path(@repository.path, commit.commit_hash), class: 'btn'
-          - if @current_file
+          - if @current_file && @repository.path_exists?(commit.commit_hash, @url)
             = render partial: 'download_file' 
             = link_to browse_commits_path(@repository.path, commit.commit_hash, @url), class: 'btn' do
               %i.icon-file 
               Show
+          - else
+            = link_to '#', class: 'btn disabled' do
+              %i.icon-download
+              Download
+            = link_to '#', class: 'btn disabled' do
+              %i.icon-file
+              Show
+          = link_to commit.short_hash, browse_commits_root_path(@repository.path, commit.commit_hash), class: 'btn'
     .clearfix

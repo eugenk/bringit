@@ -197,25 +197,29 @@ class Repository < ActiveRecord::Base
 
   protected
   
-  def entry_info_list_rugged(rugged_commit, url, entries=[])
-    if object = get_object(rugged_commit, url)
-      changing_rugged_commit = get_commit_of_last_change(url, object.oid, rugged_commit)
-      if changing_rugged_commit
-        new_entry = changing_rugged_commit.oid
-        new_entries = changing_rugged_commit.parents.map do |p|
-          entry_info_list_rugged(p, url)
-        end
-        entries.push(new_entry).concat(new_entries.flatten)
-      else
-        entries
+  def entry_info_list_rugged(rugged_commit, url)
+    entries = []
+    
+    changing_rugged_commit = get_commit_of_last_change(url, nil, rugged_commit)
+    previous_rugged_commit = nil
+    
+    until changing_rugged_commit == previous_rugged_commit || !changing_rugged_commit do
+      entries << changing_rugged_commit.oid
+      
+      previous_rugged_commit = changing_rugged_commit
+      
+      unless changing_rugged_commit.parents.empty?
+        changing_rugged_commit = get_commit_of_last_change(url, nil, changing_rugged_commit.parents.first)
       end
-    else
-      new_entries = rugged_commit.parents.map do |p|
-        entry_info_list_rugged(p, url, entries)
-      end
-
-      new_entries.flatten
     end
+    
+    # file does not exist in inital commit
+    if changing_rugged_commit && !path_exists_rugged?(changing_rugged_commit, url)
+      entries[0..-2]
+    else
+      entries
+    end
+    
   end
 
   def entry_info_rugged(rugged_commit, url)
@@ -240,7 +244,9 @@ class Repository < ActiveRecord::Base
 
     object = get_object(rugged_commit, url)
     object_oid = object ? object.oid : nil
-    previous_entry_oid ||= object_oid
+    
+    previous_entry_oid ||= object_oid unless previous_rugged_commit
+    
     if object_oid == previous_entry_oid
       if rugged_commit.parents.empty?
         rugged_commit
