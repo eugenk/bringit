@@ -184,8 +184,8 @@ class Repository < ActiveRecord::Base
     entry_info_rugged(get_commit(commit_oid), url)
   end
   
-  def entry_info_list(url)
-    rugged_commit = get_commit
+  def entry_info_list(url, commit_oid=nil)
+    rugged_commit = get_commit(commit_oid)
     if !rugged_commit
       []
     else
@@ -214,7 +214,7 @@ class Repository < ActiveRecord::Base
       new_entries = rugged_commit.parents.map do |p|
         entry_info_list_rugged(p, url, entries)
       end
-      
+
       new_entries.flatten
     end
   end
