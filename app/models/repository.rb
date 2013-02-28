@@ -258,8 +258,35 @@ class Repository < ActiveRecord::Base
   end
 
   def get_changed_files_rugged(rugged_commit) 
-    []
+    changed_files_infos = rugged_commit.parents.map do |p|
+      get_changed_files_contents(rugged_commit, p)
+    end
+
+    changed_files_infos.flatten
   end
+
+  def get_changed_files_contents(rugged_commit, parent)
+    files_contents = []
+    rugged_commit.tree.each do |e|
+      if parent.tree[e[:name]]
+
+      else
+        if e[:oid] != parent.tree[e[:name]][:oid]
+          files_contents << {
+          name: e[:name],
+          path: e[:name], #FIXME: enter real path
+          diff: "" #FIXME: enter diff
+        }
+        end
+      end
+    end
+  end
+
+  #{
+  #  path: "path/to/filename",
+  #  name: "filename",
+  #  diff: "something"
+  #}
   
   def get_commit_of_last_change(url, previous_entry_oid=nil, rugged_commit=nil, previous_rugged_commit=nil)
     rugged_commit ||= repo.lookup(repo.head.target)
