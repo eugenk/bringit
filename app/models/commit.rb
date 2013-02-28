@@ -14,7 +14,7 @@ class Commit < ActiveRecord::Base
   paginates_per 10
   max_paginates_per 50
   
-  default_scope order: 'committer_time desc'
+  default_scope order: 'committer_time desc, id desc'
   
   scope :identifiers, ->(oids, repository) do
     where("commit_hash IN (?)", oids).select { |commit| commit.repository == repository }
