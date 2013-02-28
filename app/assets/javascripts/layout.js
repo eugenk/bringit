@@ -73,7 +73,6 @@ $(function() {
 				html += ' ['+value.committer_name+']';
 				table.find("tr[data-id="+key+"] td.last-commit").html(html);
 			});
-			$("#results").append(html);
 		});	
 	}
 });
