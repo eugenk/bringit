@@ -66,7 +66,7 @@ $(function() {
 			}	
 		}).done(function(list) {
 			$.each(list, function(key, value) {
-				table.find("tr[data-id="+key+"] td.last-modified").html(value.committer_time);
+				table.find("tr[data-id="+key+"] td.last-modified").html('<span class="timestamp">'+value.committer_time+'</span>').relatizeTimestamps();
 				var html = '<a href="'+Routes.browse_commits_root_path(table.data('repository'), value.oid)+'">';
 				html += value.message;
 				html += '</a>';
@@ -75,6 +75,20 @@ $(function() {
 			});
 		});	
 	}
+});
+
+$.fn.relatizeTimestamps = function() {
+  $(this).find(".timestamp").each(function() {
+    var $this, time;
+    $this = $(this);
+    time = moment($this.text());
+    return $this.text(time.fromNow()).attr("title", time.format("LLLL"));
+  });
+  return this;
+};
+
+$(function() {
+  return $("body").relatizeTimestamps();
 });
 
 (function() {

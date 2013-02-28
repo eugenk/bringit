@@ -5,8 +5,7 @@
       .time-author
         by
         = commit.committer_name 
-        = time_ago_in_words(commit.committer_time)
-        ago
+        = timestamp(commit.committer_time)
     .span5
       .pull-right.short_hash
         .btn-group.pull-right

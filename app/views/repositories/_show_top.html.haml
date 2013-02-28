@@ -30,8 +30,7 @@
   .span9.muted
     %i.icon-calendar
     last updated
-    = time_ago_in_words(@repository.updated_at)
-    ago
+    = timestamp(@repository.updated_at)
     created on
     = @repository.created_at.strftime("%d.%m.%Y")
   - if user_signed_in?

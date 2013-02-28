@@ -22,6 +22,7 @@ gem 'best_in_place'
 gem 'rails3-jquery-autocomplete'
 gem 'js-routes'
 gem 'codemirror-rails'
+gem 'momentjs-rails'
 
 group :assets do
   gem 'sass-rails'

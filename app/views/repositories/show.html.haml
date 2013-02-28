@@ -21,8 +21,7 @@
                 .time-author
                   by
                   = commit.committer_name 
-                  = time_ago_in_words(commit.committer_time)
-                  ago
+                  = timestamp(commit.committer_time)
               .span3
                 .pull-right.short_hash
                   = link_to commit.short_hash, browse_commits_root_path(@repository.path, commit.commit_hash), class: 'btn'

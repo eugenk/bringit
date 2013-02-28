@@ -9,3 +9,4 @@
 //= require bootstrap-fileupload.min.js
 //= require layout
 //= require repository
+//= require moment

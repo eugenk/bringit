@@ -241,7 +241,7 @@ class Repository < ActiveRecord::Base
     {
       committer_name: changing_rugged_commit.committer[:name],
       committer_email: changing_rugged_commit.committer[:email],
-      committer_time: ActionController::Base.helpers.time_ago_in_words(changing_rugged_commit.committer[:time]) + ' ago',
+      committer_time: changing_rugged_commit.committer[:time].iso8601,
       message: Commit.message_title(changing_rugged_commit.message),
       oid: changing_rugged_commit.oid,
       filename: url.split('/')[-1]
