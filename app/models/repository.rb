@@ -199,9 +199,11 @@ class Repository < ActiveRecord::Base
   
   def entry_info_list_rugged(rugged_commit, url, entries=[])
     object = get_object(rugged_commit, url)
-    changing_rugged_commit = get_commit_of_last_change(url, object.oid, rugged_commit)
-   
-    if changing_rugged_commit == rugged_commit
+    changing_rugged_commit = get_commit_of_last_change(url, object ? object.oid : nil, rugged_commit)
+
+    if !changing_rugged_commit
+      entries
+    elsif changing_rugged_commit == rugged_commit
       entries << build_entry_info(rugged_commit, url)
     else
       entries << build_entry_info(changing_rugged_commit, url)
