@@ -34,8 +34,7 @@ class Repository < ActiveRecord::Base
   validates :path, presence: true, uniqueness: { case_sensitive: true }, format: VALID_PATH_REGEX
   
   def validate_owner_existance
-    return if owners && owners.size >= 1
-    errors.add :owners, 'has no owner'
+    errors.add :owners, 'has no owner' if owners.empty?
   end
   
   def to_param
