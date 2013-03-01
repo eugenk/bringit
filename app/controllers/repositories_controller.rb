@@ -147,6 +147,14 @@ class RepositoriesController < ApplicationController
     flash[:success] = 'File was deleted'
     redirect_to repository_path(@repository.path)
   end
+  
+  def diff
+    @repository = Repository.identifier(params[:id]).first!
+    @oid = params[:oid]
+    @is_head = @repository.is_head?(@oid)
+    @current_commit = @repository.all_commits.identifier(@oid).first!
+    @changed_files = @repository.get_changed_files(@oid)
+  end
 
   protected
   def get_file

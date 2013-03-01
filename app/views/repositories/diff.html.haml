@@ -1,0 +1,9 @@
+- provide(:title, "Diff of #{@repository.title} - #{@current_commit.short_hash}")
+
+
+- if @is_head
+  = render partial: 'show_top'
+- else
+  = render partial: 'show_top_commits'  
+
+= render partial: 'file_diffs'
