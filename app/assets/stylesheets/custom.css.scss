@@ -128,6 +128,13 @@ footer {
        a {
          width:80px;
          margin-top:5px;
+         &.btn-inverse {
+           width:auto;
+           i {
+             margin-right:5px;
+             font-size:0.8em;
+           }
+         }
        }
      }
   }
@@ -290,6 +297,34 @@ h2.commit-date {
     &:hover {
       text-decoration:none;
       color:rgba(0,0,0,0.4);
+    }
+  }
+}
+.changed-file {
+  h2 {
+    @extend h4;
+    margin-top:0px;
+  }
+  .diff-code {
+    @include border-radius(4px);
+    background:white;
+    padding:5px 10px;
+    display:block;
+    overflow-x:auto;
+    ins {
+      @extend code;
+      background:lighten($green,50%);
+      text-decoration:none;
+      color:$green;
+      display:block;
+    }
+    del {
+      @extend code;
+      text-decoration:none;
+      background:lighten($red,60%);
+      color:$red;
+      display:block;
+      margin:5px 0px;
     }
   }
 }

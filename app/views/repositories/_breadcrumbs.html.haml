@@ -11,11 +11,12 @@
         - get_branches(@repository, @current_commit).each do |b|
           %li
             = link_to b[:name], b[:url]
-  - repository_breadcrumbs(@repository, @breadcrumbs,@is_head,@oid).each do |crumb|
-    - if crumb[:last]
-      %li.active
-        = crumb[:name]
-    - else
-      %li
-        = link_to crumb[:name], crumb[:path]
-        %span.divider /
+  - if @breadcrumbs
+    - repository_breadcrumbs(@repository, @breadcrumbs,@is_head,@oid).each do |crumb|
+      - if crumb[:last]
+        %li.active
+          = crumb[:name]
+      - else
+        %li
+          = link_to crumb[:name], crumb[:path]
+          %span.divider /

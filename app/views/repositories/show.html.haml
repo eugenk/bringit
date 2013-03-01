@@ -32,7 +32,7 @@
                   = timestamp(commit.committer_time)
               .span3
                 .pull-right.short_hash
-                  = link_to commit.short_hash, browse_commits_root_path(@repository.path, commit.commit_hash), class: 'btn'
+                  = link_to commit.short_hash, browse_diff_path(@repository.path, commit.commit_hash), class: 'btn'
               .clearfix
     = render partial: 'show_files'
      

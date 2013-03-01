@@ -21,5 +21,17 @@
             = link_to '#', class: 'btn disabled', 'data-toggle' => 'tooltip', 'data-original-title' => 'You cannot view a deleted file' do
               %i.icon-file
               Show
-          = link_to commit.short_hash, browse_commits_root_path(@repository.path, commit.commit_hash), class: 'btn'
+          
+          - if @current_file
+            = link_to commit.short_hash, browse_diff_path(@repository.path, commit.commit_hash), class: 'btn'
+            .clearfix
+            .pull-right
+              = link_to browse_commits_root_path(@repository.path, commit.commit_hash), class: 'btn btn-small btn-inverse' do
+                %i.icon-chevron-right
+                Browse Code  
+          - else
+            = link_to commit.short_hash, browse_diff_path(@repository.path, commit.commit_hash), class: 'btn'
+            = link_to browse_commits_root_path(@repository.path, commit.commit_hash), class: 'btn btn-inverse' do
+              %i.icon-chevron-right
+              Browse Code
     .clearfix
