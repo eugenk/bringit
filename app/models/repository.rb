@@ -311,7 +311,7 @@ class Repository < ActiveRecord::Base
   end
 
   def diff(current, original)
-    Differ.diff_by_line(current, original).format_as(:html).gsub(/\t/, '&nbsp;'*4)
+    Differ.diff_by_line(CGI::escapeHTML(current), CGI::escapeHTML(original)).format_as(:html).gsub(/\t/, '&nbsp;'*4)
   end
 
   
