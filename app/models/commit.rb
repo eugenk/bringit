@@ -43,7 +43,7 @@ class Commit < ActiveRecord::Base
   end
   
   def self.message_title(message)
-    message.split('\n').first
+    message.split("\n").first
   end
   
   def self.message_body(message)
