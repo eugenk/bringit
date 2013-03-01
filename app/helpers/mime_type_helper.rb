@@ -7,6 +7,8 @@ module MimeTypeHelper
     case extension
     when 'rb'
       'text/x-ruby'
+    when 'xml'
+      'text/html'
     else
       mimetype.to_s
     end
