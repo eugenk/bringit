@@ -284,7 +284,7 @@ class Repository < ActiveRecord::Base
           files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
-          diff: 'diff not available', #FIXME: enter diff
+          diff: Differ.diff_by_line(repo.lookup(e[:oid]).content, repo.lookup(parent_tree[e[:name]][:oid]).content).format_as(:html), #FIXME: enter diff
           type: :change
         }
       elsif !parent_tree[e[:name]]
