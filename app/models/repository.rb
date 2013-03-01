@@ -284,14 +284,14 @@ class Repository < ActiveRecord::Base
           files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
-          diff: Differ.diff_by_line(repo.lookup(e[:oid]).content, repo.lookup(parent_tree[e[:name]][:oid]).content).format_as(:html),
+          diff: diff(repo.lookup(e[:oid]).content, repo.lookup(parent_tree[e[:name]][:oid]).content),
           type: :change
         }
       elsif !parent_tree[e[:name]]
         files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
-          diff: Differ.diff_by_line(repo.lookup(e[:oid]).content, '').format_as(:html),
+          diff: diff(repo.lookup(e[:oid]).content, ''),
           type: :add
         }
       end
@@ -308,6 +308,10 @@ class Repository < ActiveRecord::Base
     end
 
     files_contents
+  end
+
+  def diff(current, original)
+    Differ.diff_by_line(current, original).format_as(:html).gsub(/\t/, '&nbsp;'*4)
   end
 
   
