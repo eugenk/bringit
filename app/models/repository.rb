@@ -311,7 +311,7 @@ class Repository < ActiveRecord::Base
   end
 
   def diff(current, original)
-    Diffy::Diff.new(original, current, include_plus_and_minus_in_html: true).to_s(:html)
+    Diffy::Diff.new(original, current, include_plus_and_minus_in_html: true, context: 3).to_s(:html)
   end
   
   def get_commit_of_last_change(url, previous_entry_oid=nil, rugged_commit=nil, previous_rugged_commit=nil)
