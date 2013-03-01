@@ -22,6 +22,8 @@ class RepositoriesController < ApplicationController
     @contents = @repository.folder_contents(@oid, @url)
     @breadcrumbs = @url.split('/')
     @current_file = @repository.get_current_file(@oid, @url)
+  rescue ActiveRecord::RecordNotFound, TypeError
+    raise ActionController::RoutingError.new('Not Found')
   end
   
   def entries_info
@@ -139,6 +141,8 @@ class RepositoriesController < ApplicationController
     @current_file = @repository.get_current_file(@oid, @url)
     @breadcrumbs = @url.split('/')
     @commits = Commit.identifiers(@repository.entry_info_list(@url, @oid), @repository).page params[:page]
+  rescue ActiveRecord::RecordNotFound, TypeError
+    raise ActionController::RoutingError.new('Not Found')
   end
   
   def delete_file
@@ -154,6 +158,8 @@ class RepositoriesController < ApplicationController
     @is_head = @repository.is_head?(@oid)
     @current_commit = @repository.all_commits.identifier(@oid).first!
     @changed_files = @repository.get_changed_files(@oid)
+  rescue ActiveRecord::RecordNotFound, TypeError
+    raise ActionController::RoutingError.new('Not Found')
   end
 
   protected
