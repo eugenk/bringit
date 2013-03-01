@@ -301,7 +301,7 @@ class Repository < ActiveRecord::Base
         files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
-          diff: '', #FIXME: use correct diff syntax
+          diff: diff('', ''),
           type: :delete
         }
       end
