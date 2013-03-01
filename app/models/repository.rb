@@ -313,7 +313,6 @@ class Repository < ActiveRecord::Base
   def diff(current, original)
     Differ.diff_by_line(CGI::escapeHTML(current), CGI::escapeHTML(original)).format_as(:html).gsub(/\t/, '&nbsp;'*4)
   end
-
   
   def get_commit_of_last_change(url, previous_entry_oid=nil, rugged_commit=nil, previous_rugged_commit=nil)
     rugged_commit ||= repo.lookup(repo.head.target)
