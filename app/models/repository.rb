@@ -282,36 +282,36 @@ class Repository < ActiveRecord::Base
     current_tree.each_blob do |e|
       if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
           mime_info = mime_info(e[:name])
+          editable = mime_type_editable?(mime_info[:mime_type])
           files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
-          diff: diff(repo.lookup(e[:oid]).content, repo.lookup(parent_tree[e[:name]][:oid]).content),
+          diff: editable ? diff(repo.lookup(e[:oid]).content, repo.lookup(parent_tree[e[:name]][:oid]).content) : nil,
           type: :change,
-          mime_type: mime_info[:mime_type],
-          mime_category: mime_info[:mime_category]
+          editable: editable
         }
       elsif !parent_tree[e[:name]]
         mime_info = mime_info(e[:name])
+        editable = mime_type_editable?(mime_info[:mime_type])
         files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
-          diff: diff(repo.lookup(e[:oid]).content, ''),
+          diff: editable ? diff(repo.lookup(e[:oid]).content, '') : nil,
           type: :add,
-          mime_type: mime_info[:mime_type],
-          mime_category: mime_info[:mime_category]
+          editable: editable
         }
       end
     end
     parent_tree.each_blob do |e|
       if !current_tree[e[:name]]
         mime_info = mime_info(e[:name])
+        editable = mime_type_editable?(mime_info[:mime_type])
         files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
-          diff: diff('', ''),
+          diff: editable ? diff('', '') : nil,
           type: :delete,
-          mime_type: mime_info[:mime_type],
-          mime_category: mime_info[:mime_category]
+          editable: editable
         }
       end
     end
@@ -332,6 +332,10 @@ class Repository < ActiveRecord::Base
       mime_type: mime_type,
       mime_category: mime_category
     }
+  end
+
+  def mime_type_editable?(mime_type)
+    mime_type.to_s == 'application/xml' || mime_type.to_s.match(/text\/.*/)
   end
   
   def get_commit_of_last_change(url, previous_entry_oid=nil, rugged_commit=nil, previous_rugged_commit=nil)
