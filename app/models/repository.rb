@@ -281,28 +281,37 @@ class Repository < ActiveRecord::Base
     # get diff from current directory
     current_tree.each_blob do |e|
       if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
+          mime_info = mime_info(e[:name])
           files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
           diff: diff(repo.lookup(e[:oid]).content, repo.lookup(parent_tree[e[:name]][:oid]).content),
-          type: :change
+          type: :change,
+          mime_type: mime_info[:mime_type],
+          mime_category: mime_info[:mime_category]
         }
       elsif !parent_tree[e[:name]]
+        mime_info = mime_info(e[:name])
         files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
           diff: diff(repo.lookup(e[:oid]).content, ''),
-          type: :add
+          type: :add,
+          mime_type: mime_info[:mime_type],
+          mime_category: mime_info[:mime_category]
         }
       end
     end
     parent_tree.each_blob do |e|
       if !current_tree[e[:name]]
+        mime_info = mime_info(e[:name])
         files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
           diff: diff('', ''),
-          type: :delete
+          type: :delete,
+          mime_type: mime_info[:mime_type],
+          mime_category: mime_info[:mime_category]
         }
       end
     end
@@ -312,6 +321,17 @@ class Repository < ActiveRecord::Base
 
   def diff(current, original)
     Diffy::Diff.new(original, current, include_plus_and_minus_in_html: true, context: 3, include_diff_info: true).to_s(:html)
+  end
+
+  def mime_info(filename)
+    ext = File.extname(filename)[1..-1]
+    mime_type = Mime::Type.lookup_by_extension(ext) || Mime::TEXT
+    mime_category = mime_type.to_s.split('/')[0]
+    
+    {
+      mime_type: mime_type,
+      mime_category: mime_category
+    }
   end
   
   def get_commit_of_last_change(url, previous_entry_oid=nil, rugged_commit=nil, previous_rugged_commit=nil)
@@ -423,15 +443,13 @@ class Repository < ActiveRecord::Base
     
     if object.type == :blob
       filename = url.split('/')[-1]
-      ext = File.extname(filename)[1..-1]
-      mime_type = Mime::Type.lookup_by_extension(ext) || Mime::TEXT
-      mime_category = mime_type.to_s.split('/')[0]
+      mime_info = mime_info(filename)
       {
         name: filename,
         size: object.size,
         content: object.content,
-        mime_type: mime_type,
-        mime_category: mime_category
+        mime_type: mime_info[:mime_type],
+        mime_category: mime_info[:mime_category]
       }
     else
       nil
