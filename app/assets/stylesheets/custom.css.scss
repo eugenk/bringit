@@ -137,6 +137,9 @@ footer {
          }
        }
      }
+     &:hover {
+       background:darken($blue3,10%);
+     }
   }
   .icon-sitemap {
      color:rgba($linkColor, 0.5);
@@ -324,7 +327,7 @@ h2.commit-date {
 .diff del strong{font-weight:normal;background:#fcc;}
 .diff ins strong{font-weight:normal;background:#9f9;}
 .diff li.diff-comment { display: none; }
-.diff li.diff-block-info { background: none repeat scroll 0 0 gray; }
+.diff li.diff-block-info { background: none repeat scroll 0 0 $grayLighter; }
 
 .diff .symbol {
   margin-right:10px;
