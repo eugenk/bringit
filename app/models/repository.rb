@@ -288,6 +288,8 @@ class Repository < ActiveRecord::Base
           path: "#{directory}#{e[:name]}",
           diff: editable ? diff(repo.lookup(e[:oid]).content, repo.lookup(parent_tree[e[:name]][:oid]).content) : nil,
           type: :change,
+          mime_type: mime_info[:mime_type],
+          mime_category: mime_info[:mime_category],
           editable: editable
         }
       elsif !parent_tree[e[:name]]
@@ -298,6 +300,8 @@ class Repository < ActiveRecord::Base
           path: "#{directory}#{e[:name]}",
           diff: editable ? diff(repo.lookup(e[:oid]).content, '') : nil,
           type: :add,
+          mime_type: mime_info[:mime_type],
+          mime_category: mime_info[:mime_category],
           editable: editable
         }
       end
@@ -311,6 +315,8 @@ class Repository < ActiveRecord::Base
           path: "#{directory}#{e[:name]}",
           diff: editable ? diff('', '') : nil,
           type: :delete,
+          mime_type: mime_info[:mime_type],
+          mime_category: mime_info[:mime_category],
           editable: editable
         }
       end
