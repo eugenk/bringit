@@ -3,13 +3,17 @@
     %h2= @current_file[:name]
   .span6
     .btn-group.pull-right
-      - if @current_file[:mime_category] == 'text' && user_signed_in? && @is_head
-        = link_to raw('<i class="icon-edit"></i> Edit'), '#', class: 'btn edit-file', 
-          'data-replace' => '<i class="icon-edit"></i> Commit changes' 
-      - else
-        = link_to raw('<i class="icon-edit"></i> Edit'), '#', class: 'btn disabled', 'data-toggle' => 'tooltip', 
-            'data-original-title' => 'You cannot edit files in history'
-            
+      - if user_signed_in?
+        - if is_mime_type_editable?(@current_file) && @is_head
+          = link_to raw('<i class="icon-edit"></i> Edit'), '#', class: 'btn edit-file', 
+            'data-replace' => '<i class="icon-edit"></i> Commit changes' 
+        - elsif @is_head
+          = link_to raw('<i class="icon-edit"></i> Edit'), '#', class: 'btn disabled', 'data-toggle' => 'tooltip', 
+              'data-original-title' => 'You cannot edit this filetype'
+        - else
+          = link_to raw('<i class="icon-edit"></i> Edit'), '#', class: 'btn disabled', 'data-toggle' => 'tooltip', 
+              'data-original-title' => 'You cannot edit files in history'
+              
       = render partial: 'download_file' 
       
       = render partial: 'history_file' 

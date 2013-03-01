@@ -14,5 +14,9 @@ module MimeTypeHelper
     end
     
   end
+
+  def is_mime_type_editable?(current_file)
+    current_file[:mime_type] == 'application/xml' || current_file[:mime_category] == 'text'
+  end
   
 end

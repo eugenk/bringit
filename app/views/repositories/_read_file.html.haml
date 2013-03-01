@@ -1,16 +1,17 @@
 .well.well-small.read-file
   = render partial: 'read_file_options' 
   
-  - case @current_file[:mime_category]
-  - when 'text'
+  - if is_mime_type_editable?(@current_file)
     = render partial: 'read_file_text' 
-  - when 'image'
-    .image-content
-      - if @is_head
-        = image_tag raw_repository_path(@repository, @url), alt: @current_file[:name]
-      - else
-        = image_tag raw_commits_path(@repository, @oid, @url), alt: @current_file[:name]
-  - else 
-    .alert.alert-info
-      Cannot display this filetype.
-    = render partial: 'download_file' 
+  - else
+    - case @current_file[:mime_category]
+    - when 'image'
+      .image-content
+        - if @is_head
+          = image_tag raw_repository_path(@repository, @url), alt: @current_file[:name]
+        - else
+          = image_tag raw_commits_path(@repository, @oid, @url), alt: @current_file[:name]
+    - else 
+      .alert.alert-info
+        Cannot display this filetype.
+      = render partial: 'download_file' 
