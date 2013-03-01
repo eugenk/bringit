@@ -1,4 +1,4 @@
 - if @is_head
   = link_to raw('<i class="icon-download-alt"></i> Download'), raw_repository_path(@repository, @url), class: 'btn'   
-- else  
+- else
   = link_to raw('<i class="icon-download-alt"></i> Download'), raw_commits_path(@repository, @oid, @url), class: 'btn'

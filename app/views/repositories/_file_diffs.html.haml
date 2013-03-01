@@ -24,4 +24,4 @@
     - elsif file[:mime_category] == 'image'
       = image_tag raw_commits_path(@repository.path, @oid, file[:path]), alt: file[:name]
     - else
-      = render partial: 'download_file' 
+      = link_to raw('<i class="icon-download-alt"></i> Download'), raw_commits_path(@repository.path, @oid, file[:path]), class: 'btn'
