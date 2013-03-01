@@ -16,12 +16,15 @@
           %li.commit
             .row-fluid
               .span9
-                .message= link_to commit.title, browse_commits_root_path(repository.path, commit.commit_hash)
+                .message= link_to get_message(commit)[:title], browse_commits_root_path(repository.path, commit.commit_hash)
                 .time-author
                   by
                   = commit.committer_name 
                   = timestamp(commit.committer_time)
               .span3
-                .pull-right.short_hash
+                .pull-right.short_hash.btn-group
                   = link_to commit.short_hash, browse_commits_root_path(repository.path, commit.commit_hash), class: 'btn'
+                  = link_to browse_commits_root_path(repository.path, commit.commit_hash), class: 'btn btn-inverse' do
+                    %i.icon-chevron-right
+                    Browse Code
               .clearfix

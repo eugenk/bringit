@@ -31,4 +31,20 @@ module CommitsHelper
     entries
   end
   
+  def get_message(current_commit)
+    title = word_wrap(current_commit.title, line_width: 80)
+    body = current_commit.body
+    if title != current_commit.title
+      parts = title.split("\n")
+      title = "#{parts[0]}..."
+      body = "#{parts[1..-1].join("\n")}\n#{body}"
+    end
+    
+    {
+      title: title,
+      body: body
+    }
+    
+  end
+  
 end

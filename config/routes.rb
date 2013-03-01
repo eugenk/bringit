@@ -30,5 +30,8 @@ Bringit::Application.routes.draw do
   get '/history/repositories/:id/:url' => "repositories#history", constraints: { url: /.*/ }, as: :history_repository
   get '/history/commits/:id/:oid/:url' => "repositories#history", constraints: { url: /.*/ }, as: :history_commits
   
+  get '/diff/:id' => "repositories#diff", as: :browse_diff_head
+  get '/diff/:id/:oid' => "repositories#diff", as: :browse_diff
+  
   get '/search', to: 'repositories#search'
 end

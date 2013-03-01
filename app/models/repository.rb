@@ -201,10 +201,36 @@ class Repository < ActiveRecord::Base
       entry_info_list_rugged(rugged_commit, url)
     end
   end
+
+  def get_changed_files(commit_oid=nil)
+    rugged_commit = get_commit(commit_oid)
+    if !rugged_commit
+      []
+    else
+      get_changed_files_rugged(rugged_commit)
+    end
+  end
   
   # PROTECTED METHODS
 
   protected
+
+  def entry_info_rugged(rugged_commit, url)
+    object = get_object(rugged_commit, url)
+    changing_rugged_commit = get_commit_of_last_change(url, object.oid, rugged_commit)
+    build_entry_info(changing_rugged_commit, url)
+  end
+  
+  def build_entry_info(changing_rugged_commit, url)
+    {
+      committer_name: changing_rugged_commit.committer[:name],
+      committer_email: changing_rugged_commit.committer[:email],
+      committer_time: changing_rugged_commit.committer[:time].iso8601,
+      message: Commit.message_title(changing_rugged_commit.message),
+      oid: changing_rugged_commit.oid,
+      filename: url.split('/')[-1]
+    }
+  end
   
   def entry_info_list_rugged(rugged_commit, url)
     entries = []
@@ -228,24 +254,64 @@ class Repository < ActiveRecord::Base
     else
       entries
     end
-    
   end
 
-  def entry_info_rugged(rugged_commit, url)
-    object = get_object(rugged_commit, url)
-    changing_rugged_commit = get_commit_of_last_change(url, object.oid, rugged_commit)
-    build_entry_info(changing_rugged_commit, url)
+  def get_changed_files_rugged(rugged_commit)
+    changed_files_infos = rugged_commit.parents.map do |p|
+      get_changed_files_contents(rugged_commit.tree, p.tree)
+    end
+
+    changed_files_infos.flatten
   end
-  
-  def build_entry_info(changing_rugged_commit, url)
-    {
-      committer_name: changing_rugged_commit.committer[:name],
-      committer_email: changing_rugged_commit.committer[:email],
-      committer_time: changing_rugged_commit.committer[:time].iso8601,
-      message: Commit.message_title(changing_rugged_commit.message),
-      oid: changing_rugged_commit.oid,
-      filename: url.split('/')[-1]
-    }
+
+  def get_changed_files_contents(current_tree, parent_tree, directory='')
+    files_contents = []
+    current_tree.each_tree do |e|
+      if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
+        files_contents.concat(get_changed_files_contents(repo.lookup(e[:oid]), repo.lookup(parent_tree[e[:name]][:oid]), "#{directory}#{e[:name]}/"))
+      end
+    end
+
+    parent_tree.each_tree do |e|
+      if !current_tree[e[:name]]
+        files_contents.concat(get_changed_files_contents(repo.lookup(current_tree[e[:name]][:oid]), repo.lookup(e[:oid]), "#{directory}#{e[:name]}/"))
+      end
+    end
+
+    # get diff from current directory
+    current_tree.each_blob do |e|
+      if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
+          files_contents << {
+          name: e[:name],
+          path: "#{directory}#{e[:name]}",
+          diff: diff(repo.lookup(e[:oid]).content, repo.lookup(parent_tree[e[:name]][:oid]).content),
+          type: :change
+        }
+      elsif !parent_tree[e[:name]]
+        files_contents << {
+          name: e[:name],
+          path: "#{directory}#{e[:name]}",
+          diff: diff(repo.lookup(e[:oid]).content, ''),
+          type: :add
+        }
+      end
+    end
+    parent_tree.each_blob do |e|
+      if !current_tree[e[:name]]
+        files_contents << {
+          name: e[:name],
+          path: "#{directory}#{e[:name]}",
+          diff: diff('', ''),
+          type: :delete
+        }
+      end
+    end
+
+    files_contents
+  end
+
+  def diff(current, original)
+    Diffy::Diff.new(original, current, include_plus_and_minus_in_html: true, context: 3, include_diff_info: true).to_s(:html)
   end
   
   def get_commit_of_last_change(url, previous_entry_oid=nil, rugged_commit=nil, previous_rugged_commit=nil)

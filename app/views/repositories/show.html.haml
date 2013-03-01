@@ -17,14 +17,22 @@
           %li.commit
             .row-fluid
               .span9
-                .message= link_to commit.title, browse_commits_root_path(@repository.path, commit.commit_hash)
+                .message
+                  - message = get_message(commit)
+                  %h2
+                    - unless message[:body].empty?
+                      = link_to '#', class: 'open-full' do
+                        %i.icon-plus
+                    = link_to message[:title], browse_commits_root_path(@repository.path, commit.commit_hash)
+                  - unless message[:body].empty?
+                    .full-message= message[:body]
                 .time-author
                   by
                   = commit.committer_name 
                   = timestamp(commit.committer_time)
               .span3
                 .pull-right.short_hash
-                  = link_to commit.short_hash, browse_commits_root_path(@repository.path, commit.commit_hash), class: 'btn'
+                  = link_to commit.short_hash, browse_diff_path(@repository.path, commit.commit_hash), class: 'btn'
               .clearfix
     = render partial: 'show_files'
      

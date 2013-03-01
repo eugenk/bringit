@@ -61,7 +61,7 @@ ActiveRecord::Schema.define(:version => 20130220182217) do
   add_index "repositories", ["path"], :name => "index_repositories_on_path", :unique => true
 
   create_table "repository_owners", :force => true do |t|
-    t.integer "repository_id", :null => false
+    t.integer "repository_id"
     t.integer "owner_id",      :null => false
   end
 
