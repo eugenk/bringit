@@ -1,8 +1,27 @@
 = render partial: 'breadcrumbs'
 
+%ul.changed-files-list.nav.nav-stacked.nav-tabs
+  - @changed_files.each do |file|
+    %li
+      = link_to "#file-#{file[:path]}" do
+        - if file[:type] == :add
+          %i.icon-plus
+        - elsif file[:type] == :delete
+          %i.icon-minus
+        - elsif file[:type] == :change
+          %i.icon-edit
+        = file[:path]
 - @changed_files.each do |file|
   .changed-file.well.well-small
     %h2.file-name
-      = link_to file[:path], browse_commits_path(@repository.path, @oid, file[:path]), class: 'btn'
-    .diff-code
-      = file[:diff].html_safe
+      = link_to file[:path], browse_commits_path(@repository.path, @oid, file[:path]), class: 'btn', name: "file-#{file[:path]}"
+    - if file[:type] == :delete
+      .alert.alert-info
+        File was deleted
+    - elsif file[:editable]
+      .diff-code
+        = file[:diff].html_safe
+    - elsif file[:mime_category] == 'image'
+      = image_tag raw_commits_path(@repository.path, @oid, file[:path]), alt: file[:name]
+    - else
+      = render partial: 'download_file' 
