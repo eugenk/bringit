@@ -5,4 +5,4 @@
     %h2.file-name
       = link_to file[:path], browse_commits_path(@repository.path, @oid, file[:path]), class: 'btn'
     .diff-code
-      = simple_format(file[:diff])
+      = file[:diff].html_safe
