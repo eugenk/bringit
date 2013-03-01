@@ -22,7 +22,7 @@ gem 'rails3-jquery-autocomplete'
 gem 'js-routes'
 gem 'codemirror-rails'
 gem 'momentjs-rails'
-gem 'differ'
+gem 'diffy'
 
 group :assets do
   gem 'sass-rails'
