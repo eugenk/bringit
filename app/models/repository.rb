@@ -283,10 +283,13 @@ class Repository < ActiveRecord::Base
       if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
           mime_info = mime_info(e[:name])
           editable = mime_type_editable?(mime_info[:mime_type])
+          puts "xxxxx"
+          puts editable.inspect
+          puts mime_info
           files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
-          diff: editable ? diff(repo.lookup(e[:oid]).content, repo.lookup(parent_tree[e[:name]][:oid]).content) : nil,
+          diff: editable ? diff(repo.lookup(e[:oid]).content, repo.lookup(parent_tree[e[:name]][:oid]).content) : '',
           type: :change,
           mime_type: mime_info[:mime_type],
           mime_category: mime_info[:mime_category],
@@ -295,10 +298,13 @@ class Repository < ActiveRecord::Base
       elsif !parent_tree[e[:name]]
         mime_info = mime_info(e[:name])
         editable = mime_type_editable?(mime_info[:mime_type])
+        puts "yyyyyy"
+        puts editable.inspect
+        puts mime_info
         files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
-          diff: editable ? diff(repo.lookup(e[:oid]).content, '') : nil,
+          diff: editable ? diff(repo.lookup(e[:oid]).content, '') : '',
           type: :add,
           mime_type: mime_info[:mime_type],
           mime_category: mime_info[:mime_category],
@@ -310,10 +316,13 @@ class Repository < ActiveRecord::Base
       if !current_tree[e[:name]]
         mime_info = mime_info(e[:name])
         editable = mime_type_editable?(mime_info[:mime_type])
+        puts "zzzzzzz"
+        puts editable.inspect
+        puts mime_info
         files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
-          diff: editable ? diff('', '') : nil,
+          diff: editable ? diff('', '') : '',
           type: :delete,
           mime_type: mime_info[:mime_type],
           mime_category: mime_info[:mime_category],
@@ -341,7 +350,7 @@ class Repository < ActiveRecord::Base
   end
 
   def mime_type_editable?(mime_type)
-    mime_type.to_s == 'application/xml' || mime_type.to_s.match(/text\/.*/)
+    mime_type.to_s == 'application/xml' || mime_type.to_s.match(/^text\/.*/)
   end
   
   def get_commit_of_last_change(url, previous_entry_oid=nil, rugged_commit=nil, previous_rugged_commit=nil)
