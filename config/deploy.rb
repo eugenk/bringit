@@ -53,7 +53,10 @@ namespace :deploy do
     run "mkdir -p /tmp/gitroot"
     #run "rm -rf #{File.join(current_path,'data','gitroot')}"
     #run "mkdir -p #{File.join(current_path,'data','gitroot')}"
-    run "cd #{current_path} && bundle exec rake db:migrate:reset db:seed", env: { RAILS_ENV: 'production' }
+    run "cd #{current_path} && bundle exec rake db:migrate:reset", env: { RAILS_ENV: 'production' }
+  end
+  task :seed do
+    run "cd #{current_path} && bundle exec rake db:seed", env: { RAILS_ENV: 'production' }
   end
   task :init do
     update
