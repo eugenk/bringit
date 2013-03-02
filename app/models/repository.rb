@@ -273,7 +273,23 @@ class Repository < ActiveRecord::Base
 
   def get_changed_files_contents(current_tree, parent_tree, directory='')
     files_contents = []
-    
+    files_contents.concat(get_changed_files_contents_subtrees(current_tree, parent_tree, directory))
+    files_contents.concat(get_changed_files_contents_current_tree(current_tree, parent_tree, directory))
+
+
+    files_contents
+  end
+
+  def get_changed_files_contents_subtrees(current_tree, parent_tree, directory)
+    files_contents = []
+    files_contents.concat(get_changed_files_contents_subtrees_addeed_and_changed(current_tree, parent_tree, directory))
+    files_contents.concat(get_changed_files_contents_subtrees_deleted(current_tree, parent_tree, directory))
+
+    files_contents
+  end
+
+  def get_changed_files_contents_subtrees_addeed_and_changed(current_tree, parent_tree, directory)
+    files_contents = []
     current_tree.each do |e|
       if e[:type] == :tree
         if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
@@ -286,60 +302,68 @@ class Repository < ActiveRecord::Base
       end
     end
 
+    files_contents
+  end
+
+  def get_changed_files_contents_subtrees_deleted(current_tree, parent_tree, directory)
+    files_contents = []
     parent_tree.each do |e|
       if e[:type] == :tree && !current_tree[e[:name]]
         files_contents.concat(get_changed_files_contents({}, repo.lookup(e[:oid]), "#{directory}#{e[:name]}/"))
       end
     end
 
-    # get diff from current directory
+    files_contents
+  end
+
+  def get_changed_files_contents_current_tree(current_tree, parent_tree, directory)
+    files_contents = []
+    files_contents.concat(get_changed_files_contents_current_tree_added_and_changed(current_tree, parent_tree, directory))
+    files_contents.concat(get_changed_files_contents_current_tree_deleted(current_tree, parent_tree, directory))
+
+    files_contents
+  end
+
+  def get_changed_files_contents_current_tree_added_and_changed(current_tree, parent_tree, directory)
+    files_contents = []
     current_tree.each do |e|
       if e[:type] == :blob
         if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
-            mime_info = mime_info(e[:name])
-            editable = mime_type_editable?(mime_info[:mime_type])
-            files_contents << {
-            name: e[:name],
-            path: "#{directory}#{e[:name]}",
-            diff: editable ? diff(repo.lookup(e[:oid]).content, repo.lookup(parent_tree[e[:name]][:oid]).content) : '',
-            type: :change,
-            mime_type: mime_info[:mime_type],
-            mime_category: mime_info[:mime_category],
-            editable: editable
-          }
+          files_contents << changed_files_entry(directory, e[:name], :change, repo.lookup(e[:oid]).content, repo.lookup(parent_tree[e[:name]][:oid]).content)
         elsif !parent_tree[e[:name]]
-          mime_info = mime_info(e[:name])
-          editable = mime_type_editable?(mime_info[:mime_type])
-          files_contents << {
-            name: e[:name],
-            path: "#{directory}#{e[:name]}",
-            diff: editable ? diff(repo.lookup(e[:oid]).content, '') : '',
-            type: :add,
-            mime_type: mime_info[:mime_type],
-            mime_category: mime_info[:mime_category],
-            editable: editable
-          }
+          files_contents << changed_files_entry(directory, e[:name], :add, repo.lookup(e[:oid]).content, '')
         end
-      end
-    end
-    parent_tree.each do |e|
-      if e[:type] == :blob && !current_tree[e[:name]]
-        mime_info = mime_info(e[:name])
-        editable = mime_type_editable?(mime_info[:mime_type])
-        files_contents << {
-          name: e[:name],
-          path: "#{directory}#{e[:name]}",
-          diff: editable ? diff('', '') : '',
-          type: :delete,
-          mime_type: mime_info[:mime_type],
-          mime_category: mime_info[:mime_category],
-          editable: editable
-        }
       end
     end
 
     files_contents
   end
+
+  def get_changed_files_contents_current_tree_deleted(current_tree, parent_tree, directory)
+    files_contents = []
+    parent_tree.each do |e|
+      if e[:type] == :blob && !current_tree[e[:name]]
+        files_contents << changed_files_entry(directory, e[:name], :delete, '', '')
+      end
+    end
+
+    files_contents
+  end
+
+  def changed_files_entry(directory, name, type, content_current, content_parent)
+    mime_info = mime_info(name)
+    editable = mime_type_editable?(mime_info[:mime_type])
+    {
+      name: name,
+      path: "#{directory}#{name}",
+      diff: editable ? diff(content_current, content_parent) : '',
+      type: type,
+      mime_type: mime_info[:mime_type],
+      mime_category: mime_info[:mime_category],
+      editable: editable
+    }
+  end
+
 
   def diff(current, original)
     Diffy::Diff.new(original.force_encoding('UTF-8'), current.force_encoding('UTF-8'), include_plus_and_minus_in_html: true, context: 3, include_diff_info: true).to_s(:html)
