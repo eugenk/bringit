@@ -271,48 +271,52 @@ class Repository < ActiveRecord::Base
   def get_changed_files_contents(current_tree, parent_tree, directory='')
     files_contents = []
     
-    current_tree.each_tree do |e|
-      if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
-        files_contents.concat(get_changed_files_contents(repo.lookup(e[:oid]), repo.lookup(parent_tree[e[:name]][:oid]), "#{directory}#{e[:name]}/"))
-      elsif !parent_tree[e[:name]]
-        files_contents.concat(get_changed_files_contents(repo.lookup(e[:oid]), {}, "#{directory}#{e[:name]}/"))
-      elsif parent_tree == {} || parent_tree.count == 0
-        files_contents.concat(get_changed_files_contents(repo.lookup(e[:oid]), parent_tree, "#{directory}#{e[:name]}/"))
+    current_tree.each do |e|
+      if e[:type] == :tree
+        if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
+          files_contents.concat(get_changed_files_contents(repo.lookup(e[:oid]), repo.lookup(parent_tree[e[:name]][:oid]), "#{directory}#{e[:name]}/"))
+        elsif !parent_tree[e[:name]]
+          files_contents.concat(get_changed_files_contents(repo.lookup(e[:oid]), {}, "#{directory}#{e[:name]}/"))
+        elsif parent_tree == {} || parent_tree.count == 0
+          files_contents.concat(get_changed_files_contents(repo.lookup(e[:oid]), parent_tree, "#{directory}#{e[:name]}/"))
+        end
       end
     end
 
     parent_tree.each do |e|
       if e[:type] == :tree && !current_tree[e[:name]]
-        files_contents.concat(get_changed_files_contents(repo.lookup(current_tree[e[:name]][:oid]), repo.lookup(e[:oid]), "#{directory}#{e[:name]}/"))
+        files_contents.concat(get_changed_files_contents({}, repo.lookup(e[:oid]), "#{directory}#{e[:name]}/"))
       end
     end
 
     # get diff from current directory
-    current_tree.each_blob do |e|
-      if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
+    current_tree.each do |e|
+      if e[:type] == :blob
+        if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
+            mime_info = mime_info(e[:name])
+            editable = mime_type_editable?(mime_info[:mime_type])
+            files_contents << {
+            name: e[:name],
+            path: "#{directory}#{e[:name]}",
+            diff: editable ? diff(repo.lookup(e[:oid]).content, repo.lookup(parent_tree[e[:name]][:oid]).content) : '',
+            type: :change,
+            mime_type: mime_info[:mime_type],
+            mime_category: mime_info[:mime_category],
+            editable: editable
+          }
+        elsif !parent_tree[e[:name]]
           mime_info = mime_info(e[:name])
           editable = mime_type_editable?(mime_info[:mime_type])
           files_contents << {
-          name: e[:name],
-          path: "#{directory}#{e[:name]}",
-          diff: editable ? diff(repo.lookup(e[:oid]).content, repo.lookup(parent_tree[e[:name]][:oid]).content) : '',
-          type: :change,
-          mime_type: mime_info[:mime_type],
-          mime_category: mime_info[:mime_category],
-          editable: editable
-        }
-      elsif !parent_tree[e[:name]]
-        mime_info = mime_info(e[:name])
-        editable = mime_type_editable?(mime_info[:mime_type])
-        files_contents << {
-          name: e[:name],
-          path: "#{directory}#{e[:name]}",
-          diff: editable ? diff(repo.lookup(e[:oid]).content, '') : '',
-          type: :add,
-          mime_type: mime_info[:mime_type],
-          mime_category: mime_info[:mime_category],
-          editable: editable
-        }
+            name: e[:name],
+            path: "#{directory}#{e[:name]}",
+            diff: editable ? diff(repo.lookup(e[:oid]).content, '') : '',
+            type: :add,
+            mime_type: mime_info[:mime_type],
+            mime_category: mime_info[:mime_category],
+            editable: editable
+          }
+        end
       end
     end
     parent_tree.each do |e|
