@@ -125,7 +125,7 @@ class Repository < ActiveRecord::Base
       path_exists_rugged?(rugged_commit, url)
     end
   end
-  
+
   def folder_contents(commit_oid=nil, url='')
     rugged_commit = get_commit(commit_oid)
     if !rugged_commit && url.empty?
@@ -134,7 +134,7 @@ class Repository < ActiveRecord::Base
       folder_contents_rugged(rugged_commit, url)
     end
   end
-  
+
   def get_current_file(commit_oid=nil, url='')
     rugged_commit = get_commit(commit_oid)
     if !rugged_commit && url.empty?
@@ -143,14 +143,17 @@ class Repository < ActiveRecord::Base
       get_current_file_rugged(rugged_commit, url)
     end
   end
-  
+
   def get_url(oid=nil, url=nil)
     url ||= '' 
     url = url[0..-2] if(url[-1] == '/')
-    
     raise ActionController::RoutingError.new('Not Found') unless path_exists?(oid, url)
     
     url
+  end
+
+  def self.directory(path)
+    path.split("/")[0..-2].join("/")
   end
 
   def get_branches

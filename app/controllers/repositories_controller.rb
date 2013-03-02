@@ -95,11 +95,10 @@ class RepositoriesController < ApplicationController
       flash[:error] = "Please choose a file to upload"
       redirect_to browse_repository_path(@repository.path, @url)
     else
-      tmp_path = params[:file].tempfile
       file_path = @repository.build_target_path(@url, params[:file].original_filename)
-      @repository.add_file(current_user, tmp_path, file_path, params[:message])
+      @repository.add_file(current_user, params[:file].tempfile, file_path, params[:message])
       flash[:success] = 'File was added'
-      redirect_to browse_repository_path(@repository.path, file_path.split("/")[0..-2].join("/"))
+      redirect_to browse_repository_path(@repository.path, Repository.directory(file_path))
     end
   end
 
