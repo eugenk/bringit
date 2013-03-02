@@ -42,11 +42,6 @@
             Options
             %b.caret
           %ul.dropdown-menu
-            %li
-              %a{href: '#add-contributors', 'data-toggle' => 'tab'}
-                %i.icon-plus
-                Add contributors 
-            %li.divider
             %li= link_to raw('<i class="icon-trash"></i> Delete repository'), repository_path(@repository.path), method: :delete,
               'data-confirm' => "Are you sure to remove the repository #{@repository.title} permanently?", 'data-id' => @repository.path, 
               'data-head' => 'Remove repository', class: 'delete-confirm'
@@ -55,11 +50,11 @@
 
 .authored
   authored by
-  = raw @repository.contributors[0..1].map { |contributor| link_to contributor.email, '#' }.join(", ")
+  = raw @repository.contributors[0..1].map { |contributor| contributor.email }.join(", ")
     
   - if @repository.contributors.size > 2
     %span.muted
       and 
-      = link_to "#{(@repository.contributors.size-3)} other #{(@repository.contributors.size-3) > 1 ? 'users' : 'user'}", '#'
+      = "#{(@repository.contributors.size-3)} other #{(@repository.contributors.size-3) > 1 ? 'users' : 'user'}"
 
 %hr
