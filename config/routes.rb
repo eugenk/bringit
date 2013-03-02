@@ -10,7 +10,7 @@ Bringit::Application.routes.draw do
   get '/autocomplete' => "repositories#autocomplete_repository_title", as: :autocomplete_repository_title_repositories
   get '/repositories' => "repositories#index", as: :repositories
   get '/new' => "repositories#new", as: :new_repository 
-  post '/create' => "repositories#create", as: :repositories
+  post '/create' => "repositories#create", as: :create_repository
   
   get '/repositories/:id/:url' => "repositories#show", constraints: { url: /.*/ }, as: :browse_repository
   

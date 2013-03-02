@@ -3,7 +3,7 @@
   %h3 Create new repository
 .modal-body
   = render 'layouts/flash_messages'
-  = simple_form_for(@repository, html: {class: 'form-horizontal', 'data-remote' => true, 
+  = simple_form_for(@repository, url: create_repository_path, html: {class: 'form-horizontal', 'data-remote' => true, 
       "data-replace" => '#modal', "data-update" => '#modal'}) do |f|
     = f.input :title, input_html: { class: 'input-xlarge', required: true }
     = f.input :description, input_html: { class: 'input-xlarge' }
