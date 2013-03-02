@@ -313,15 +313,15 @@ describe Repository do
     end
   end
 
-  
+
   describe "when getting the list of changed files" do
     before do
       @repository.save
       @content1 = "Some\ncontent\nwith\nmany\nlines."
       @content2 = "Some\ncontent,\nwith\nmany\nlines."
-      @commit1 = @repository.commit_file(@repository.owners.first, @content1, 'path2/path/file.xml', 'Message1')
-      @commit2 = @repository.commit_file(@repository.owners.first, @content2, 'path2/path/file.xml', 'Message2')
-      @commit3 = @repository.delete_file(@repository.owners.first, 'path2/path/file.xml')
+      @commit1 = @repository.commit_file(@repository.owners.first, @content1, 'path/to/file.xml', 'Message1')
+      @commit2 = @repository.commit_file(@repository.owners.first, @content2, 'path/to/file.xml', 'Message2')
+      @commit3 = @repository.delete_file(@repository.owners.first, 'path/to/file.xml')
     end
     
     it "last commit should be HEAD" do
@@ -338,7 +338,7 @@ describe Repository do
     end
     
     it "should have the right path in the list when using the first commit" do
-      @repository.get_changed_files(@commit1.commit_hash).first[:path].should == 'path2/path/file.xml'
+      @repository.get_changed_files(@commit1.commit_hash).first[:path].should == 'path/to/file.xml'
     end
     
     it "should have the right type in the list when using the first commit" do
@@ -368,7 +368,7 @@ describe Repository do
     end
     
     it "should have the right path in the list when using a commit in the middle" do
-      @repository.get_changed_files(@commit2.commit_hash).first[:path].should == 'path2/path/file.xml'
+      @repository.get_changed_files(@commit2.commit_hash).first[:path].should == 'path/to/file.xml'
     end
     
     it "should have the right type in the list when using a commit in the middle" do
@@ -398,7 +398,7 @@ describe Repository do
     end
     
     it "should have the right path in the list when using the HEAD" do
-      @repository.get_changed_files.first[:path].should == 'path2/path/file.xml'
+      @repository.get_changed_files.first[:path].should == 'path/to/file.xml'
     end
     
     it "should have the right type in the list when using the HEAD" do
@@ -415,6 +415,52 @@ describe Repository do
     
     it "should have the right editable in the list when using the HEAD" do
       @repository.get_changed_files.first[:editable].should == true
+    end
+  end
+
+
+  describe "when getting the history of a file" do
+    before do
+      @repository.save
+      @filepath = 'path/to/file.txt'
+      @commit_add1 = @repository.commit_file(@repository.owners.first, 'Some content1', @filepath, 'Add')
+      @commit_change1 = @repository.commit_file(@repository.owners.first, 'Some other content1', @filepath, 'Change')
+      @commit_other1 = @repository.commit_file(@repository.owners.first, 'Other content1', 'file2.txt', 'Other File: Add')
+      @commit_delete1 = @repository.delete_file(@repository.owners.first, @filepath)
+      @commit_other2 = @repository.commit_file(@repository.owners.first, 'Other content2', 'file2.txt', 'Other File: Change1')
+      @commit_other3 = @repository.commit_file(@repository.owners.first, 'Other content3', 'file2.txt', 'Other File: Change2')
+      @commit_add2 = @repository.commit_file(@repository.owners.first, 'Some content2', @filepath, 'Re-Add')
+      @commit_change2 = @repository.commit_file(@repository.owners.first, 'Some other content2', @filepath, 'Re-Change')
+      @commit_delete2 = @repository.delete_file(@repository.owners.first, @filepath)
+    end
+
+    it "should have the correct values in the history at the HEAD" do
+      @repository.entry_info_list.should == [
+        @commit_delete2.commit_hash,
+        @commit_change2.commit_hash,
+        @commit_add2.commit_hash,
+        @commit_delete1.commit_hash,
+        @commit_change1.commit_hash,
+        @commit_add1.commit_hash
+      ]
+    end
+
+    it "should have the correct values in the history a commit before the HEAD" do
+      @repository.entry_info_list(@commit_change2.commit_hash).should == [
+        @commit_change2.commit_hash,
+        @commit_add2.commit_hash,
+        @commit_delete1.commit_hash,
+        @commit_change1.commit_hash,
+        @commit_add1.commit_hash
+      ]
+    end
+
+    it "should have the correct values in the history in the commit that changes another file" do
+      @repository.entry_info_list(@commit_other3.commit_hash).should == [
+        @commit_delete1.commit_hash,
+        @commit_change1.commit_hash,
+        @commit_add1.commit_hash
+      ]
     end
   end
 end
