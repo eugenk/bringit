@@ -4,7 +4,7 @@ describe Repository do
   before do
     system "rm -rf #{Bringit::Application.config.git_root}"
     system "mkdir -p #{Bringit::Application.config.git_root}"
-    @user = User.new(email: "eugenk@tzi.de", 
+    @user = User.new(email: "user@example.com", 
                      password: "password", password_confirmation: "password")
     @repository = Repository.new(title: 'Bringit - git web-interface', owners: [@user])
     @fields = [:path, :title, :description]
@@ -184,29 +184,6 @@ describe Repository do
       @repository.get_current_file(nil, 'path/file.txt')[:content].should == 'Some content2'
     end
   end
-  
-  describe "when getting the list of changed files" do
-    before do
-      @repository.save
-      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file.xml', 'Some commit message')
-    end
-
-    it "should have the right file count" do
-      @repository.get_changed_files.size.should == 1
-    end
-
-    it "should have the right contents in the list" do
-      @repository.get_changed_files.should == [{
-          name: 'file.xml',
-          path: 'path/file.xml',
-          diff: Diffy::Diff.new('', 'Some content', include_plus_and_minus_in_html: true, context: 3, include_diff_info: true).to_s(:html),
-          type: :add,
-          mime_type: Mime::Type.lookup_by_extension('xml'),
-          mime_category: 'application',
-          editable: true
-        }]
-    end
-  end
 
   
   describe "when getting the list of changed files" do
@@ -214,40 +191,75 @@ describe Repository do
       @repository.save
       @content1 = "Some\ncontent\nwith\nmany\nlines."
       @content2 = "Some\ncontent,\nwith\nmany\nlines."
-      @commit1 = @repository.commit_file(@repository.owners.first, @content1, 'path/file.xml', 'Message1')
-      @commit2 = @repository.commit_file(@repository.owners.first, @content2, 'path/file.xml', 'Message2')
+      @commit1 = @repository.commit_file(@repository.owners.first, @content1, 'path2/path/file.xml', 'Message1')
+      @commit2 = @repository.commit_file(@repository.owners.first, @content2, 'path2/path/file.xml', 'Message2')
+    end
+    
+    it "last commit should be head" do
+      @repository.is_head?(@commit2.commit_hash).should == true
     end
 
     it "should have the right file count when using a previous commit" do
       @repository.get_changed_files(@commit1.commit_hash).size.should == 1
     end
+    
 
-    it "should have the right contents in the list when using a previous commit" do
-      @repository.get_changed_files(@commit1.commit_hash).should == [{
-          name: 'file.xml',
-          path: 'path/file.xml',
-          diff: Diffy::Diff.new('', @content1, include_plus_and_minus_in_html: true, context: 3, include_diff_info: true).to_s(:html),
-          type: :add,
-          mime_type: Mime::Type.lookup_by_extension('xml'),
-          mime_category: 'application',
-          editable: true
-        }]
+    it "should have the right file count when using a previous commit" do
+      @repository.get_changed_files(@commit1.commit_hash).size.should == 1
     end
+    
+    it "should have the right name in the list when using a previous commit" do
+      @repository.get_changed_files(@commit1.commit_hash).first[:name].should == 'file.xml'
+    end
+    
+    it "should have the right path in the list when using a previous commit" do
+      @repository.get_changed_files(@commit1.commit_hash).first[:path].should == 'path2/path/file.xml'
+    end
+    
+    it "should have the right type in the list when using a previous commit" do
+      @repository.get_changed_files(@commit1.commit_hash).first[:type].should == :add
+    end
+    
+    it "should have the right mime type in the list when using a previous commit" do
+      @repository.get_changed_files(@commit1.commit_hash).first[:mime_type].should == Mime::Type.lookup_by_extension('xml')
+    end
+    
+    it "should have the right mime category in the list when using a previous commit" do
+      @repository.get_changed_files(@commit1.commit_hash).first[:mime_category].should == 'application'
+    end
+    
+    it "should have the right editable in the list when using a previous commit" do
+      @repository.get_changed_files(@commit1.commit_hash).first[:editable].should == true
+    end
+    
+    
 
     it "should have the right file count when using the HEAD" do
       @repository.get_changed_files.size.should == 1
     end
-
-    it "should have the right contents in the list when using the HEAD" do
-      @repository.get_changed_files.should == [{
-          name: 'file.xml',
-          path: 'path/file.xml',
-          diff: Diffy::Diff.new(@content1, @content2, include_plus_and_minus_in_html: true, context: 3, include_diff_info: true).to_s(:html),
-          type: :add,
-          mime_type: Mime::Type.lookup_by_extension('xml'),
-          mime_category: 'application',
-          editable: true
-        }]
+    
+    it "should have the right name in the list when using the HEAD" do
+      @repository.get_changed_files.first[:name].should == 'file.xml'
+    end
+    
+    it "should have the right path in the list when using the HEAD" do
+      @repository.get_changed_files.first[:path].should == 'path2/path/file.xml'
+    end
+    
+    it "should have the right type in the list when using the HEAD" do
+      @repository.get_changed_files.first[:type].should == :change
+    end
+    
+    it "should have the right mime type in the list when using the HEAD" do
+      @repository.get_changed_files.first[:mime_type].should == Mime::Type.lookup_by_extension('xml')
+    end
+    
+    it "should have the right mime category in the list when using the HEAD" do
+      @repository.get_changed_files.first[:mime_category].should == 'application'
+    end
+    
+    it "should have the right editable in the list when using the HEAD" do
+      @repository.get_changed_files.first[:editable].should == true
     end
   end
 end
