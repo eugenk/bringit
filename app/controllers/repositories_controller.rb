@@ -46,7 +46,7 @@ class RepositoriesController < ApplicationController
       @redirect_url = repository_path(@repository.path)
       render template: 'layouts/_redirect', layout: false 
     else
-      flash[:error] = @repository.errors.messages.map { |field, error| "#{field} #{error.join(", ")}." }.join(" ")
+      flash[:error] = all_errors
       render action: '_new', layout: false 
     end
   end
@@ -61,7 +61,7 @@ class RepositoriesController < ApplicationController
       end
     else
       if params[:repository][:title]
-        flash[:error] = @repository.errors.messages.map { |field, error| "#{field} #{error.join(", ")}." }.join(" ")
+        flash[:error] = all_errors
         @repository.reload
         redirect_to @repository
       else
@@ -173,5 +173,9 @@ class RepositoriesController < ApplicationController
   def basic_assignments
     @oid = params[:oid]
     @is_head = @repository.is_head?(@oid)
+  end
+
+  def all_errors
+    @repository.errors.messages.map { |field, error| "#{field} #{error.join(", ")}." }.join(" ")
   end
 end
