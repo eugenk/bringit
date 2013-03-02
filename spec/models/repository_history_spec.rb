@@ -27,31 +27,31 @@ describe Repository do
 
     it "should have the correct values in the history at the HEAD" do
       @repository.entry_info_list(@filepath).should == [
-        @commit_delete2.commit_hash,
-        @commit_change2.commit_hash,
-        @commit_add2.commit_hash,
-        @commit_delete1.commit_hash,
-        @commit_change1.commit_hash,
-        @commit_add1.commit_hash
-      ]
+        @commit_delete2,
+        @commit_change2,
+        @commit_add2,
+        @commit_delete1,
+        @commit_change1,
+        @commit_add1
+      ].map { |c| c.commit_hash }
     end
 
     it "should have the correct values in the history a commit before the HEAD" do
       @repository.entry_info_list(@filepath, @commit_change2.commit_hash).should == [
-        @commit_change2.commit_hash,
-        @commit_add2.commit_hash,
-        @commit_delete1.commit_hash,
-        @commit_change1.commit_hash,
-        @commit_add1.commit_hash
-      ]
+        @commit_change2,
+        @commit_add2,
+        @commit_delete1,
+        @commit_change1,
+        @commit_add1
+      ].map { |c| c.commit_hash }
     end
 
     it "should have the correct values in the history in the commit that changes another file" do
       @repository.entry_info_list(@filepath, @commit_other3.commit_hash).should == [
-        @commit_delete1.commit_hash,
-        @commit_change1.commit_hash,
-        @commit_add1.commit_hash
-      ]
+        @commit_delete1,
+        @commit_change1,
+        @commit_add1
+      ].map { |c| c.commit_hash }
     end
   end
 end
