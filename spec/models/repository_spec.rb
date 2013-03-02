@@ -133,29 +133,107 @@ describe Repository do
   describe "can read a folder" do
     before do
       @repository.save
-      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file1.txt', 'Some commit message1')
-      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file2.txt', 'Some commit message2')
+      @commit_add1 = @repository.commit_file(@repository.owners.first, 'Some content', 'path/file1.txt', 'Some commit message1')
+      @commit_add2 = @repository.commit_file(@repository.owners.first, 'Some content', 'path/file2.txt', 'Some commit message2')
+      @commit_add3 = @repository.commit_file(@repository.owners.first, 'Some content', 'file3.txt', 'Some commit message2')
+      @commit_del1 = @repository.delete_file(@repository.owners.first, 'path/file1.txt')
+      @commit_del2 = @repository.delete_file(@repository.owners.first, 'path/file2.txt')
+      @commit_del3 = @repository.delete_file(@repository.owners.first, 'file3.txt')
+    end
+
+    
+    it "should read the right number of contents in the root folder after adding the first file" do
+      @repository.folder_contents(@commit_add1.commit_hash).size.should == 1
     end
     
-    it "should read the right number of contents" do
-      @repository.folder_contents.size.should == 1
-    end
-    
-    it "should read the right contents in folder" do
-      @repository.folder_contents.should == [{
+    it "should read the right contents in the root folder after adding the first file" do
+      @repository.folder_contents(@commit_add1.commit_hash).should == [{
         type: :dir,
         name: 'path',
         path: 'path'
       }]
     end
     
-    it "subfolder should read the right number of contents" do
-      @repository.folder_contents(nil, 'path').size.should == 2
+    it "should read the right number of contents in the subfolder after adding the first file" do
+      @repository.folder_contents(@commit_add1.commit_hash, 'path').size.should == 1
+    end
+    
+    it "should read the right contents in the subfolder after adding the first file" do
+      @repository.folder_contents(@commit_add1.commit_hash, 'path').should == [{
+        type: :file,
+        name: 'file1.txt',
+        path: 'path/file1.txt'
+      }]
     end
     
     
-    it "should read the right contents in subfolder" do
-      @repository.folder_contents(nil, 'path').should == [{
+    it "should read the right number of contents in the root folder after adding the second file" do
+      @repository.folder_contents(@commit_add2.commit_hash).size.should == 1
+    end
+    
+    it "should read the right contents in the root folder after adding the second file" do
+      @repository.folder_contents(@commit_add2.commit_hash).should == [{
+        type: :dir,
+        name: 'path',
+        path: 'path'
+      }]
+    end
+
+    it "should read the right number of contents in the subfolder after adding the second file" do
+      @repository.folder_contents(@commit_add2.commit_hash, 'path').size.should == 2
+    end
+    
+    it "should read the right contents in the subfolder after adding the second file" do
+      @repository.folder_contents(@commit_add2.commit_hash, 'path').should == [{
+        type: :file,
+        name: 'file1.txt',
+        path: 'path/file1.txt'
+      },{
+        type: :file,
+        name: 'file2.txt',
+        path: 'path/file2.txt'
+      }]
+    end
+
+
+    it "should read the right number of contents in the root folder after adding the third file" do
+      @repository.folder_contents(@commit_add3.commit_hash).size.should == 2
+    end
+    
+    it "should read the right contents in the root folder after adding the third file" do
+      @repository.folder_contents(@commit_add3.commit_hash).should == [{
+        type: :dir,
+        name: 'path',
+        path: 'path'
+      },{
+        type: :file,
+        name: 'file3.txt',
+        path: 'file3.txt'
+      }]
+    end
+
+    it "should read the right number of contents in the root folder after adding the third file" do
+      @repository.folder_contents(@commit_add3.commit_hash).size.should == 2
+    end
+    
+    it "should read the right contents in the root folder after adding the third file" do
+      @repository.folder_contents(@commit_add3.commit_hash).should == [{
+        type: :dir,
+        name: 'path',
+        path: 'path'
+      },{
+        type: :file,
+        name: 'file3.txt',
+        path: 'file3.txt'
+      }]
+    end
+
+    it "should read the right number of contents in the subfolder after adding the third file" do
+      @repository.folder_contents(@commit_add3.commit_hash, 'path').size.should == 2
+    end
+    
+    it "should read the right contents in the subfolder after adding the third file" do
+      @repository.folder_contents(@commit_add3.commit_hash, 'path').should == [{
         type: :file,
         name: 'file1.txt',
         path: 'path/file1.txt'
@@ -166,6 +244,56 @@ describe Repository do
       }]
     end
     
+    
+    it "should read the right number of contents in the root folder after deleting the first file" do
+      @repository.folder_contents(@commit_del1.commit_hash).size.should == 2
+    end
+    
+    it "should read the right contents in the root folder after deleting the first file" do
+      @repository.folder_contents(@commit_del1.commit_hash).should == [{
+        type: :dir,
+        name: 'path',
+        path: 'path'
+      },{
+        type: :file,
+        name: 'file3.txt',
+        path: 'file3.txt'
+      }]
+    end
+    
+    it "should read the right number of contents in the subfolder after deleting the first file" do
+      @repository.folder_contents(@commit_del1.commit_hash, 'path').size.should == 1
+    end
+    
+    it "should read the right contents in the subfolder after deleting the first file" do
+      @repository.folder_contents(@commit_del1.commit_hash, 'path').should == [{
+        type: :file,
+        name: 'file2.txt',
+        path: 'path/file2.txt'
+      }]
+    end
+    
+    
+    it "should read the right number of contents in the root folder after deleting the second file" do
+      @repository.folder_contents(@commit_del2.commit_hash).size.should == 1
+    end
+    
+    it "should read the right contents in the root folder after deleting the second file" do
+      @repository.folder_contents(@commit_del2.commit_hash).should == [{
+        type: :file,
+        name: 'file3.txt',
+        path: 'file3.txt'
+      }]
+    end
+    
+    
+    it "should read the right number of contents in the root folder after deleting the third file" do
+      @repository.folder_contents(@commit_del3.commit_hash).size.should == 0
+    end
+    
+    it "should read the right contents in the root folder after deleting the third file" do
+      @repository.folder_contents(@commit_del3.commit_hash).should == []
+    end
   end
   
   describe "can overwrite file" do
@@ -193,43 +321,70 @@ describe Repository do
       @content2 = "Some\ncontent,\nwith\nmany\nlines."
       @commit1 = @repository.commit_file(@repository.owners.first, @content1, 'path2/path/file.xml', 'Message1')
       @commit2 = @repository.commit_file(@repository.owners.first, @content2, 'path2/path/file.xml', 'Message2')
+      @commit3 = @repository.delete_file(@repository.owners.first, 'path2/path/file.xml')
     end
     
-    it "last commit should be head" do
-      @repository.is_head?(@commit2.commit_hash).should == true
-    end
-
-    it "should have the right file count when using a previous commit" do
-      @repository.get_changed_files(@commit1.commit_hash).size.should == 1
+    it "last commit should be HEAD" do
+      @repository.is_head?(@commit3.commit_hash).should == true
     end
     
 
-    it "should have the right file count when using a previous commit" do
+    it "should have the right file count when using the first commit" do
       @repository.get_changed_files(@commit1.commit_hash).size.should == 1
     end
     
-    it "should have the right name in the list when using a previous commit" do
+    it "should have the right name in the list when using the first commit" do
       @repository.get_changed_files(@commit1.commit_hash).first[:name].should == 'file.xml'
     end
     
-    it "should have the right path in the list when using a previous commit" do
+    it "should have the right path in the list when using the first commit" do
       @repository.get_changed_files(@commit1.commit_hash).first[:path].should == 'path2/path/file.xml'
     end
     
-    it "should have the right type in the list when using a previous commit" do
+    it "should have the right type in the list when using the first commit" do
       @repository.get_changed_files(@commit1.commit_hash).first[:type].should == :add
     end
     
-    it "should have the right mime type in the list when using a previous commit" do
+    it "should have the right mime type in the list when using the first commit" do
       @repository.get_changed_files(@commit1.commit_hash).first[:mime_type].should == Mime::Type.lookup_by_extension('xml')
     end
     
-    it "should have the right mime category in the list when using a previous commit" do
+    it "should have the right mime category in the list when using the first commit" do
       @repository.get_changed_files(@commit1.commit_hash).first[:mime_category].should == 'application'
     end
     
-    it "should have the right editable in the list when using a previous commit" do
+    it "should have the right editable in the list when using the first commit" do
       @repository.get_changed_files(@commit1.commit_hash).first[:editable].should == true
+    end
+    
+    
+
+    it "should have the right file count when using a commit in the middle" do
+      @repository.get_changed_files(@commit2.commit_hash).size.should == 1
+    end
+    
+    it "should have the right name in the list when using a commit in the middle" do
+      @repository.get_changed_files(@commit2.commit_hash).first[:name].should == 'file.xml'
+    end
+    
+    it "should have the right path in the list when using a commit in the middle" do
+      @repository.get_changed_files(@commit2.commit_hash).first[:path].should == 'path2/path/file.xml'
+    end
+    
+    it "should have the right type in the list when using a commit in the middle" do
+      @repository.get_changed_files(@commit2.commit_hash).first[:type].should == :change
+    end
+    
+    it "should have the right mime type in the list when using a commit in the middle" do
+      @repository.get_changed_files(@commit2.commit_hash).first[:mime_type].should == Mime::Type.lookup_by_extension('xml')
+    end
+    
+    it "should have the right mime category in the list when using a commit in the middle" do
+      @repository.get_changed_files(@commit2.commit_hash).first[:mime_category].should == 'application'
+    end
+    
+    it "should have the right editable in the list when using a commit in the middle" do
+      @repository.get_changed_files(@commit2.commit_hash).first[:editable].should == true
     end
     
     
@@ -247,7 +402,7 @@ describe Repository do
     end
     
     it "should have the right type in the list when using the HEAD" do
-      @repository.get_changed_files.first[:type].should == :change
+      @repository.get_changed_files.first[:type].should == :delete
     end
     
     it "should have the right mime type in the list when using the HEAD" do
