@@ -272,7 +272,6 @@ class Repository < ActiveRecord::Base
     files_contents = []
     
     current_tree.each_tree do |e|
-      puts e.inspect
       if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
         files_contents.concat(get_changed_files_contents(repo.lookup(e[:oid]), repo.lookup(parent_tree[e[:name]][:oid]), "#{directory}#{e[:name]}/"))
       elsif !parent_tree[e[:name]]
