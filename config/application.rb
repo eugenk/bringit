@@ -11,6 +11,9 @@ end
 
 module Bringit
   class Application < Rails::Application
+    config.autoload_paths += %W(
+        #{config.root}/app/models/concerns
+      )
     # don't generate RSpec tests for views and helpers
     config.generators do |g|
       g.test_framework :rspec, fixture: true
