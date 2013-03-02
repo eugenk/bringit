@@ -15,13 +15,7 @@ class RepositoriesController < ApplicationController
   
   def show
     @repository = Repository.identifier(params[:id]).first!
-    @oid = params[:oid]
-    @url = @repository.get_url(@oid, params[:url])
-    @is_head = @repository.is_head?(@oid)
-    @current_commit = @is_head ? nil : @repository.all_commits.identifier(@oid).first!
-    @contents = @repository.folder_contents(@oid, @url)
-    @breadcrumbs = @url.split('/')
-    @current_file = @repository.get_current_file(@oid, @url)
+    show_assignments
   rescue ActiveRecord::RecordNotFound, TypeError
     raise ActionController::RoutingError.new('Not Found')
   end
@@ -124,9 +118,7 @@ class RepositoriesController < ApplicationController
   
   def raw
     @repository = Repository.identifier(params[:id]).first!
-    @oid = params[:oid]
-    @url = @repository.get_url(@oid, params[:url])
-    @is_head = @repository.is_head?(@oid)
+    general_assignments
     @current_file = @repository.get_current_file(@oid, @url)
     
     render text: @current_file[:content], content_type: Mime::Type.lookup('application/force-download')
@@ -134,9 +126,7 @@ class RepositoriesController < ApplicationController
   
   def history
     @repository = Repository.identifier(params[:id]).first!
-    @oid = params[:oid]
-    @url = @repository.get_url(@oid, params[:url])
-    @is_head = @repository.is_head?(@oid)
+    general_assignments
     @current_commit = @is_head ? nil : @repository.all_commits.identifier(@oid).first!
     @current_file = @repository.get_current_file(@oid, @url)
     @breadcrumbs = @url.split('/')
@@ -154,8 +144,7 @@ class RepositoriesController < ApplicationController
   
   def diff
     @repository = Repository.identifier(params[:id]).first!
-    @oid = params[:oid]
-    @is_head = @repository.is_head?(@oid)
+    basic_assignments
     @current_commit = @repository.all_commits.identifier(@oid).first!
     @changed_files = @repository.get_changed_files(@oid)
   rescue ActiveRecord::RecordNotFound, TypeError
@@ -167,5 +156,23 @@ class RepositoriesController < ApplicationController
     @repository = Repository.identifier(params[:id]).first!
     @url = @repository.get_url(nil, params[:url])
     @current_file = @repository.get_current_file(nil,@url)
+  end
+
+  def show_assignments
+    general_assignments
+    @current_commit = @is_head ? nil : @repository.all_commits.identifier(@oid).first!
+    @contents = @repository.folder_contents(@oid, @url)
+    @breadcrumbs = @url.split('/')
+    @current_file = @repository.get_current_file(@oid, @url)
+  end
+
+  def general_assignments
+    basic_assignments
+    @url = @repository.get_url(@oid, params[:url])
+  end
+
+  def basic_assignments
+    @oid = params[:oid]
+    @is_head = @repository.is_head?(@oid)
   end
 end

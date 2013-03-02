@@ -339,7 +339,7 @@ class Repository < ActiveRecord::Base
   end
 
   def diff(current, original)
-    Diffy::Diff.new(original, current, include_plus_and_minus_in_html: true, context: 3, include_diff_info: true).to_s(:html)
+    Diffy::Diff.new(original.force_encoding('UTF-8'), current.force_encoding('UTF-8'), include_plus_and_minus_in_html: true, context: 3, include_diff_info: true).to_s(:html)
   end
 
   def mime_info(filename)
