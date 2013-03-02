@@ -10,7 +10,13 @@ module CommitsHelper
     exists = false
     entries = []
     
-    unless branches.empty?
+    if branches.empty?
+      entries.unshift({
+        url: repository_path(repository.path),
+        name: 'master',
+        active: false
+      })
+    else
       entries = branches.map do |b|
         # b[:name], #b[:oid], #b[:refname]
         exists ||= (current_commit && b[:oid] == current_commit.commit_hash)
