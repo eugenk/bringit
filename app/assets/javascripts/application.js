@@ -7,7 +7,12 @@
 //= require autocomplete-rails
 //= require codemirror
 //= require bootstrap-fileupload.min.js
-//= require layout
-//= require repository
 //= require moment
 //= require jquery.truncate
+//= require timestamp
+//= require modal
+//= require filetable
+//= require editfile
+//= require ajax
+//= require layout
+//= require repository
