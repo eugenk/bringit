@@ -435,7 +435,7 @@ describe Repository do
     end
 
     it "should have the correct values in the history at the HEAD" do
-      @repository.entry_info_list.should == [
+      @repository.entry_info_list(@filepath).should == [
         @commit_delete2.commit_hash,
         @commit_change2.commit_hash,
         @commit_add2.commit_hash,
