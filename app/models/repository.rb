@@ -257,11 +257,15 @@ class Repository < ActiveRecord::Base
   end
 
   def get_changed_files_rugged(rugged_commit)
-    changed_files_infos = rugged_commit.parents.map do |p|
-      get_changed_files_contents(rugged_commit.tree, p.tree)
-    end
+    if rugged_commit.parents.empty?
+      get_changed_files_contents(rugged_commit.tree, {})
+    else
+      changed_files_infos = rugged_commit.parents.map do |p|
+        get_changed_files_contents(rugged_commit.tree, p.tree)
+      end
 
-    changed_files_infos.flatten
+      changed_files_infos.flatten
+    end
   end
 
   def get_changed_files_contents(current_tree, parent_tree, directory='')
@@ -272,8 +276,8 @@ class Repository < ActiveRecord::Base
       end
     end
 
-    parent_tree.each_tree do |e|
-      if !current_tree[e[:name]]
+    parent_tree.each do |e|
+      if e[:type] == :tree && !current_tree[e[:name]]
         files_contents.concat(get_changed_files_contents(repo.lookup(current_tree[e[:name]][:oid]), repo.lookup(e[:oid]), "#{directory}#{e[:name]}/"))
       end
     end
@@ -306,8 +310,8 @@ class Repository < ActiveRecord::Base
         }
       end
     end
-    parent_tree.each_blob do |e|
-      if !current_tree[e[:name]]
+    parent_tree.each do |e|
+      if e[:type] == :blob && !current_tree[e[:name]]
         mime_info = mime_info(e[:name])
         editable = mime_type_editable?(mime_info[:mime_type])
         files_contents << {
