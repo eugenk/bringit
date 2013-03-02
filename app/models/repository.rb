@@ -283,9 +283,6 @@ class Repository < ActiveRecord::Base
       if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
           mime_info = mime_info(e[:name])
           editable = mime_type_editable?(mime_info[:mime_type])
-          puts "xxxxx"
-          puts editable.inspect
-          puts mime_info
           files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
@@ -298,9 +295,6 @@ class Repository < ActiveRecord::Base
       elsif !parent_tree[e[:name]]
         mime_info = mime_info(e[:name])
         editable = mime_type_editable?(mime_info[:mime_type])
-        puts "yyyyyy"
-        puts editable.inspect
-        puts mime_info
         files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",
@@ -316,9 +310,6 @@ class Repository < ActiveRecord::Base
       if !current_tree[e[:name]]
         mime_info = mime_info(e[:name])
         editable = mime_type_editable?(mime_info[:mime_type])
-        puts "zzzzzzz"
-        puts editable.inspect
-        puts mime_info
         files_contents << {
           name: e[:name],
           path: "#{directory}#{e[:name]}",

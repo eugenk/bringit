@@ -93,7 +93,7 @@ describe Repository do
     end.to raise_error(RepositoryNotFoundError)
   end
   
-  describe "can commit file" do
+  describe "can commit a file" do
     before do
       @repository.save
       @repository.commit_file(@repository.owners.first, 'Some content', 'path/file.txt', 'Some commit message')
@@ -116,7 +116,7 @@ describe Repository do
     end
   end
   
-  describe "can delete file" do
+  describe "can delete a file" do
     before do
       @repository.save
       @repository.commit_file(@repository.owners.first, 'Some content', 'path/file.txt', 'Some commit message')
@@ -130,11 +130,11 @@ describe Repository do
     end
   end
   
-  describe "can read folder" do
+  describe "can read a folder" do
     before do
       @repository.save
-      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file1.txt', 'Some commit message')
-      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file2.txt', 'Some commit 2')
+      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file1.txt', 'Some commit message1')
+      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file2.txt', 'Some commit message2')
     end
     
     it "should read the right number of contents" do
@@ -185,5 +185,69 @@ describe Repository do
     end
   end
   
+  describe "when getting the list of changed files" do
+    before do
+      @repository.save
+      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file.xml', 'Some commit message')
+    end
+
+    it "should have the right file count" do
+      @repository.get_changed_files.size.should == 1
+    end
+
+    it "should have the right contents in the list" do
+      @repository.get_changed_files.should == [{
+          name: 'file.xml',
+          path: 'path/file.xml',
+          diff: Diffy::Diff.new('', 'Some content', include_plus_and_minus_in_html: true, context: 3, include_diff_info: true).to_s(:html),
+          type: :add,
+          mime_type: Mime::Type.lookup_by_extension('xml'),
+          mime_category: 'application',
+          editable: true
+        }]
+    end
+  end
+
   
+  describe "when getting the list of changed files" do
+    before do
+      @repository.save
+      @content1 = "Some\ncontent\nwith\nmany\nlines."
+      @content2 = "Some\ncontent,\nwith\nmany\nlines."
+      @commit1 = @repository.commit_file(@repository.owners.first, @content1, 'path/file.xml', 'Message1')
+      @commit2 = @repository.commit_file(@repository.owners.first, @content2, 'path/file.xml', 'Message2')
+    end
+
+    it "should have the right file count when using a previous commit" do
+      @repository.get_changed_files(@commit1.commit_hash).size.should == 1
+    end
+
+    it "should have the right contents in the list when using a previous commit" do
+      @repository.get_changed_files(@commit1.commit_hash).should == [{
+          name: 'file.xml',
+          path: 'path/file.xml',
+          diff: Diffy::Diff.new('', @content1, include_plus_and_minus_in_html: true, context: 3, include_diff_info: true).to_s(:html),
+          type: :add,
+          mime_type: Mime::Type.lookup_by_extension('xml'),
+          mime_category: 'application',
+          editable: true
+        }]
+    end
+
+    it "should have the right file count when using the HEAD" do
+      @repository.get_changed_files.size.should == 1
+    end
+
+    it "should have the right contents in the list when using the HEAD" do
+      @repository.get_changed_files.should == [{
+          name: 'file.xml',
+          path: 'path/file.xml',
+          diff: Diffy::Diff.new(@content1, @content2, include_plus_and_minus_in_html: true, context: 3, include_diff_info: true).to_s(:html),
+          type: :add,
+          mime_type: Mime::Type.lookup_by_extension('xml'),
+          mime_category: 'application',
+          editable: true
+        }]
+    end
+  end
 end
