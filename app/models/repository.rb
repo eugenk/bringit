@@ -1,6 +1,7 @@
 require 'digest/sha1'
 
 class Repository < ActiveRecord::Base
+  include CommitGettable, ObjectGettable
   attr_accessible :description, :title, :owners
   attr_protected :path, :pushes, :commits, :repo
   
@@ -92,7 +93,7 @@ class Repository < ActiveRecord::Base
     if repo.empty?
       old_tree = nil
     else
-      old_tree = repo.lookup(repo.head.target).tree 
+      old_tree = head.tree 
     end
     
     tree = build_tree(entry, old_tree, target_path.split('/'))
@@ -175,7 +176,7 @@ class Repository < ActiveRecord::Base
   end
   
   def is_head?(commit_oid=nil)
-    commit_oid == nil || (!repo.empty? && commit_oid == repo.head.target)
+    commit_oid == nil || (!repo.empty? && commit_oid == head_oid)
   end
 
   def entries_info(commit_oid=nil, url_path='')
@@ -385,7 +386,7 @@ class Repository < ActiveRecord::Base
   end
   
   def get_commit_of_last_change(url, previous_entry_oid=nil, rugged_commit=nil, previous_rugged_commit=nil)
-    rugged_commit ||= repo.lookup(repo.head.target)
+    rugged_commit ||= head
 
     object = get_object(rugged_commit, url)
     object_oid = object ? object.oid : nil
@@ -410,7 +411,7 @@ class Repository < ActiveRecord::Base
     if repo.empty?
       nil
     else
-      repo.lookup(commit_oid || repo.head.target)
+      repo.lookup(commit_oid || head_oid)
     end
   end
   
@@ -418,7 +419,7 @@ class Repository < ActiveRecord::Base
     if repo.empty?
       []
     else
-      [repo.head.target]
+      [head_oid]
     end
   end
   
@@ -502,17 +503,6 @@ class Repository < ActiveRecord::Base
     end
   end
   
-  # can throw error: Rugged::OdbError: Object not found - failed to find pack entry
-  def get_object(rugged_commit, object_path='')
-    object = rugged_commit.tree
-    object_path.split('/').each do |part|
-      return nil unless object[part]
-      object = repo.lookup(object[part][:oid]) unless part.empty?
-    end
-    
-    object
-  end
-  
   def create_repository
     repo = Rugged::Repository.init_at(local_path, true)
   end
@@ -578,5 +568,13 @@ class Repository < ActiveRecord::Base
     else
       builder.reject! { |e| e[:name] == path_parts.first }
     end
+  end
+
+  def head_oid
+    repo.head.target
+  end
+
+  def head
+    repo.lookup(head_oid)
   end
 end
