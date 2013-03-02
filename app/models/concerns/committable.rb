@@ -39,7 +39,7 @@ module Committable
     if repo.empty?
       ref = Rugged::Reference.create(repo, 'refs/heads/master', commit_oid)
     else
-      head_oid = commit_oid
+      repo.head.target = commit_oid
     end
     
     touch
@@ -50,8 +50,8 @@ module Committable
     
     commit
   end
-
-
+  
+  
   protected
   
   def build_tree(entry, tree, path_parts)
