@@ -1,7 +1,7 @@
 require 'digest/sha1'
 
 class Repository < ActiveRecord::Base
-  include CommitGettable, ObjectGettable
+  include CommitGettable, ObjectGettable, FolderContentsGettable, Committable
   attr_accessible :description, :title, :owners
   attr_protected :path, :pushes, :commits, :repo
   
@@ -68,71 +68,12 @@ class Repository < ActiveRecord::Base
     raise RepositoryNotFoundError
   end
   
-  def delete_file(user, target_path)
-    commit_file(user, nil, target_path, "Delete file #{target_path}")
-  end
-
-  def add_file(user, tmp_path, target_path, message)
-    commit_file(user, File.open(tmp_path, 'rb').read, target_path, message)
-  end
-  
-  def commit_file(user, file_contents, target_path, message)
-    #Entry
-    entry = nil
-    if file_contents
-      entry = {
-        type: :blob, 
-        name: nil, 
-        oid: Rugged::Blob.create(repo, file_contents), 
-        content: file_contents,
-        filemode: 33188
-      }
-    end
-    
-    # TreeBuilder
-    if repo.empty?
-      old_tree = nil
-    else
-      old_tree = head.tree 
-    end
-    
-    tree = build_tree(entry, old_tree, target_path.split('/'))
-    
-    # Commit Sha
-    commit_oid = Rugged::Commit.create(repo, author: user.author, 
-      message: message, committer: user.author, parents: commit_parents, tree: tree)
-    rugged_commit = repo.lookup(commit_oid)
-    
-    if repo.empty?
-      ref = Rugged::Reference.create(repo, 'refs/heads/master', commit_oid)
-    else
-      repo.head.target = commit_oid
-    end
-    
-    touch
-    
-    push = build_push(user)
-    commit = build_commit(user, push, rugged_commit)
-    commit.save
-    
-    commit
-  end
-  
   def path_exists?(commit_oid=nil, url='')
     rugged_commit = get_commit(commit_oid)
     if !rugged_commit && url.empty?
       true
     else
       path_exists_rugged?(rugged_commit, url)
-    end
-  end
-
-  def folder_contents(commit_oid=nil, url='')
-    rugged_commit = get_commit(commit_oid)
-    if !rugged_commit && url.empty?
-      []
-    else
-      folder_contents_rugged(rugged_commit, url)
     end
   end
 
@@ -450,37 +391,6 @@ class Repository < ActiveRecord::Base
     end
   rescue Rugged::OdbError
     false
-  end
-  
-  def folder_contents_rugged(rugged_commit, url='')
-    return [] unless path_exists_rugged?(rugged_commit, url)
-    
-    tree = get_object(rugged_commit, url)
-    contents = []
-    
-    if tree.type == :tree
-      tree.each_tree do |subdir|
-        folder_contents_append_entry(contents, url, :dir, subdir[:name])
-      end
-      
-      tree.each_blob do |file|
-        folder_contents_append_entry(contents, url, :file, file[:name])
-      end
-    end
-    
-    contents
-  end
-
-  def folder_contents_append_entry(contents, url, type, name)
-    path_file = url.dup
-    path_file << '/' unless url.empty?
-    path_file << name
-
-    contents << {
-      type: type,
-      name: name,
-      path: path_file
-    }
   end
   
   def get_current_file_rugged(rugged_commit, url='')
