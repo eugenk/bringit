@@ -67,22 +67,22 @@ module Committable
       
       if old_entry
         if old_entry[:type] == :tree
-          build_tree_tree(builder, entry, repo.lookup(old_entry[:oid]), path_parts)
+          bt_tree(builder, entry, repo.lookup(old_entry[:oid]), path_parts)
         else
-          build_tree_blob(builder, entry, path_parts)
+          bt_blob(builder, entry, path_parts)
         end
       else
         if path_parts.size == 1
-          build_tree_blob(builder, entry, path_parts)
+          bt_blob(builder, entry, path_parts)
         else
-          build_tree_tree(builder, entry, nil, path_parts)
+          bt_tree(builder, entry, nil, path_parts)
         end    
       end
       
     elsif path_parts.size == 1
-      build_tree_blob(builder, entry, path_parts)
+      bt_blob(builder, entry, path_parts)
     else
-      build_tree_tree(builder, entry, nil, path_parts)
+      bt_tree(builder, entry, nil, path_parts)
     end
     builder.reject! do |e|
       e[:type] == :tree && repo.lookup(e[:oid]).count == 0
@@ -92,7 +92,7 @@ module Committable
     repo.lookup(tree_oid)
   end
   
-  def build_tree_tree(builder, entry, old_entry, path_parts)
+  def bt_tree(builder, entry, old_entry, path_parts)
     new_tree = build_tree(entry, old_entry, path_parts[1..-1])
     tree_entry = {
       type: :tree, 
@@ -103,7 +103,7 @@ module Committable
     builder.insert(tree_entry)
   end
   
-  def build_tree_blob(builder, entry, path_parts)
+  def bt_blob(builder, entry, path_parts)
     if entry
       entry[:name] = path_parts.first
       builder.insert(entry)

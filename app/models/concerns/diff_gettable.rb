@@ -6,52 +6,52 @@ module DiffGettable
     if !rugged_commit
       []
     else
-      get_changed_files_rugged(rugged_commit)
+      gcf_rugged(rugged_commit)
     end
   end
 
 
   protected
 
-  def get_changed_files_rugged(rugged_commit)
+  def gcf_rugged(rugged_commit)
     if rugged_commit.parents.empty?
-      get_changed_files_contents(rugged_commit.tree, {})
+      gcf_complete(rugged_commit.tree, {})
     else
       changed_files_infos = rugged_commit.parents.map do |p|
-        get_changed_files_contents(rugged_commit.tree, p.tree)
+        gcf_complete(rugged_commit.tree, p.tree)
       end
 
       changed_files_infos.flatten
     end
   end
 
-  def get_changed_files_contents(current_tree, parent_tree, directory='')
+  def gcf_complete(current_tree, parent_tree, directory='')
     files_contents = []
-    files_contents.concat(get_changed_files_contents_subtrees(current_tree, parent_tree, directory))
-    files_contents.concat(get_changed_files_contents_current_tree(current_tree, parent_tree, directory))
+    files_contents.concat(gcf_subtrees(current_tree, parent_tree, directory))
+    files_contents.concat(gcf_current(current_tree, parent_tree, directory))
 
 
     files_contents
   end
 
-  def get_changed_files_contents_subtrees(current_tree, parent_tree, directory)
+  def gcf_subtrees(current_tree, parent_tree, directory)
     files_contents = []
-    files_contents.concat(get_changed_files_contents_subtrees_addeed_and_changed(current_tree, parent_tree, directory))
-    files_contents.concat(get_changed_files_contents_subtrees_deleted(current_tree, parent_tree, directory))
+    files_contents.concat(gcf_subtrees_addeed_and_changed(current_tree, parent_tree, directory))
+    files_contents.concat(gcf_subtrees_deleted(current_tree, parent_tree, directory))
 
     files_contents
   end
 
-  def get_changed_files_contents_subtrees_addeed_and_changed(current_tree, parent_tree, directory)
+  def gcf_subtrees_addeed_and_changed(current_tree, parent_tree, directory)
     files_contents = []
     current_tree.each do |e|
       if e[:type] == :tree
         if parent_tree[e[:name]] && e[:oid] != parent_tree[e[:name]][:oid]
-          files_contents.concat(get_changed_files_contents(repo.lookup(e[:oid]), repo.lookup(parent_tree[e[:name]][:oid]), "#{directory}#{e[:name]}/"))
+          files_contents.concat(gcf_complete(repo.lookup(e[:oid]), repo.lookup(parent_tree[e[:name]][:oid]), "#{directory}#{e[:name]}/"))
         elsif !parent_tree[e[:name]]
-          files_contents.concat(get_changed_files_contents(repo.lookup(e[:oid]), {}, "#{directory}#{e[:name]}/"))
+          files_contents.concat(gcf_complete(repo.lookup(e[:oid]), {}, "#{directory}#{e[:name]}/"))
         elsif parent_tree == {} || parent_tree.count == 0
-          files_contents.concat(get_changed_files_contents(repo.lookup(e[:oid]), parent_tree, "#{directory}#{e[:name]}/"))
+          files_contents.concat(gcf_complete(repo.lookup(e[:oid]), parent_tree, "#{directory}#{e[:name]}/"))
         end
       end
     end
@@ -59,26 +59,26 @@ module DiffGettable
     files_contents
   end
 
-  def get_changed_files_contents_subtrees_deleted(current_tree, parent_tree, directory)
+  def gcf_subtrees_deleted(current_tree, parent_tree, directory)
     files_contents = []
     parent_tree.each do |e|
       if e[:type] == :tree && !current_tree[e[:name]]
-        files_contents.concat(get_changed_files_contents({}, repo.lookup(e[:oid]), "#{directory}#{e[:name]}/"))
+        files_contents.concat(gcf_complete({}, repo.lookup(e[:oid]), "#{directory}#{e[:name]}/"))
       end
     end
 
     files_contents
   end
 
-  def get_changed_files_contents_current_tree(current_tree, parent_tree, directory)
+  def gcf_current(current_tree, parent_tree, directory)
     files_contents = []
-    files_contents.concat(get_changed_files_contents_current_tree_added_and_changed(current_tree, parent_tree, directory))
-    files_contents.concat(get_changed_files_contents_current_tree_deleted(current_tree, parent_tree, directory))
+    files_contents.concat(gcf_current_added_and_changed(current_tree, parent_tree, directory))
+    files_contents.concat(gcf_current_deleted(current_tree, parent_tree, directory))
 
     files_contents
   end
 
-  def get_changed_files_contents_current_tree_added_and_changed(current_tree, parent_tree, directory)
+  def gcf_current_added_and_changed(current_tree, parent_tree, directory)
     files_contents = []
     current_tree.each do |e|
       if e[:type] == :blob
@@ -93,7 +93,7 @@ module DiffGettable
     files_contents
   end
 
-  def get_changed_files_contents_current_tree_deleted(current_tree, parent_tree, directory)
+  def gcf_current_deleted(current_tree, parent_tree, directory)
     files_contents = []
     parent_tree.each do |e|
       if e[:type] == :blob && !current_tree[e[:name]]
