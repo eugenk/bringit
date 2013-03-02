@@ -6,18 +6,26 @@ Bringit::Application.routes.draw do
   root to: 'home#index'
   
   post '/development/session' => 'sessions#create', as: :development_session
-  
-  resources :repositories do
-    get :autocomplete_repository_title, :on => :collection
-    post 'upload' => "repositories#upload"
-  end
+
+  get '/autocomplete' => "repositories#autocomplete_repository_title", as: :autocomplete_repository_title_repositories
+  get '/repositories' => "repositories#index", as: :repositories
+  get '/new' => "repositories#new", as: :new_repository 
+  post '/create' => "repositories#create"
   
   get '/repositories/:id/:url' => "repositories#show", constraints: { url: /.*/ }, as: :browse_repository
   
   get '/raw/repositories/:id/:url' => "repositories#raw", constraints: { url: /.*/ }, as: :raw_repository
   get '/raw/commits/:id/:oid/:url' => "repositories#raw", constraints: { url: /.*/ }, as: :raw_commits
   
-  post '/repositories/:id' => "repositories#update"
+  get '/repositories/:id' => "repositories#show", as: :repository
+  
+  post '/upload/:id' => "repositories#upload", as: :repository_upload
+  
+  delete '/delete/:id' => "repositories#destroy", as: :delete_repository
+  
+  match '/update/:id' => "repositories#update", as: :update_repository
+  
+  post '/repositories/:id' => "repositories#update", as: :repository
   delete '/delete_file/repositories/:id/:url' => "repositories#delete_file", constraints: { url: /.*/ }, as: :delete_file_repository
   post '/update_file/repositories/:id/:url' => "repositories#update_file", constraints: { url: /.*/ }, as: :update_file_repository
   

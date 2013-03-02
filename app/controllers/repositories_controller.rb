@@ -83,7 +83,7 @@ class RepositoriesController < ApplicationController
   end
   
   def upload
-    @repository = Repository.identifier(params[:repository_id]).first!
+    @repository = Repository.identifier(params[:id]).first!
     @url = params[:url] || ''
     @url = url[0..-2] if(@url[-1] == '/')
     params[:message].strip!

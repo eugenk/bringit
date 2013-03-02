@@ -8,7 +8,7 @@
       - else
         = @repository.title
     
-    = form_for(@repository, url: repository_path(@repository), method: :post, html: {class: 'form-inline', id: 'edit-title-form'}) do |f|
+    = form_for(@repository, url: update_repository_path(@repository), method: :post, html: {class: 'form-inline', id: 'edit-title-form'}) do |f|
       .input-append
         = f.text_field :title, maxlength: 32
   .span4
@@ -23,7 +23,7 @@
     %span.editable-notice 
       %i.icon-pencil
     .changeable-description  
-      = best_in_place_if user_signed_in?, @repository, :description, type: :textarea, classes: 'repository-description'
+      = best_in_place_if user_signed_in?, @repository, :description, type: :textarea, classes: 'repository-description', path: update_repository_path(@repository)
   - else
     %span= @repository.description
 .row
@@ -42,7 +42,7 @@
             Options
             %b.caret
           %ul.dropdown-menu
-            %li= link_to raw('<i class="icon-trash"></i> Delete repository'), repository_path(@repository.path), method: :delete,
+            %li= link_to raw('<i class="icon-trash"></i> Delete repository'), delete_repository_path(@repository.path), method: :delete,
               'data-confirm' => "Are you sure to remove the repository #{@repository.title} permanently?", 'data-id' => @repository.path, 
               'data-head' => 'Remove repository', class: 'delete-confirm'
               
