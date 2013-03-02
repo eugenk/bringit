@@ -14,15 +14,15 @@ describe Repository do
     before do
       @repository.save
       @filepath = 'path/to/file.txt'
-      @commit_add1 = @repository.commit_file(@repository.owners.first, 'Some content1', @filepath, 'Add')
-      @commit_change1 = @repository.commit_file(@repository.owners.first, 'Some other content1', @filepath, 'Change')
-      @commit_other1 = @repository.commit_file(@repository.owners.first, 'Other content1', 'file2.txt', 'Other File: Add')
-      @commit_delete1 = @repository.delete_file(@repository.owners.first, @filepath)
-      @commit_other2 = @repository.commit_file(@repository.owners.first, 'Other content2', 'file2.txt', 'Other File: Change1')
-      @commit_other3 = @repository.commit_file(@repository.owners.first, 'Other content3', 'file2.txt', 'Other File: Change2')
-      @commit_add2 = @repository.commit_file(@repository.owners.first, 'Some content2', @filepath, 'Re-Add')
-      @commit_change2 = @repository.commit_file(@repository.owners.first, 'Some other content2', @filepath, 'Re-Change')
-      @commit_delete2 = @repository.delete_file(@repository.owners.first, @filepath)
+      @commit_add1 = @repository.commit_file(@user, 'Some content1', @filepath, 'Add')
+      @commit_change1 = @repository.commit_file(@user, 'Some other content1', @filepath, 'Change')
+      @commit_other1 = @repository.commit_file(@user, 'Other content1', 'file2.txt', 'Other File: Add')
+      @commit_delete1 = @repository.delete_file(@user, @filepath)
+      @commit_other2 = @repository.commit_file(@user, 'Other content2', 'file2.txt', 'Other File: Change1')
+      @commit_other3 = @repository.commit_file(@user, 'Other content3', 'file2.txt', 'Other File: Change2')
+      @commit_add2 = @repository.commit_file(@user, 'Some content2', @filepath, 'Re-Add')
+      @commit_change2 = @repository.commit_file(@user, 'Some other content2', @filepath, 'Re-Change')
+      @commit_delete2 = @repository.delete_file(@user, @filepath)
     end
 
     it "should have the correct values in the history at the HEAD" do

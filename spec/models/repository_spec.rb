@@ -96,7 +96,7 @@ describe Repository do
   describe "can commit a file" do
     before do
       @repository.save
-      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file.txt', 'Some commit message')
+      @repository.commit_file(@user, 'Some content', 'path/file.txt', 'Some commit message')
     end
     it { should be_valid }
     it "should exist a commit in the database" do
@@ -119,8 +119,8 @@ describe Repository do
   describe "can delete a file" do
     before do
       @repository.save
-      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file.txt', 'Some commit message')
-      @repository.delete_file(@repository.owners.first, 'path/file.txt')
+      @repository.commit_file(@user, 'Some content', 'path/file.txt', 'Some commit message')
+      @repository.delete_file(@user, 'path/file.txt')
     end
     it "should exist a commit in the database" do
       @repository.all_commits.first.message.should == 'Delete file path/file.txt'
@@ -133,12 +133,12 @@ describe Repository do
   describe "can read a folder" do
     before do
       @repository.save
-      @commit_add1 = @repository.commit_file(@repository.owners.first, 'Some content', 'path/file1.txt', 'Some commit message1')
-      @commit_add2 = @repository.commit_file(@repository.owners.first, 'Some content', 'path/file2.txt', 'Some commit message2')
-      @commit_add3 = @repository.commit_file(@repository.owners.first, 'Some content', 'file3.txt', 'Some commit message2')
-      @commit_del1 = @repository.delete_file(@repository.owners.first, 'path/file1.txt')
-      @commit_del2 = @repository.delete_file(@repository.owners.first, 'path/file2.txt')
-      @commit_del3 = @repository.delete_file(@repository.owners.first, 'file3.txt')
+      @commit_add1 = @repository.commit_file(@user, 'Some content', 'path/file1.txt', 'Some commit message1')
+      @commit_add2 = @repository.commit_file(@user, 'Some content', 'path/file2.txt', 'Some commit message2')
+      @commit_add3 = @repository.commit_file(@user, 'Some content', 'file3.txt', 'Some commit message2')
+      @commit_del1 = @repository.delete_file(@user, 'path/file1.txt')
+      @commit_del2 = @repository.delete_file(@user, 'path/file2.txt')
+      @commit_del3 = @repository.delete_file(@user, 'file3.txt')
     end
 
     
@@ -299,8 +299,8 @@ describe Repository do
   describe "can overwrite file" do
     before do
       @repository.save
-      @repository.commit_file(@repository.owners.first, 'Some content', 'path/file.txt', 'Some commit message')
-      @repository.commit_file(@repository.owners.first, 'Some content2', 'path/file.txt', 'Some commit message2')
+      @repository.commit_file(@user, 'Some content', 'path/file.txt', 'Some commit message')
+      @repository.commit_file(@user, 'Some content2', 'path/file.txt', 'Some commit message2')
     end
     it "should exist commit in the database" do
       @repository.all_commits.first.message.should == 'Some commit message2'

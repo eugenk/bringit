@@ -15,9 +15,9 @@ describe Repository do
       @repository.save
       @content1 = "Some\ncontent\nwith\nmany\nlines."
       @content2 = "Some\ncontent,\nwith\nmany\nlines."
-      @commit1 = @repository.commit_file(@repository.owners.first, @content1, 'path/to/file.xml', 'Message1')
-      @commit2 = @repository.commit_file(@repository.owners.first, @content2, 'path/to/file.xml', 'Message2')
-      @commit3 = @repository.delete_file(@repository.owners.first, 'path/to/file.xml')
+      @commit1 = @repository.commit_file(@user, @content1, 'path/to/file.xml', 'Message1')
+      @commit2 = @repository.commit_file(@user, @content2, 'path/to/file.xml', 'Message2')
+      @commit3 = @repository.delete_file(@user, 'path/to/file.xml')
     end
     
     it "last commit should be HEAD" do
