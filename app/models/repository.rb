@@ -435,31 +435,27 @@ class Repository < ActiveRecord::Base
     
     if tree.type == :tree
       tree.each_tree do |subdir|
-        path_file = url.dup
-        path_file << '/' unless url.empty?
-        path_file << subdir[:name]
-        
-        contents << {
-          type: :dir,
-          name: subdir[:name],
-          path: path_file
-        }
+        folder_contents_append_entry(contents, url, :dir, subdir[:name])
       end
       
       tree.each_blob do |file|
-        path_file = url.dup
-        path_file << '/' unless url.empty?
-        path_file << file[:name]
-  
-        contents << {
-          type: :file,
-          name: file[:name],
-          path: path_file
-        }
+        folder_contents_append_entry(contents, url, :file, file[:name])
       end
     end
     
     contents
+  end
+
+  def folder_contents_append_entry(contents, url, type, name)
+    path_file = url.dup
+    path_file << '/' unless url.empty?
+    path_file << name
+
+    contents << {
+      type: type,
+      name: name,
+      path: path_file
+    }
   end
   
   def get_current_file_rugged(rugged_commit, url='')
